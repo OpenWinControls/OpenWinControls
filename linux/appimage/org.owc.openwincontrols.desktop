@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=OpenWinControls
+GenericName=OpenWinControls
+Comment=GPD WinControls replacement
+Exec=OpenWinControls
+Icon=OpenWinControls
+Categories=Utility
