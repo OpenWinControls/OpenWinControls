@@ -99,7 +99,7 @@ jobs:
           mkdir -p OpenWinControls/usr/share/metainfo
           mkdir OpenWinControls/AppDir
           mv OpenWinControls/usr OpenWinControls/AppDir/usr
-          cp linux/appimage/org.owc.openwincontrols.appdata.xml OpenWinControls/AppDir/usr/share/metainfo
+          cp OpenWinControls/linux/appimage/org.owc.openwincontrols.appdata.xml OpenWinControls/AppDir/usr/share/metainfo
 
       - name: make appimage
         run: >
@@ -107,8 +107,8 @@ jobs:
           EXTRA_QT_PLUGINS="svg;wayland-decoration-client;wayland-graphics-integration-client;wayland-shell-integration;waylandcompositor"
           LD_LIBRARY_PATH=$LD_LIBRARY_PATH:OpenWinControls/AppDir/usr/lib
           ./linuxdeploy-x86_64.AppImage
-          -d linux/appimage/org.owc.openwincontrols.desktop
-          -i linux/appimage/usr/share/icons/hicolor/256x256/apps/OpenWinControls.png
+          -d OpenWinControls/linux/appimage/org.owc.openwincontrols.desktop
+          -i OpenWinControls/linux/appimage/usr/share/icons/hicolor/256x256/apps/OpenWinControls.png
           --exclude-library=libwayland-client.so*
           --appdir OpenWinControls/AppDir
           --plugin qt
