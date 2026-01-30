@@ -76,6 +76,11 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install libudev-dev libusb-1.0-0-dev
+
+      - name: install missing libtiff5
+        run: |
+          wget https://archive.ubuntu.com/ubuntu/pool/main/t/tiff/libtiff5_4.3.0-6ubuntu0.12_amd64.deb
+          sudo apt install ./libtiff5_4.3.0-6ubuntu0.12_amd64.deb
           
       - name: download linuxdeploy and plugins
         run: |
