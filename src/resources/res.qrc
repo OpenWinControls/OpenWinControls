@@ -1,0 +1,52 @@
+<!--
+  - This file is part of OpenWinControls.
+  - Copyright (C) 2026 kylon
+  -
+  - OpenWinControls is free software: you can redistribute it and/or modify
+  - it under the terms of the GNU General Public License as published by
+  - the Free Software Foundation, either version 3 of the License, or
+  - (at your option) any later version.
+  -
+  - OpenWinControls is distributed in the hope that it will be useful,
+  - but WITHOUT ANY WARRANTY; without even the implied warranty of
+  - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  - GNU General Public License for more details.
+  -
+  - You should have received a copy of the GNU General Public License
+  - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<RCC>
+    <qresource prefix="/">
+        <file alias="max2b">img/max2-back.png</file>
+        <file alias="max2f">img/max2-front.png</file>
+        <file alias="minib">img/mini-back.png</file>
+        <file alias="minif">img/mini-front.png</file>
+        <file alias="win3b">img/win3-back.png</file>
+        <file alias="win3f">img/win3-front.png</file>
+        <file alias="win4b">img/win4-back.png</file>
+        <file alias="win4f">img/win4-front.png</file>
+        <file alias="win5b">img/win5-back.png</file>
+        <file alias="win5f">img/win5-front.png</file>
+        <file alias="unkd">img/unk.png</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="dpad">icons/generic_dpad.png</file>
+        <file alias="face">icons/action_btns.png</file>
+        <file alias="select">icons/select.png</file>
+        <file alias="start">icons/start.png</file>
+        <file alias="menu">icons/menu.png</file>
+        <file alias="ls">icons/ls.png</file>
+        <file alias="rs">icons/rs.png</file>
+        <file alias="l1">icons/l1.png</file>
+        <file alias="l2">icons/l2.png</file>
+        <file alias="l3">icons/l3.png</file>
+        <file alias="l4">icons/l4.png</file>
+        <file alias="r1">icons/r1.png</file>
+        <file alias="r2">icons/r2.png</file>
+        <file alias="r3">icons/r3.png</file>
+        <file alias="r4">icons/r4.png</file>
+    </qresource>
+    <qresource prefix="/app">
+        <file alias="icon">owc.ico</file>
+    </qresource>
+</RCC>

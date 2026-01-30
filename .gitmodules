@@ -1,0 +1,6 @@
+[submodule "src/extern/yaml-cpp"]
+	path = src/extern/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp
+[submodule "src/extern/libOpenWinControls"]
+	path = src/extern/libOpenWinControls
+	url = https://github.com/OpenWinControls/libOpenWinControls
