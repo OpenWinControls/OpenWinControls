@@ -142,14 +142,14 @@ jobs:
 
       - name: zip windows release
         run: zip -r -9 "OpenWinControls-Windows.zip" owc_windows
-
+      
       - name: publish release
         env:
           GH_TOKEN: ${{ secrets.GTK }}
           GH_REPO: ${{ github.repository }}
         run: >
-          gh release create
-          "OpenWinControls-Windows.zip"
+          gh release create continuous
+          OpenWinControls-Windows.zip
           OpenWinControls-x86_64/OpenWinControls-x86_64.AppImage
           --draft=false
           --latest
