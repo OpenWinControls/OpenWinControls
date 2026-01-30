@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: jurplel/install-qt-action@v4
         with:
-          version: '6.10.2'
+          version: '6.10.1'
           modules: qtimageformats qtmultimedia qtwaylandcompositor
 
       - uses: actions/checkout@main
@@ -60,7 +60,7 @@ jobs:
 
       - uses: jurplel/install-qt-action@v4
         with:
-          version: '6.10.2'
+          version: '6.10.1'
           modules: qtimageformats qtmultimedia qtwaylandcompositor
 
       - uses: actions/checkout@main
