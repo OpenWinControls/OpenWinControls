@@ -154,4 +154,4 @@ jobs:
           --draft=false
           --latest
           -t "OpenWinControls"
-          -n continuos build
+          -n "continuos build"
