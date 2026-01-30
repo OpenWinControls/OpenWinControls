@@ -42,6 +42,10 @@ cmake -B build
 make -C build
 ```
 
+## Credits
+
+button icons - https://github.com/RobTheFiveNine/flat-gamepad-icons
+
 ---
 
 ![](home.png)
