@@ -24,8 +24,8 @@
 #define NOGDI
 #define NOVIRTUALKEYCODES
 #define NOCLIPBOARD
-#ifdef UNICODE
-#undef  UNICODE
+#ifndef UNICODE
+#define  UNICODE
 #endif
 #include <Windows.h>
 #include <winreg.h>
