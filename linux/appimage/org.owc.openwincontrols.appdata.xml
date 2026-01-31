@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+	<id>org.owc.openwincontrols</id>
+	<metadata_license>CC0-1.0</metadata_license>
+	<project_license>GPL-3.0</project_license>
+	<name>OpenWinControls</name>
+	<summary>GPD WinControls replacement</summary>
+	<description>
+		<p>
+			Multiplatform open-source GPD WinControls replacement.
+			Fully unlock all features of the controller firmware in GPD devices.
+		</p>
+	</description>
+	<launchable type="desktop-id">org.owc.openwincontrols.desktop</launchable>
+	<url type="homepage">https://github.com/OpenWinControls/OpenWinControls</url>
+	<url type="bugtracker">https://github.com/OpenWinControls/OpenWinControls/issues</url>
+	<provides>
+		<id>org.owc.openwincontrols.desktop</id>
+	</provides>
+	<categories>
+		<category>Utility</category>
+	</categories>
+	<developer id="org.owc.kylon">
+		<name>kylon</name>
+	</developer>
+	<content_rating type="oars-1.1" />
+	<keywords>
+		<keyword translate="no">OpenWinControls</keyword>
+		<keyword>gpd</keyword>
+		<keyword>wincontrols</keyword>
+	</keywords>
+	<screenshots>
+		<screenshot type="default"><image>https://raw.githubusercontent.com/OpenWinControls/OpenWinControls/main/home.png</image></screenshot>
+	</screenshots>
+</component>

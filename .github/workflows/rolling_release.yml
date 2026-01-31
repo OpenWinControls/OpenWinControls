@@ -1,0 +1,171 @@
+name: rolling release
+
+on:
+  push:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+  
+jobs:
+  win_release:
+    runs-on: windows-latest
+
+    outputs:
+      win_release_pkg_id: ${{steps.win_release_zip.outputs.artifact-id}}
+
+    steps:
+      - uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.10.2'
+          modules: qtimageformats qtmultimedia
+
+      - uses: actions/checkout@main
+        with:
+          path: OpenWinControls
+          submodules: true
+
+      - name: init submodules
+        run: |
+          cd OpenWinControls
+          git submodule update --init --recursive
+        
+      - name: prepare release folder
+        run: mkdir "owc_windows"
+
+      - name: build
+        shell: cmd
+        run: |
+           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+           cd OpenWinControls
+           cmake -B build -DCMAKE_BUILD_TYPE=Release -G Ninja
+           ninja -C build
+           copy build\OpenWinControls.exe ${{github.workspace}}\owc_windows
+           windeployqt6.exe --no-translations --no-quick-import --no-opengl-sw --no-compiler-runtime ${{github.workspace}}/owc_windows/OpenWinControls.exe
+
+      - name: upload windows release
+        id: win_release_zip
+        uses: actions/upload-artifact@main
+        with:
+          name: owc_windows
+          path: owc_windows
+          retention-days: 1
+
+  linux_release:
+    runs-on: ubuntu-latest
+
+    outputs:
+      linux_owc_appimg_id: ${{steps.linux_appimg.outputs.artifact-id}}
+
+    steps:
+      - uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.10.2'
+          modules: qtimageformats qtmultimedia qtwaylandcompositor
+
+      - uses: actions/checkout@main
+        with:
+          path: OpenWinControls
+          submodules: true
+
+      - name: init submodules
+        run: |
+          cd OpenWinControls
+          git submodule update --init --recursive
+
+      - name: install required libs
+        run: |
+          sudo apt-get update
+          sudo apt-get install libudev-dev libusb-1.0-0-dev
+
+      - name: install missing libtiff5
+        run: |
+          wget https://archive.ubuntu.com/ubuntu/pool/main/t/tiff/libtiff5_4.3.0-6ubuntu0.12_amd64.deb
+          sudo apt install ./libtiff5_4.3.0-6ubuntu0.12_amd64.deb
+          
+      - name: download linuxdeploy and plugins
+        run: |
+          wget -q --show-progress https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          wget -q --show-progress https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+          curl -fsSLo linuxdeploy-plugin-checkrt.sh https://github.com/darealshinji/linuxdeploy-plugin-checkrt/releases/download/continuous/linuxdeploy-plugin-checkrt.sh
+          chmod +x linuxdeploy-plugin-checkrt.sh
+          chmod +x linuxdeploy-*.AppImage
+          
+      - name: prepare release folders
+        run: mkdir "owc_linux"
+
+      - name: build
+        run: |
+           cd OpenWinControls
+           cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=usr
+           make -C build -j`nproc` install
+
+      - name: prepare appimage
+        run: |
+          mkdir -p OpenWinControls/usr/share/metainfo
+          mkdir OpenWinControls/AppDir
+          mv OpenWinControls/usr OpenWinControls/AppDir/usr
+          cp OpenWinControls/linux/appimage/org.owc.openwincontrols.appdata.xml OpenWinControls/AppDir/usr/share/metainfo
+
+      - name: make appimage
+        run: >
+          EXTRA_PLATFORM_PLUGINS=libqwayland.so
+          EXTRA_QT_PLUGINS="svg;wayland-decoration-client;wayland-graphics-integration-client;wayland-shell-integration;waylandcompositor"
+          LD_LIBRARY_PATH=$LD_LIBRARY_PATH:OpenWinControls/AppDir/usr/lib
+          ./linuxdeploy-x86_64.AppImage
+          -d OpenWinControls/linux/appimage/org.owc.openwincontrols.desktop
+          -i OpenWinControls/linux/appimage/usr/share/icons/hicolor/256x256/apps/OpenWinControls.png
+          --exclude-library=libwayland-client.so*
+          --appdir OpenWinControls/AppDir
+          --plugin qt
+          --plugin checkrt
+          --output appimage
+
+      - name: upload appimage
+        id: linux_appimg
+        uses: actions/upload-artifact@main
+        with:
+          name: OpenWinControls-x86_64
+          path: OpenWinControls-x86_64.AppImage
+          retention-days: 1
+          
+  publish_release:
+    runs-on: ubuntu-latest
+    needs: [win_release, linux_release]
+
+    steps:
+      - uses: actions/checkout@main
+
+      - name: get release artifacts
+        uses: actions/download-artifact@main
+        with:
+          artifact-ids: ${{needs.win_release.outputs.win_release_pkg_id}},${{needs.linux_release.outputs.linux_owc_appimg_id}}
+
+      - name: zip windows release
+        run: zip -r -9 "OpenWinControls-Windows.zip" owc_windows
+
+      - name: prepare release notes
+        run: >
+          echo -e "Continuous build\n\n
+          [**Changelog**](https://github.com/OpenWinControls/OpenWinControls/blob/main/CHANGELOG.md)\n\n
+          ### Linux\n\n
+          Official AUR git package [here](https://aur.archlinux.org/packages/openwincontrols-git)" > rel_notes.md
+          
+      - name: remove old release
+        env:
+          GH_TOKEN: ${{ secrets.GTK }}
+          GH_REPO: ${{ github.repository }}
+        run: gh release delete continuous -y
+        continue-on-error: true
+        
+      - name: publish release
+        env:
+          GH_TOKEN: ${{ secrets.GTK }}
+          GH_REPO: ${{ github.repository }}
+        run: >
+          gh release create continuous
+          OpenWinControls-Windows.zip
+          OpenWinControls-x86_64/OpenWinControls-x86_64.AppImage
+          --draft=false
+          --latest
+          -t "OpenWinControls"
+          -F "rel_notes.md"
