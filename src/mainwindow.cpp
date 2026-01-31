@@ -114,13 +114,13 @@ QString MainWindow::getProduct() const {
     LSTATUS ret;
     HKEY rkey;
 
-    ret = RegOpenKeyEx(HKEY_LOCAL_MACHINE, LR"(HARDWARE\DESCRIPTION\System\BIOS)", 0, KEY_READ, &rkey);
+    ret = RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT(R"(HARDWARE\DESCRIPTION\System\BIOS)"), 0, KEY_READ, &rkey);
     if (ret != ERROR_SUCCESS) {
         logsPage->writeLog(QString("failed to open bios subkey, code: %1").arg(ret));
         return "";
     }
 
-    ret = RegGetValue(rkey, nullptr, L"BaseBoardProduct", RRF_RT_REG_SZ, nullptr, nullptr, &bufSz);
+    ret = RegGetValue(rkey, nullptr, TEXT("BaseBoardProduct"), RRF_RT_REG_SZ, nullptr, nullptr, &bufSz);
     if (ret != ERROR_SUCCESS) {
         logsPage->writeLog(QString("failed to read size for reg value, code %1").arg(ret));
         RegCloseKey(rkey);
@@ -130,7 +130,7 @@ QString MainWindow::getProduct() const {
     bufSz += sizeof(TCHAR);
     buf = std::make_unique<TCHAR[]>(bufSz);
 
-    ret = RegGetValue(rkey, nullptr, L"BaseBoardProduct", RRF_RT_REG_SZ, nullptr, buf.get(), &bufSz);
+    ret = RegGetValue(rkey, nullptr, TEXT("BaseBoardProduct"), RRF_RT_REG_SZ, nullptr, buf.get(), &bufSz);
     if (ret != ERROR_SUCCESS) {
         logsPage->writeLog(QString("failed to read reg value, code %1").arg(ret));
         RegCloseKey(rkey);
