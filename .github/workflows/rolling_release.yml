@@ -3,6 +3,7 @@ name: rolling release
 on:
   push:
     branches: [ "main" ]
+    paths: ['**.cpp', '**.h', 'CMakeLists.txt']
 
   workflow_dispatch:
   
