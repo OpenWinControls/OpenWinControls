@@ -20,6 +20,13 @@
 #include "mainwindow.h"
 
 int main(int argc, char *argv[]) {
+#ifdef _WIN32
+    DWORD langCount = 2;
+
+    // hidapi uses the preferred user lang to print logs, try to force english, if available
+    SetProcessPreferredUILanguages(MUI_LANGUAGE_NAME, L"en-US\0en\0\0", &langCount);
+#endif
+
     QApplication a(argc, argv);
     MainWindow w;
 
