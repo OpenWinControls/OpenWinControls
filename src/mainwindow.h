@@ -49,8 +49,7 @@ private:
     [[nodiscard]] QString getProduct() const;
     [[nodiscard]] QSharedPointer<OWC::Controller> getDevice(const QString &product) const;
     [[nodiscard]] bool isCompatible(const QString &product) const;
-    void initController(const QString &product);
-    void initUI(const QString &product) const;
+    void initApp();
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);

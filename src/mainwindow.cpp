@@ -39,7 +39,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     QVBoxLayout *lyt = new QVBoxLayout();
     QHBoxLayout *bottomLyt = new QHBoxLayout();
     QFont appFont = font();
-    QString prod;
 
     stackedWidget = new QStackedWidget();
     homePage = new OWC::HomePage();
@@ -48,7 +47,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     logsPage = new OWC::LogsPage();
     settingsPage = new OWC::SettingsPage();
     controllerVersionLbl = new QLabel("0.0");
-    prod = getProduct();
 
     appFont.setPointSize(12);
     setFont(appFont);
@@ -87,8 +85,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     QObject::connect(settingsPage, &OWC::SettingsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
     QObject::connect(settingsPage, &OWC::SettingsPage::resetSettings, this, &MainWindow::onResetSettings);
 
-    initController(prod);
-    initUI(prod);
+    initApp();
 }
 
 MainWindow::~MainWindow() {
@@ -196,26 +193,28 @@ bool MainWindow::isCompatible(const QString &product) const {
     return false;
 }
 
-void MainWindow::initController(const QString &product) {
+void MainWindow::initApp() {
     const std::function<void(const std::string &)> logCB = [&](const std::string &msg) { logsPage->writeLog(QString::fromStdString(msg)); };
+    const QString prod = getProduct();
 
-    gpd = getDevice(product);
+    gpd = getDevice(prod);
     if (gpd.isNull())
         return;
 
     gpd->enableLogging(logCB);
 
-    if (!gpd->init())
+    if (!gpd->init()) {
         logsPage->writeLog(QStringLiteral("device initialization failed"));
-    else if (!gpd->readConfig())
-        logsPage->writeLog(QStringLiteral("failed to read firmware config"));
-    else if (!isCompatible(product))
-        logsPage->writeLog(QStringLiteral("no compatible controller found"));
-}
-
-void MainWindow::initUI(const QString &product) const {
-    if (gpd.isNull())
         return;
+
+    } else if (!gpd->readConfig()) {
+        logsPage->writeLog(QStringLiteral("failed to read firmware config"));
+        return;
+
+    } else if (!isCompatible(prod)) {
+        logsPage->writeLog(QStringLiteral("no compatible controller found"));
+        return;
+    }
 
     if (gpd->getControllerType() == 1) {
         const QSharedPointer<OWC::ControllerV1> gpdV1 = qSharedPointerCast<OWC::ControllerV1>(gpd);
@@ -223,13 +222,19 @@ void MainWindow::initUI(const QString &product) const {
         const std::pair<int, int> k = gpdV1->getKVersion();
 
         controllerVersionLbl->setText(QString("X%1.%2, K%3.%4").arg(x.first).arg(x.second).arg(k.first).arg(k.second));
-    }
+
+    }/* else if (gpd->getControllerType() == 2) {
+        const QSharedPointer<OWC::ControllerV2> gpdV2 = qSharedPointerCast<OWC::ControllerV2>(gpd);
+        const auto [major, minor] = gpdV2->getVersion();
+
+        controllerVersionLbl->setText(QString("%1.%2").arg(major).arg(minor));
+    }*/
 
     faceButtonsPage->setMapping(gpd);
     backButtonsPage->setMapping(gpd);
     settingsPage->initPage(gpd);
     settingsPage->setData(gpd);
-    homePage->setDevice(product);
+    homePage->setDevice(prod);
 }
 
 void MainWindow::onLogSent(const QString& msg) const {
