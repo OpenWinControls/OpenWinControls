@@ -17,6 +17,9 @@
  */
 #include <QApplication>
 
+#ifdef _WIN32
+#include "include/win.h"
+#endif
 #include "mainwindow.h"
 
 int main(int argc, char *argv[]) {
