@@ -159,38 +159,29 @@ QSharedPointer<OWC::Controller> MainWindow::getDevice(const QString &product) co
 }
 
 bool MainWindow::isCompatible(const QString &product) const {
+    std::pair<int, int> version = {0, 0};
+    bool compCheck = false;
+
     /*if (product == OWC::win3) {
        return true;
 
    } else*/ if (product == OWC::win4) {
-       const auto [major, minor] = qSharedPointerCast<OWC::ControllerV1>(gpd)->getKVersion();
-       const bool compCheck = major >= 4 && minor >= 7;
-
-       if (!compCheck)
-           logsPage->writeLog(QString("version %1.%2 is not supported").arg(major).arg(minor));
-
-       return compCheck;
+       version = qSharedPointerCast<OWC::ControllerV1>(gpd)->getKVersion();
+       compCheck = version.first >= 4 && version.second >= 7;
 
     } else if (product == OWC::mini23 || product == OWC::mini24) {
-        const auto [major, minor] = qSharedPointerCast<OWC::ControllerV1>(gpd)->getKVersion();
-        const bool compCheck = major >= 5 && minor >= 3;
-
-        if (!compCheck)
-            logsPage->writeLog(QString("version %1.%2 is not supported").arg(major).arg(minor));
-
-        return compCheck;
+        version = qSharedPointerCast<OWC::ControllerV1>(gpd)->getKVersion();
+        compCheck = version.first >= 5 && version.second >= 3;
 
     } else if (product == OWC::max2_22 || product == OWC::max2_25) {
-        const auto [major, minor] = qSharedPointerCast<OWC::ControllerV1>(gpd)->getKVersion();
-        const bool compCheck = major >= 1 && minor >= 23;
-
-        if (!compCheck)
-            logsPage->writeLog(QString("version %1.%2 is not supported").arg(major).arg(minor));
-
-        return compCheck;
+        version = qSharedPointerCast<OWC::ControllerV1>(gpd)->getKVersion();
+        compCheck = version.first >= 1 && version.second >= 23;
     }
 
-    return false;
+    if (!compCheck)
+        logsPage->writeLog(QString("version %1.%2 is not supported").arg(version.first).arg(version.second));
+
+    return compCheck;
 }
 
 void MainWindow::initApp() {
