@@ -169,7 +169,7 @@ namespace OWC {
             const std::string key = std::format("L4_K{}", i+1);
 
             if (yaml[key])
-                lBtnList[i].btn->setText(QString::fromStdString(yaml[key].as<std::string>()));
+                lBtnList[i].btn->setText(QString::fromStdString(yaml[key].as<std::string>()).toUpper());
 
             if (i < 3) {
                 const std::string time = std::format("L4_K{}_START_TIME", i+1);
@@ -183,7 +183,7 @@ namespace OWC {
             const std::string key = std::format("R4_K{}", i+1);
 
             if (yaml[key])
-                rBtnList[i].btn->setText(QString::fromStdString(yaml[key].as<std::string>()));
+                rBtnList[i].btn->setText(QString::fromStdString(yaml[key].as<std::string>()).toUpper());
 
             if (i < 3) {
                 const std::string time = std::format("R4_K{}_START_TIME", i+1);

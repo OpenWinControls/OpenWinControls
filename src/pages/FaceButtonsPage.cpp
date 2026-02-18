@@ -420,7 +420,7 @@ namespace OWC {
     void FaceButtonsPage::importMappingFromYaml(const YAML::Node &yaml) const {
         for (const auto &[key, btnPair]: btnMap.asKeyValueRange()) {
             if (yaml[key])
-                btnPair.first->setText(QString::fromStdString(yaml[key].as<std::string>()));
+                btnPair.first->setText(QString::fromStdString(yaml[key].as<std::string>()).toUpper());
         }
     }
 
