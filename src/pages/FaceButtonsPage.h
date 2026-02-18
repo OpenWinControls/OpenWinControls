@@ -30,6 +30,7 @@ namespace OWC {
 
     private:
         static constexpr int buttonWidth = 122;
+        QMap<std::string_view, std::pair<QPushButton *, Button>> btnMap;
         QPushButton *backBtn = nullptr;
         QPushButton *resetBtn = nullptr;
         QPushButton *charMapBtn = nullptr;

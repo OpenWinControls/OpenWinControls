@@ -24,7 +24,10 @@
 namespace OWC {
     BackButtonsPage::BackButtonsPage() {
         QVBoxLayout *lyt = new QVBoxLayout();
+        QHBoxLayout *backBtnLyt = new QHBoxLayout();
         QHBoxLayout *buttonsLyt = new QHBoxLayout();
+        QLabel *helpTx = new QLabel("macro key slots and start times");
+        QFont helpFont = helpTx->font();
 
         backBtn = new QPushButton("Home");
         resetBtn = new QPushButton("Reset");
@@ -32,17 +35,21 @@ namespace OWC {
         charMap = new CharMapWidget();
 
         charMap->setVisible(false);
+        helpFont.setItalic(true);
+        helpTx->setFont(helpFont);
 
+        buttonsLyt->addWidget(helpTx);
         buttonsLyt->addStretch();
         buttonsLyt->addWidget(charMapBtn);
         buttonsLyt->addWidget(backBtn);
         buttonsLyt->addWidget(resetBtn);
 
+        backBtnLyt->addLayout(makeBackButtonUI("l4", lBtnList));
+        backBtnLyt->addLayout(makeBackButtonUI("r4", rBtnList));
+
         lyt->addWidget(charMap);
-        lyt->addStretch();
-        lyt->addLayout(makeLBlock());
-        lyt->addSpacing(12);
-        lyt->addLayout(makeRBlock());
+        lyt->addSpacing(15);
+        lyt->addLayout(backBtnLyt);
         lyt->addStretch();
         lyt->addLayout(buttonsLyt);
 
@@ -54,141 +61,63 @@ namespace OWC {
         QObject::connect(charMap, &CharMapWidget::keyPressed, this, &BackButtonsPage::onCharMapKeyPressed);
     }
 
-    QHBoxLayout *BackButtonsPage::makeLBlock() {
-        QHBoxLayout *lyt = new QHBoxLayout();
-        QLabel *plus1 = new QLabel("+");
-        QLabel *plus2 = new QLabel("+");
-        QLabel *plus3 = new QLabel("+");
+    QVBoxLayout *BackButtonsPage::makeBackButtonUI(const QString &icon, QList<KeySlot> &slotList) {
+        QVBoxLayout *lyt = new QVBoxLayout();
+        QHBoxLayout *iconLyt = new QHBoxLayout();
+        QHBoxLayout *macroTimeLyt = new QHBoxLayout();
         QLabel *lIcon = new QLabel();
-        QFont plusFont = plus1->font();
 
-        l1Btn = new QPushButton();
-        l2Btn = new QPushButton();
-        l3Btn = new QPushButton();
-        l4Btn = new QPushButton();
-        l1Ms = new QSpinBox();
-        l2Ms = new QSpinBox();
-        l3Ms = new QSpinBox();
-        l4Ms = new QSpinBox();
+        lIcon->setPixmap(QPixmap(QString(":/icons/%1").arg(icon)).scaled(70, 70, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 
-        l1Btn->setFixedWidth(buttonWidth);
-        l2Btn->setFixedWidth(buttonWidth);
-        l3Btn->setFixedWidth(buttonWidth);
-        l4Btn->setFixedWidth(buttonWidth);
-        l1Ms->setRange(0, msMax);
-        l1Ms->setMaximumWidth(80);
-        l2Ms->setRange(0, msMax);
-        l2Ms->setMaximumWidth(80);
-        l3Ms->setRange(0, msMax);
-        l3Ms->setMaximumWidth(80);
-        l4Ms->setRange(0, msMax);
-        l4Ms->setMaximumWidth(80);
-        plusFont.setBold(true);
-        plusFont.setPointSize(14);
-        plus1->setFont(plusFont);
-        plus2->setFont(plusFont);
-        plus3->setFont(plusFont);
-        lIcon->setPixmap(QPixmap(":/icons/l4").scaled(55, 55, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-
+        iconLyt->setAlignment(Qt::AlignCenter);
+        iconLyt->addWidget(lIcon);
         lyt->setAlignment(Qt::AlignCenter);
-        lyt->addWidget(lIcon);
-        lyt->addSpacing(8);
-        lyt->addWidget(l1Btn);
-        lyt->addWidget(l1Ms);
-        lyt->addWidget(plus1);
-        lyt->addWidget(l2Btn);
-        lyt->addWidget(l2Ms);
-        lyt->addWidget(plus2);
-        lyt->addWidget(l3Btn);
-        lyt->addWidget(l3Ms);
-        lyt->addWidget(plus3);
-        lyt->addWidget(l4Btn);
-        lyt->addWidget(l4Ms);
+        lyt->addLayout(iconLyt);
+        lyt->addSpacing(15);
 
-        QObject::connect(l1Btn, &QPushButton::clicked, this, &BackButtonsPage::onkeyButtonPressed);
-        QObject::connect(l2Btn, &QPushButton::clicked, this, &BackButtonsPage::onkeyButtonPressed);
-        QObject::connect(l3Btn, &QPushButton::clicked, this, &BackButtonsPage::onkeyButtonPressed);
-        QObject::connect(l4Btn, &QPushButton::clicked, this, &BackButtonsPage::onkeyButtonPressed);
+        for (int i=0; i<4; ++i) {
+            QHBoxLayout *slotLyt = new QHBoxLayout();
+            QPushButton *slot = new QPushButton();
+            QSpinBox *time = new QSpinBox();
 
-        return lyt;
-    }
+            slot->setFixedWidth(150);
+            time->setRange(0, INT16_MAX - 1);
 
-    QHBoxLayout *BackButtonsPage::makeRBlock() {
-        QHBoxLayout *lyt = new QHBoxLayout();
-        QLabel *plus1 = new QLabel("+");
-        QLabel *plus2 = new QLabel("+");
-        QLabel *plus3 = new QLabel("+");
-        QLabel *rIcon = new QLabel();
-        QFont plusFont = plus1->font();
+            slotLyt->setAlignment(Qt::AlignLeft);
+            slotLyt->addWidget(new QLabel(QString::number(i + 1)));
+            slotLyt->addWidget(slot);
 
-        r1Btn = new QPushButton();
-        r2Btn = new QPushButton();
-        r3Btn = new QPushButton();
-        r4Btn = new QPushButton();
-        r1Ms = new QSpinBox();
-        r2Ms = new QSpinBox();
-        r3Ms = new QSpinBox();
-        r4Ms = new QSpinBox();
+            if (i < 3) {
+                slotLyt->addSpacing(6);
+                slotLyt->addWidget(time);
+                slotLyt->addWidget(new QLabel("ms"));
+            }
 
-        r1Btn->setFixedWidth(buttonWidth);
-        r2Btn->setFixedWidth(buttonWidth);
-        r3Btn->setFixedWidth(buttonWidth);
-        r4Btn->setFixedWidth(buttonWidth);
-        r1Ms->setRange(0, msMax);
-        r1Ms->setMaximumWidth(80);
-        r2Ms->setRange(0, msMax);
-        r2Ms->setMaximumWidth(80);
-        r3Ms->setRange(0, msMax);
-        r3Ms->setMaximumWidth(80);
-        r4Ms->setRange(0, msMax);
-        r4Ms->setMaximumWidth(80);
-        plusFont.setBold(true);
-        plusFont.setPointSize(14);
-        plus1->setFont(plusFont);
-        plus2->setFont(plusFont);
-        plus3->setFont(plusFont);
-        rIcon->setPixmap(QPixmap(":/icons/r4").scaled(55, 55, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            lyt->addLayout(slotLyt);
+            slotList.append({.btn = slot, .startTime = time});
+            QObject::connect(slot, &QPushButton::clicked, this, &BackButtonsPage::onkeyButtonPressed);
+        }
 
-        lyt->setAlignment(Qt::AlignCenter);
-        lyt->addWidget(rIcon);
-        lyt->addSpacing(8);
-        lyt->addWidget(r1Btn);
-        lyt->addWidget(r1Ms);
-        lyt->addWidget(plus1);
-        lyt->addWidget(r2Btn);
-        lyt->addWidget(r2Ms);
-        lyt->addWidget(plus2);
-        lyt->addWidget(r3Btn);
-        lyt->addWidget(r3Ms);
-        lyt->addWidget(plus3);
-        lyt->addWidget(r4Btn);
-        lyt->addWidget(r4Ms);
-
-        QObject::connect(r1Btn, &QPushButton::clicked, this, &BackButtonsPage::onkeyButtonPressed);
-        QObject::connect(r2Btn, &QPushButton::clicked, this, &BackButtonsPage::onkeyButtonPressed);
-        QObject::connect(r3Btn, &QPushButton::clicked, this, &BackButtonsPage::onkeyButtonPressed);
-        QObject::connect(r4Btn, &QPushButton::clicked, this, &BackButtonsPage::onkeyButtonPressed);
+        macroTimeLyt->addWidget(new QLabel("Macro start time"));
+        macroTimeLyt->addSpacing(10);
+        macroTimeLyt->addWidget(slotList[3].startTime);
+        macroTimeLyt->addWidget(new QLabel("ms"));
+        lyt->addSpacing(25);
+        lyt->addLayout(macroTimeLyt);
 
         return lyt;
     }
 
     void BackButtonsPage::setMapping(const QSharedPointer<Controller> &gpd) const {
-        l1Btn->setText(QString::fromStdString(gpd->getLBack1()));
-        l2Btn->setText(QString::fromStdString(gpd->getLBack2()));
-        l3Btn->setText(QString::fromStdString(gpd->getLBack3()));
-        l4Btn->setText(QString::fromStdString(gpd->getLBack4()));
-        r1Btn->setText(QString::fromStdString(gpd->getRBack1()));
-        r2Btn->setText(QString::fromStdString(gpd->getRBack2()));
-        r3Btn->setText(QString::fromStdString(gpd->getRBack3()));
-        r4Btn->setText(QString::fromStdString(gpd->getRBack4()));
-        l1Ms->setValue(gpd->getLBack1Delay());
-        l2Ms->setValue(gpd->getLBack2Delay());
-        l3Ms->setValue(gpd->getLBack3Delay());
-        l4Ms->setValue(gpd->getLBack4Delay());
-        r1Ms->setValue(gpd->getRBack1Delay());
-        r2Ms->setValue(gpd->getRBack2Delay());
-        r3Ms->setValue(gpd->getRBack3Delay());
-        r4Ms->setValue(gpd->getRBack4Delay());
+        for (int i=0; i<4; ++i) {
+            lBtnList[i].btn->setText(QString::fromStdString(gpd->getBackButton(1, i+1)));
+            lBtnList[i].startTime->setValue(gpd->getBackButtonStartTime(1, i+1));
+        }
+
+        for (int i=0; i<4; ++i) {
+            rBtnList[i].btn->setText(QString::fromStdString(gpd->getBackButton(2, i+1)));
+            rBtnList[i].startTime->setValue(gpd->getBackButtonStartTime(2, i+1));
+        }
     }
 
     void BackButtonsPage::keyPressEvent(QKeyEvent *event) {
@@ -215,109 +144,76 @@ namespace OWC {
         QString yaml;
         QTextStream ts(&yaml);
 
-        ts << "L_BACK1: " << l1Btn->text() << "\n"
-            "L_BACK1_DELAY: " << l1Ms->value() << "\n"
-            "L_BACK2: " << l2Btn->text() << "\n"
-            "L_BACK2_DELAY: " << l2Ms->value() << "\n"
-            "L_BACK3: " << l3Btn->text() << "\n"
-            "L_BACK3_DELAY: " << l3Ms->value() << "\n"
-            "L_BACK4: " << l4Btn->text() << "\n"
-            "L_BACK4_DELAY: " << l4Ms->value() << "\n"
-            "R_BACK1: " << r1Btn->text() << "\n"
-            "R_BACK1_DELAY: " << r1Ms->value() << "\n"
-            "R_BACK2: " << r2Btn->text() << "\n"
-            "R_BACK2_DELAY: " << r2Ms->value() << "\n"
-            "R_BACK3: " << r3Btn->text() << "\n"
-            "R_BACK3_DELAY: " << r3Ms->value() << "\n"
-            "R_BACK4: " << r4Btn->text() << "\n"
-            "R_BACK4_DELAY: " << r4Ms->value();
+        for (int i=0; i<4; ++i) {
+            ts << "L4_K" << (i+1) << ": " << lBtnList[i].btn->text() << "\n";
+
+            if (i < 3)
+                ts << "L4_K" << (i+1) << "_START_TIME: " << lBtnList[i].startTime->value() << "\n";
+        }
+
+        for (int i=0; i<4; ++i) {
+            ts << "R4_K" << (i+1) << ": " << rBtnList[i].btn->text() << "\n";
+
+            if (i < 3)
+                ts << "R4_K" << (i+1) << "_START_TIME: " << rBtnList[i].startTime->value() << "\n";
+        }
+
+        ts << "L4_MACRO_START_TIME: " << lBtnList[3].startTime->value() << "\n"
+            "R4_MACRO_START_TIME: " << rBtnList[3].startTime->value() << "\n";
 
         return yaml;
     }
 
     void BackButtonsPage::importMappingFromYaml(const YAML::Node &yaml) const {
-        if (yaml["L_BACK1"])
-            l1Btn->setText(QString::fromStdString(yaml["L_BACK1"].as<std::string>()));
+        for (int i=0; i<4; ++i) {
+            const std::string key = std::format("L4_K{}", i+1);
 
-        if (yaml["L_BACK2"])
-            l2Btn->setText(QString::fromStdString(yaml["L_BACK2"].as<std::string>()));
+            if (yaml[key])
+                lBtnList[i].btn->setText(QString::fromStdString(yaml[key].as<std::string>()));
 
-        if (yaml["L_BACK3"])
-            l3Btn->setText(QString::fromStdString(yaml["L_BACK3"].as<std::string>()));
+            if (i < 3) {
+                const std::string time = std::format("L4_K{}_START_TIME", i+1);
 
-        if (yaml["L_BACK4"])
-            l4Btn->setText(QString::fromStdString(yaml["L_BACK4"].as<std::string>()));
+                if (yaml[time])
+                    lBtnList[i].startTime->setValue(yaml[time].as<int>());
+            }
+        }
 
-        if (yaml["R_BACK1"])
-            r1Btn->setText(QString::fromStdString(yaml["R_BACK1"].as<std::string>()));
+        for (int i=0; i<4; ++i) {
+            const std::string key = std::format("R4_K{}", i+1);
 
-        if (yaml["R_BACK2"])
-            r2Btn->setText(QString::fromStdString(yaml["R_BACK2"].as<std::string>()));
+            if (yaml[key])
+                rBtnList[i].btn->setText(QString::fromStdString(yaml[key].as<std::string>()));
 
-        if (yaml["R_BACK3"])
-            r3Btn->setText(QString::fromStdString(yaml["R_BACK3"].as<std::string>()));
+            if (i < 3) {
+                const std::string time = std::format("R4_K{}_START_TIME", i+1);
 
-        if (yaml["R_BACK4"])
-            r4Btn->setText(QString::fromStdString(yaml["R_BACK4"].as<std::string>()));
+                if (yaml[time])
+                    rBtnList[i].startTime->setValue(yaml[time].as<int>());
+            }
+        }
 
-        if (yaml["L_BACK1_DELAY"])
-            l1Ms->setValue(yaml["L_BACK1_DELAY"].as<int>());
+        if (yaml["L4_MACRO_START_TIME"])
+            lBtnList[3].startTime->setValue(yaml["L4_MACRO_START_TIME"].as<int>());
 
-        if (yaml["L_BACK2_DELAY"])
-            l2Ms->setValue(yaml["L_BACK2_DELAY"].as<int>());
-
-        if (yaml["L_BACK3_DELAY"])
-            l3Ms->setValue(yaml["L_BACK3_DELAY"].as<int>());
-
-        if (yaml["L_BACK4_DELAY"])
-            l4Ms->setValue(yaml["L_BACK4_DELAY"].as<int>());
-
-        if (yaml["R_BACK1_DELAY"])
-            r1Ms->setValue(yaml["R_BACK1_DELAY"].as<int>());
-
-        if (yaml["R_BACK2_DELAY"])
-            r2Ms->setValue(yaml["R_BACK2_DELAY"].as<int>());
-
-        if (yaml["R_BACK3_DELAY"])
-            r3Ms->setValue(yaml["R_BACK3_DELAY"].as<int>());
-
-        if (yaml["R_BACK4_DELAY"])
-            r4Ms->setValue(yaml["R_BACK4_DELAY"].as<int>());
+        if (yaml["R4_MACRO_START_TIME"])
+            rBtnList[3].startTime->setValue(yaml["R4_MACRO_START_TIME"].as<int>());
     }
 
     void BackButtonsPage::writeMapping(const QSharedPointer<Controller> &gpd) {
-        if (!gpd->setLBack1(l1Btn->text().toStdString()))
-            emit logSent("failed to set back left slot 1 key");
+        for (int i=0; i<4; ++i) {
+            if (!gpd->setBackButton(1, i+1, lBtnList[i].btn->text().toStdString()))
+                emit logSent(QString("failed to set L4 key slot %1").arg(i+1));
 
-        if (!gpd->setLBack2(l2Btn->text().toStdString()))
-            emit logSent("failed to set back left slot 2 key");
+            gpd->setBackButtonStartTime(1, i+1, lBtnList[i].startTime->value());
+        }
 
-        if (!gpd->setLBack3(l3Btn->text().toStdString()))
-            emit logSent("failed to set back left slot 3 key");
+        for (int i=0; i<4; ++i) {
+            if (!gpd->setBackButton(2, i+1, rBtnList[i].btn->text().toStdString()))
+                emit logSent(QString("failed to set R4 key slot %1").arg(i+1));
 
-        if (!gpd->setLBack4(l4Btn->text().toStdString()))
-            emit logSent("failed to set back left slot 4 key");
-
-        if (!gpd->setRBack1(r1Btn->text().toStdString()))
-            emit logSent("failed to set back right slot 1 key");
-
-        if (!gpd->setRBack2(r2Btn->text().toStdString()))
-            emit logSent("failed to set back right slot 2 key");
-
-        if (!gpd->setRBack3(r3Btn->text().toStdString()))
-            emit logSent("failed to set back right slot 3 key");
-
-        if (!gpd->setRBack4(r4Btn->text().toStdString()))
-            emit logSent("failed to set back right slot 4 key");
-
-        gpd->setLBack1Delay(l1Ms->value());
-        gpd->setLBack2Delay(l2Ms->value());
-        gpd->setLBack3Delay(l3Ms->value());
-        gpd->setLBack4Delay(l4Ms->value());
-        gpd->setRBack1Delay(r1Ms->value());
-        gpd->setRBack2Delay(r2Ms->value());
-        gpd->setRBack3Delay(r3Ms->value());
-        gpd->setRBack4Delay(r4Ms->value());
+            gpd->setBackButtonStartTime(2, i+1, lBtnList[i].startTime->value());
+        }
     }
 
     void BackButtonsPage::onBackBtnClicked() {

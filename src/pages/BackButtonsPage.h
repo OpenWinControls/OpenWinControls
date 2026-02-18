@@ -30,33 +30,21 @@ namespace OWC {
         Q_OBJECT
 
     private:
-        static constexpr int msMax = INT16_MAX - 1;
-        static constexpr int buttonWidth = 120;
+        struct KeySlot final {
+            QPushButton *btn = nullptr;
+            QSpinBox *startTime = nullptr;
+        };
+
         QPushButton *backBtn = nullptr;
         QPushButton *resetBtn = nullptr;
         QPushButton *charMapBtn = nullptr;
         CharMapWidget *charMap = nullptr;
-        QPushButton *l1Btn = nullptr;
-        QPushButton *l2Btn = nullptr;
-        QPushButton *l3Btn = nullptr;
-        QPushButton *l4Btn = nullptr;
-        QPushButton *r1Btn = nullptr;
-        QPushButton *r2Btn = nullptr;
-        QPushButton *r3Btn = nullptr;
-        QPushButton *r4Btn = nullptr;
-        QSpinBox *l1Ms = nullptr;
-        QSpinBox *l2Ms = nullptr;
-        QSpinBox *l3Ms = nullptr;
-        QSpinBox *l4Ms = nullptr;
-        QSpinBox *r1Ms = nullptr;
-        QSpinBox *r2Ms = nullptr;
-        QSpinBox *r3Ms = nullptr;
-        QSpinBox *r4Ms = nullptr;
+        QList<KeySlot> lBtnList;
+        QList<KeySlot> rBtnList;
         QPushButton *pendingBtn = nullptr;
         QString oldPendingBtnText;
 
-        [[nodiscard]] QHBoxLayout *makeLBlock();
-        [[nodiscard]] QHBoxLayout *makeRBlock();
+        [[nodiscard]] QVBoxLayout *makeBackButtonUI(const QString &icon, QList<KeySlot> &slotList);
 
     protected:
         void keyPressEvent(QKeyEvent *event) override;

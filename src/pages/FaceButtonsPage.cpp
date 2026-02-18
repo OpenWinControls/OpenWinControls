@@ -68,6 +68,30 @@ namespace OWC {
 
         setLayout(lyt);
 
+        btnMap = {
+            {"A", {aBtn, Button::KBD_A}},
+            {"B", {bBtn, Button::KBD_B}},
+            {"X", {xBtn, Button::KBD_X}},
+            {"Y", {yBtn, Button::KBD_Y}},
+            {"DPAD_UP", {dpadUpBtn, Button::KBD_DPAD_UP}},
+            {"DPAD_DOWN", {dpadDownBtn, Button::KBD_DPAD_DOWN}},
+            {"DPAD_LEFT", {dpadLeftBtn, Button::KBD_DPAD_LEFT}},
+            {"DPAD_RIGHT", {dpadRight, Button::KBD_DPAD_RIGHT}},
+            {"L_ANALOG_UP", {LAnalogUpBtn, Button::KBD_LANALOG_UP}},
+            {"L_ANALOG_DOWN", {LAnalogDownBtn, Button::KBD_LANALOG_DOWN}},
+            {"L_ANALOG_LEFT", {LAnalogLeftBtn, Button::KBD_LANALOG_LEFT}},
+            {"L_ANALOG_RIGHT", {LAnalogRightBtn, Button::KBD_LANALOG_RIGHT}},
+            {"L1", {l1Btn, Button::KBD_L1}},
+            {"L2", {l2Btn, Button::KBD_L2}},
+            {"L3", {l3Btn, Button::KBD_L3}},
+            {"R1", {r1Btn, Button::KBD_R1}},
+            {"R2", {r2Btn, Button::KBD_R2}},
+            {"R3", {r3Btn, Button::KBD_R3}},
+            {"START", {startBtn, Button::KBD_START}},
+            {"SELECT", {selectBtn, Button::KBD_SELECT}},
+            {"MENU", {menuBtn, Button::KBD_MENU}}
+        };
+
         QObject::connect(backBtn, &QPushButton::clicked, this, &FaceButtonsPage::onBackBtnClicked);
         QObject::connect(resetBtn, &QPushButton::clicked, this, &FaceButtonsPage::onResetBtnClicked);
         QObject::connect(charMapBtn, &QPushButton::clicked, this, &FaceButtonsPage::onCharMapBtnClicked);
@@ -359,27 +383,8 @@ namespace OWC {
     }
 
     void FaceButtonsPage::setMapping(const QSharedPointer<Controller> &gpd) const {
-        dpadUpBtn->setText(QString::fromStdString(gpd->getDpadUp()));
-        dpadDownBtn->setText(QString::fromStdString(gpd->getDpadDown()));
-        dpadLeftBtn->setText(QString::fromStdString(gpd->getDpadLeft()));
-        dpadRight->setText(QString::fromStdString(gpd->getDpadRight()));
-        LAnalogUpBtn->setText(QString::fromStdString(gpd->getLAnalogUp()));
-        LAnalogDownBtn->setText(QString::fromStdString(gpd->getLAnalogDown()));
-        LAnalogLeftBtn->setText(QString::fromStdString(gpd->getLAnalogLeft()));
-        LAnalogRightBtn->setText(QString::fromStdString(gpd->getLAnalogRight()));
-        aBtn->setText(QString::fromStdString(gpd->getA()));
-        bBtn->setText(QString::fromStdString(gpd->getB()));
-        xBtn->setText(QString::fromStdString(gpd->getX()));
-        yBtn->setText(QString::fromStdString(gpd->getY()));
-        startBtn->setText(QString::fromStdString(gpd->getStart()));
-        selectBtn->setText(QString::fromStdString(gpd->getSelect()));
-        menuBtn->setText(QString::fromStdString(gpd->getMenu()));
-        l1Btn->setText(QString::fromStdString(gpd->getL1()));
-        l2Btn->setText(QString::fromStdString(gpd->getL2()));
-        l3Btn->setText(QString::fromStdString(gpd->getL3()));
-        r1Btn->setText(QString::fromStdString(gpd->getR1()));
-        r2Btn->setText(QString::fromStdString(gpd->getR2()));
-        r3Btn->setText(QString::fromStdString(gpd->getR3()));
+        for (const auto &[key, btnPair]: btnMap.asKeyValueRange())
+            btnPair.first->setText(QString::fromStdString(gpd->getButton(btnPair.second)));
     }
 
     void FaceButtonsPage::keyPressEvent(QKeyEvent *event) {
@@ -406,159 +411,24 @@ namespace OWC {
         QString yaml;
         QTextStream ts (&yaml);
 
-        ts << "A: " << aBtn->text() << "\n"
-            "B: " << bBtn->text() << "\n"
-            "X: " << xBtn->text() << "\n"
-            "Y: " << yBtn->text() << "\n"
-            "DPAD_UP: " << dpadUpBtn->text() << "\n"
-            "DPAD_DOWN: " << dpadDownBtn->text() << "\n"
-            "DPAD_LEFT: " << dpadLeftBtn->text() << "\n"
-            "DPAD_RIGHT: " << dpadRight->text() << "\n"
-            "L_ANALOG_UP: " << LAnalogUpBtn->text() << "\n"
-            "L_ANALOG_DOWN: " << LAnalogDownBtn->text() << "\n"
-            "L_ANALOG_LEFT: " << LAnalogLeftBtn->text() << "\n"
-            "L_ANALOG_RIGHT: " << LAnalogRightBtn->text() << "\n"
-            "L1: " << l1Btn->text() << "\n"
-            "L2: " << l2Btn->text() << "\n"
-            "L3: " << l3Btn->text() << "\n"
-            "R1: " << r1Btn->text() << "\n"
-            "R2: " << r2Btn->text() << "\n"
-            "R3: " << r3Btn->text() << "\n"
-            "START: " << startBtn->text() << "\n"
-            "SELECT: " << selectBtn->text() << "\n"
-            "MENU: " << menuBtn->text();
+        for (const auto &[key, btnPair]: btnMap.asKeyValueRange())
+            ts << key.data() << ": " << btnPair.first->text() << "\n";
 
         return yaml;
     }
 
     void FaceButtonsPage::importMappingFromYaml(const YAML::Node &yaml) const {
-        if (yaml["DPAD_UP"])
-            dpadUpBtn->setText(QString::fromStdString(yaml["DPAD_UP"].as<std::string>()));
-
-        if (yaml["DPAD_DOWN"])
-            dpadDownBtn->setText(QString::fromStdString(yaml["DPAD_DOWN"].as<std::string>()));
-
-        if (yaml["DPAD_LEFT"])
-            dpadLeftBtn->setText(QString::fromStdString(yaml["DPAD_LEFT"].as<std::string>()));
-
-        if (yaml["DPAD_RIGHT"])
-            dpadRight->setText(QString::fromStdString(yaml["DPAD_RIGHT"].as<std::string>()));
-
-        if (yaml["A"])
-            aBtn->setText(QString::fromStdString(yaml["A"].as<std::string>()));
-
-        if (yaml["B"])
-            bBtn->setText(QString::fromStdString(yaml["B"].as<std::string>()));
-
-        if (yaml["X"])
-            xBtn->setText(QString::fromStdString(yaml["X"].as<std::string>()));
-
-        if (yaml["Y"])
-            yBtn->setText(QString::fromStdString(yaml["Y"].as<std::string>()));
-
-        if (yaml["L_ANALOG_UP"])
-            LAnalogUpBtn->setText(QString::fromStdString(yaml["L_ANALOG_UP"].as<std::string>()));
-
-        if (yaml["L_ANALOG_DOWN"])
-            LAnalogDownBtn->setText(QString::fromStdString(yaml["L_ANALOG_DOWN"].as<std::string>()));
-
-        if (yaml["L_ANALOG_LEFT"])
-            LAnalogLeftBtn->setText(QString::fromStdString(yaml["L_ANALOG_LEFT"].as<std::string>()));
-
-        if (yaml["L_ANALOG_RIGHT"])
-            LAnalogRightBtn->setText(QString::fromStdString(yaml["L_ANALOG_RIGHT"].as<std::string>()));
-
-        if (yaml["START"])
-            startBtn->setText(QString::fromStdString(yaml["START"].as<std::string>()));
-
-        if (yaml["SELECT"])
-            selectBtn->setText(QString::fromStdString(yaml["SELECT"].as<std::string>()));
-
-        if (yaml["MENU"])
-            menuBtn->setText(QString::fromStdString(yaml["MENU"].as<std::string>()));
-
-        if (yaml["L1"])
-            l1Btn->setText(QString::fromStdString(yaml["L1"].as<std::string>()));
-
-        if (yaml["L2"])
-            l2Btn->setText(QString::fromStdString(yaml["L2"].as<std::string>()));
-
-        if (yaml["L3"])
-            l3Btn->setText(QString::fromStdString(yaml["L3"].as<std::string>()));
-
-        if (yaml["R1"])
-            r1Btn->setText(QString::fromStdString(yaml["R1"].as<std::string>()));
-
-        if (yaml["R2"])
-            r2Btn->setText(QString::fromStdString(yaml["R2"].as<std::string>()));
-
-        if (yaml["R3"])
-            r3Btn->setText(QString::fromStdString(yaml["R3"].as<std::string>()));
+        for (const auto &[key, btnPair]: btnMap.asKeyValueRange()) {
+            if (yaml[key])
+                btnPair.first->setText(QString::fromStdString(yaml[key].as<std::string>()));
+        }
     }
 
     void FaceButtonsPage::writeMapping(const QSharedPointer<Controller> &gpd) {
-        if (!gpd->setDpadUp(dpadUpBtn->text().toStdString()))
-            emit logSent("failed to set dpad up key");
-
-        if (!gpd->setDpadDown(dpadDownBtn->text().toStdString()))
-            emit logSent("failed to set dpad down key");
-
-        if (!gpd->setDpadLeft(dpadLeftBtn->text().toStdString()))
-            emit logSent("failed to set dpad left key");
-
-        if (!gpd->setDpadRight(dpadRight->text().toStdString()))
-            emit logSent("failed to set dpad right key");
-
-        if (!gpd->setA(aBtn->text().toStdString()))
-            emit logSent("failed to set A key");
-
-        if (!gpd->setB(bBtn->text().toStdString()))
-            emit logSent("failed to set B key");
-
-        if (!gpd->setX(xBtn->text().toStdString()))
-            emit logSent("failed to set X key");
-
-        if (!gpd->setY(yBtn->text().toStdString()))
-            emit logSent("failed to set Y key");
-
-        if (!gpd->setLAnalogUp(LAnalogUpBtn->text().toStdString()))
-            emit logSent("failed to set left analog up key");
-
-        if (!gpd->setLAnalogDown(LAnalogDownBtn->text().toStdString()))
-            emit logSent("failed to set left analog down key");
-
-        if (!gpd->setLAnalogLeft(LAnalogLeftBtn->text().toStdString()))
-            emit logSent("failed to set left analog left key");
-
-        if (!gpd->setLAnalogRight(LAnalogRightBtn->text().toStdString()))
-            emit logSent("failed to set left analog right key");
-
-        if (!gpd->setStart(startBtn->text().toStdString()))
-            emit logSent("failed to set start key");
-
-        if (!gpd->setSelect(selectBtn->text().toStdString()))
-            emit logSent("failed to set select key");
-
-        if (!gpd->setMenu(menuBtn->text().toStdString()))
-            emit logSent("failed to set menu key");
-
-        if (!gpd->setL1(l1Btn->text().toStdString()))
-            emit logSent("failed to set L1 key");
-
-        if (!gpd->setL2(l2Btn->text().toStdString()))
-            emit logSent("failed to set L2 key");
-
-        if (!gpd->setL3(l3Btn->text().toStdString()))
-            emit logSent("failed to set L3 key");
-
-        if (!gpd->setR1(r1Btn->text().toStdString()))
-            emit logSent("failed to set R1 key");
-
-        if (!gpd->setR2(r2Btn->text().toStdString()))
-            emit logSent("failed to set R2 key");
-
-        if (!gpd->setR3(r3Btn->text().toStdString()))
-            emit logSent("failed to set R3 key");
+        for (const auto &[key, btnPair]: btnMap.asKeyValueRange()) {
+            if (!gpd->setButton(btnPair.second, btnPair.first->text().toStdString()))
+                emit logSent(QString("failed to set %1").arg(key));
+        }
     }
 
     void FaceButtonsPage::onBackBtnClicked() {

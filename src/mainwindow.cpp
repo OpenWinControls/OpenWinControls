@@ -185,7 +185,7 @@ bool MainWindow::isCompatible(const QString &product) const {
 }
 
 void MainWindow::initApp() {
-    const std::function<void(const std::string &)> logCB = [&](const std::string &msg) { logsPage->writeLog(QString::fromStdString(msg)); };
+    const std::function<void(const std::wstring &)> logCB = [&](const std::wstring &msg) { logsPage->writeLog(QString::fromStdWString(msg)); };
     const QString prod = getProduct();
 
     gpd = getDevice(prod);
@@ -275,7 +275,7 @@ void MainWindow::onHomeExportYamlClicked() {
     }
 
     ts << "MAPPING_TYPE: " << gpd->getControllerType() << "\n" <<
-        faceButtonsPage->exportMappingToYaml() << "\n" <<
+        faceButtonsPage->exportMappingToYaml() <<
         backButtonsPage->exportMappingToYaml();
 
     ts.flush();

@@ -25,7 +25,7 @@
 #include "../extern/libOpenWinControls/src/controller/Controller.h"
 
 namespace OWC {
-    class SettingsPage: public QWidget {
+    class SettingsPage final: public QWidget {
         Q_OBJECT
 
     private:
@@ -45,9 +45,9 @@ namespace OWC {
         QLabel *ledColorLbl = nullptr;
         QPushButton *ledColorChooserBtn = nullptr;
 
-        void makeRumbleV1Settings();
-        void makeShoulderLedsV1Settings();
-        void makeDeadzoneV1Settings();
+        [[nodiscard]] QVBoxLayout *makeRumbleV1Settings();
+        [[nodiscard]] QVBoxLayout *makeShoulderLedsV1Settings();
+        [[nodiscard]] QVBoxLayout *makeDeadzoneV1Settings();
 
     public:
         SettingsPage();

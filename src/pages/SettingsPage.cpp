@@ -41,8 +41,9 @@ namespace OWC {
         QObject::connect(resetBtn, &QPushButton::clicked, this, &SettingsPage::onResetBtnClicked);
     }
 
-    void SettingsPage::makeRumbleV1Settings() {
-        QHBoxLayout *rlyt = new QHBoxLayout();
+    QVBoxLayout *SettingsPage::makeRumbleV1Settings() {
+        QVBoxLayout *rumbleLyt = new QVBoxLayout();
+        QHBoxLayout *settLyt = new QHBoxLayout();
         QLabel *title = new QLabel("Rumble");
         QFont titleFont = title->font();
 
@@ -53,18 +54,21 @@ namespace OWC {
         title->setFont(titleFont);
         rumble->addItems({"off", "low", "high"});
 
-        rlyt->addWidget(new QLabel("Vibration intensity:"));
-        rlyt->addSpacing(4);
-        rlyt->addWidget(rumble);
-        rlyt->addStretch();
+        settLyt->addWidget(new QLabel("Vibration intensity:"));
+        settLyt->addSpacing(4);
+        settLyt->addWidget(rumble);
+        settLyt->addStretch();
 
-        lyt->insertWidget(0, title);
-        lyt->insertSpacing(1, 6);
-        lyt->insertLayout(2, rlyt);
-        lyt->insertSpacing(3, 20);
+        rumbleLyt->addWidget(title);
+        rumbleLyt->addSpacing(6);
+        rumbleLyt->addLayout(settLyt);
+        rumbleLyt->addSpacing(20);
+
+        return rumbleLyt;
     }
 
-    void SettingsPage::makeShoulderLedsV1Settings() {
+    QVBoxLayout *SettingsPage::makeShoulderLedsV1Settings() {
+        QVBoxLayout *ledCtlLyt = new QVBoxLayout();
         QHBoxLayout *ledLyt = new QHBoxLayout();
         QLabel *title = new QLabel("Shoulder leds");
         QFont titleFont = title->font();
@@ -76,10 +80,7 @@ namespace OWC {
         titleFont.setBold(true);
         title->setAlignment(Qt::AlignCenter);
         title->setFont(titleFont);
-        ledMode->addItem("off", 0);
-        ledMode->addItem("solid", 1);
-        ledMode->addItem("breathe", 0x11);
-        ledMode->addItem("rotate", 0x21);
+        ledMode->addItems({"off", "solid", "breathe", "rotate"});
         ledColorLbl->setAutoFillBackground(true);
         ledColorLbl->setFixedWidth(80);
         ledColorLbl->setFrameShape(QFrame::Box);
@@ -93,17 +94,20 @@ namespace OWC {
         ledLyt->addWidget(ledColorChooserBtn);
         ledLyt->addStretch();
 
-        lyt->insertWidget(0, title);
-        lyt->insertSpacing(1, 6);
-        lyt->insertLayout(2, ledLyt);
-        lyt->insertSpacing(3, 20);
+        ledCtlLyt->addWidget(title);
+        ledCtlLyt->addSpacing(6);
+        ledCtlLyt->addLayout(ledLyt);
+        ledCtlLyt->addSpacing(20);
 
         QObject::connect(ledMode, &QComboBox::currentIndexChanged, this, &SettingsPage::onLedModeChanged);
         QObject::connect(ledColorChooserBtn, &QPushButton::clicked, this, &SettingsPage::onLedColorChooserBtnClicked);
+
+        return ledCtlLyt;
     }
 
-    void SettingsPage::makeDeadzoneV1Settings() {
-        QHBoxLayout *dzLyt = new QHBoxLayout();
+    QVBoxLayout *SettingsPage::makeDeadzoneV1Settings() {
+        QVBoxLayout *deadzoneLyt = new QVBoxLayout();
+        QHBoxLayout *settLyt = new QHBoxLayout();
         QVBoxLayout *leftLyt = new QVBoxLayout();
         QHBoxLayout *leftContLyt = new QHBoxLayout();
         QVBoxLayout *lCenterLyt = new QVBoxLayout();
@@ -186,70 +190,71 @@ namespace OWC {
         rightLyt->addSpacing(8);
         rightLyt->addLayout(rightContLyt);
 
-        dzLyt->addLayout(leftLyt);
-        dzLyt->addSpacing(20);
-        dzLyt->addLayout(rightLyt);
+        settLyt->addLayout(leftLyt);
+        settLyt->addSpacing(20);
+        settLyt->addLayout(rightLyt);
 
-        lyt->insertWidget(0, title);
-        lyt->insertSpacing(1, 8);
-        lyt->insertLayout(2, dzLyt);
-        lyt->insertSpacing(3, 20);
+        deadzoneLyt->addWidget(title);
+        deadzoneLyt->addSpacing(8);
+        deadzoneLyt->addLayout(settLyt);
+        deadzoneLyt->addSpacing(20);
 
         QObject::connect(dzLeftCenter, &QSlider::valueChanged, this, &SettingsPage::onDzLeftCenterChanged);
         QObject::connect(dzLeftBoundary, &QSlider::valueChanged, this, &SettingsPage::onDzLeftBoundaryChanged);
         QObject::connect(dzRightCenter, &QSlider::valueChanged, this, &SettingsPage::onDzRightCenterChanged);
         QObject::connect(dzRightBoundary, &QSlider::valueChanged, this, &SettingsPage::onDzRightBoundaryChanged);
+
+        return deadzoneLyt;
     }
 
     void SettingsPage::initPage(const QSharedPointer<Controller> &gpd) {
         if (gpd->hasFeature(ControllerFeature::ShoulderLedsV1))
-            makeShoulderLedsV1Settings();
+            lyt->insertLayout(0, makeShoulderLedsV1Settings());
 
         if (gpd->hasFeature(ControllerFeature::RumbleV1))
-            makeRumbleV1Settings();
+            lyt->insertLayout(0, makeRumbleV1Settings());
 
         if (gpd->hasFeature(ControllerFeature::DeadZoneControlV1))
-            makeDeadzoneV1Settings();
+            lyt->insertLayout(0, makeDeadzoneV1Settings());
     }
 
     void SettingsPage::setData(const QSharedPointer<Controller> &gpd) const {
         if (gpd->hasFeature(ControllerFeature::ShoulderLedsV1)) {
             const std::tuple<int, int, int> lcolor = gpd->getLedColor();
             const QColor color = QColor(std::get<0>(lcolor), std::get<1>(lcolor), std::get<2>(lcolor));
-            const QString mode = QString::fromStdString(gpd->getLedMode());
             QPalette ledColorLblPal = ledColorLbl->palette();
 
             ledColorLblPal.setColor(QPalette::Window, color);
             ledColorLbl->setPalette(ledColorLblPal);
-            ledMode->setCurrentIndex(ledMode->findText(mode));
+            ledMode->setCurrentIndex(static_cast<int>(gpd->getLedMode()));
         }
 
         if (gpd->hasFeature(ControllerFeature::RumbleV1))
-            rumble->setCurrentIndex(rumble->findText(QString::fromStdString(gpd->getRumbleMode())));
+            rumble->setCurrentIndex(static_cast<int>(gpd->getRumbleMode()));
 
         if (gpd->hasFeature(ControllerFeature::DeadZoneControlV1)) {
-            dzLeftCenter->setValue(gpd->getLAnalogCenter());
-            dzLeftBoundary->setValue(gpd->getLAnalogBoundary());
-            dzRightCenter->setValue(gpd->getRAnalogCenter());
-            dzRightBoundary->setValue(gpd->getRAnalogBoundary());
+            dzLeftCenter->setValue(gpd->getAnalogCenter(true));
+            dzLeftBoundary->setValue(gpd->getAnalogBoundary(true));
+            dzRightCenter->setValue(gpd->getAnalogCenter(false));
+            dzRightBoundary->setValue(gpd->getAnalogBoundary(false));
         }
     }
 
     void SettingsPage::writeSettings(const QSharedPointer<Controller> &gpd) const {
         if (gpd->hasFeature(ControllerFeature::RumbleV1))
-            gpd->setRumble(rumble->currentText().toStdString());
+            gpd->setRumble(static_cast<RumbleMode>(rumble->currentIndex()));
 
         if (gpd->hasFeature(ControllerFeature::DeadZoneControlV1)) {
-            gpd->setLAnalogCenter(dzLeftCenter->value());
-            gpd->setLAnalogBoundary(dzLeftBoundary->value());
-            gpd->setRAnalogCenter(dzRightCenter->value());
-            gpd->setRAnalogBoundary(dzRightBoundary->value());
+            gpd->setAnalogCenter(dzLeftCenter->value(), true);
+            gpd->setAnalogBoundary(dzLeftBoundary->value(), true);
+            gpd->setAnalogCenter(dzRightCenter->value(), false);
+            gpd->setAnalogBoundary(dzRightBoundary->value(), false);
         }
 
         if (gpd->hasFeature(ControllerFeature::ShoulderLedsV1)) {
             const QColor color = ledColorLbl->palette().color(QPalette::Window);
 
-            gpd->setLedMode(ledMode->currentText().toStdString());
+            gpd->setLedMode(static_cast<LedMode>(ledMode->currentIndex()));
             gpd->setLedColor(color.red(), color.green(), color.blue());
         }
     }
