@@ -34,7 +34,7 @@
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
-    setWindowTitle(APP_NAME);
+    setWindowTitle(QString("%1 %2.%3").arg(APP_NAME).arg(APP_VER_MAJOR).arg(APP_VER_MINOR));
     setWindowIcon(QIcon(":/app/icon"));
     setMinimumSize(1040, 690);
     setMaximumSize(1040, 690);
@@ -58,8 +58,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     stackedWidget->addWidget(settingsPage);
     stackedWidget->setCurrentIndex(0);
 
-    bottomLyt->addWidget(new QLabel(QString("App version: %1.%2").arg(APP_VER_MAJOR).arg(APP_VER_MINOR)));
-    bottomLyt->addSpacing(4);
     bottomLyt->addWidget(new QLabel("Controller version:"));
     bottomLyt->addWidget(controllerVersionLbl);
     bottomLyt->addStretch();
