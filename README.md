@@ -5,9 +5,9 @@ Multiplatform GPD WinControls replacement
 ## Features
 
 - Import and export mappings from/to yaml files
-- Allows to remap all buttons
-- Allows to change controller settings, like deadzone, leds etc.., where available
-- Built-in char map to allow to set all supported keys
+- Remap all buttons
+- Deadzone, shoulder leds (win4) and vibration intensity settings
+- Built-in char map
 
 ## Linux
 
