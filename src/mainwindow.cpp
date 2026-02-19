@@ -231,7 +231,7 @@ void MainWindow::initApp() {
         controllerVersionLbl->setText(QString("%1.%2").arg(major).arg(minor));
     }
 
-    stackedWidget->insertWidget(2, backButtonsPage);
+    stackedWidget->addWidget(backButtonsPage);
 
     faceButtonsPage->setMapping(gpd);
     backButtonsPage->setMapping(gpd);
@@ -253,15 +253,15 @@ void MainWindow::onHomeFaceButtonsMapClicked() const {
 }
 
 void MainWindow::onHomeBackButtonsMapClicked() const {
-    stackedWidget->setCurrentIndex(2);
+    stackedWidget->setCurrentIndex(stackedWidget->indexOf(backButtonsPage));
 }
 
 void MainWindow::onHomeShowLogsClicked() const {
-    stackedWidget->setCurrentIndex(3);
+    stackedWidget->setCurrentIndex(2);
 }
 
 void MainWindow::onHomeSettingsPageClicked() const {
-    stackedWidget->setCurrentIndex(4);
+    stackedWidget->setCurrentIndex(3);
 }
 
 void MainWindow::onHomeApplyChanges() {
