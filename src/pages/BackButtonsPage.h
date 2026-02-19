@@ -28,14 +28,16 @@ namespace OWC {
     class BackButtonsPage: public QWidget {
         Q_OBJECT
 
-    protected:
-        QHBoxLayout *backBtnLyt = nullptr;
+    private:
         QPushButton *backBtn = nullptr;
         QPushButton *resetBtn = nullptr;
         QPushButton *charMapBtn = nullptr;
         CharMapWidget *charMap = nullptr;
-        QPushButton *pendingBtn = nullptr;
-        QString oldPendingBtnText;
+        QPushButton *pendingBtn = nullptr; // clicked, waiting for new key
+        QString oldPendingBtnText; // text backup to restore on cancel
+
+    protected:
+        QHBoxLayout *backBtnLyt = nullptr;
 
         void keyPressEvent(QKeyEvent *event) override;
 
