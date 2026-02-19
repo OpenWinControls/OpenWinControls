@@ -26,6 +26,7 @@ namespace OWC {
 
     private:
         QPushButton *clearBtn = nullptr;
+        QPushButton *saveBtn = nullptr;
         QPushButton *backBtn = nullptr;
         QTextEdit *logContainer = nullptr;
 
@@ -36,6 +37,7 @@ namespace OWC {
 
     private slots:
         void onClearBtnClicked() const;
+        void onSaveBtnClicked();
         void onBackBtnClicked();
 
     signals:

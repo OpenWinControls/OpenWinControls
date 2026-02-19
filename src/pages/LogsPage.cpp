@@ -17,6 +17,8 @@
  */
 #include <QVBoxLayout>
 #include <QScroller>
+#include <QFileDialog>
+#include <QFile>
 
 #include "LogsPage.h"
 
@@ -26,6 +28,7 @@ namespace OWC {
         QHBoxLayout *buttonLyt = new QHBoxLayout();
 
         clearBtn = new QPushButton("Clear");
+        saveBtn = new QPushButton("Save");
         backBtn = new QPushButton("Home");
         logContainer = new QTextEdit();
 
@@ -37,12 +40,14 @@ namespace OWC {
         buttonLyt->addWidget(backBtn);
         buttonLyt->addStretch();
         buttonLyt->addWidget(clearBtn);
+        buttonLyt->addWidget(saveBtn);
         lyt->addWidget(logContainer);
         lyt->addLayout(buttonLyt);
 
         setLayout(lyt);
 
         QObject::connect(clearBtn, &QPushButton::clicked, this, &LogsPage::onClearBtnClicked);
+        QObject::connect(saveBtn, &QPushButton::clicked, this, &LogsPage::onSaveBtnClicked);
         QObject::connect(backBtn, &QPushButton::clicked, this, &LogsPage::onBackBtnClicked);
     }
 
@@ -52,6 +57,23 @@ namespace OWC {
 
     void LogsPage::onClearBtnClicked() const {
         logContainer->clear();
+    }
+
+    void LogsPage::onSaveBtnClicked() {
+        const QString out = QFileDialog::getSaveFileName(this, "Save logs", "", "Text (*.txt)");
+
+        if (out.isEmpty())
+            return;
+
+        QFile outF(out);
+
+        if (!outF.open(QFile::WriteOnly | QFile::Text)) {
+            logContainer->append(QString("failed to save logs: %1").arg(outF.errorString()));
+            return;
+        }
+
+        outF.write(logContainer->toPlainText().toUtf8());
+        outF.close();
     }
 
     void LogsPage::onBackBtnClicked() {
