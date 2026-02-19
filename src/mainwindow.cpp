@@ -24,17 +24,20 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "pages/BackButtonsV1Page.h"
+#include "pages/BackButtonsV2Page.h"
 #include "version.h"
 #include "include/GPDProducts.h"
 #include "extern/libOpenWinControls/src/include/ControllerFeature.h"
 #include "extern/libOpenWinControls/src/controller/ControllerV1.h"
+#include "extern/libOpenWinControls/src/controller/ControllerV2.h"
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
     setWindowTitle(APP_NAME);
     setWindowIcon(QIcon(":/app/icon"));
-    setMinimumSize(1024, 690);
-    setMaximumSize(1024, 690);
+    setMinimumSize(1040, 690);
+    setMaximumSize(1040, 690);
 
     QVBoxLayout *lyt = new QVBoxLayout();
     QHBoxLayout *bottomLyt = new QHBoxLayout();
@@ -43,7 +46,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     stackedWidget = new QStackedWidget();
     homePage = new OWC::HomePage();
     faceButtonsPage = new OWC::FaceButtonsPage();
-    backButtonsPage = new OWC::BackButtonsPage();
     logsPage = new OWC::LogsPage();
     settingsPage = new OWC::SettingsPage();
     controllerVersionLbl = new QLabel("0.0");
@@ -52,7 +54,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     setFont(appFont);
     stackedWidget->addWidget(homePage);
     stackedWidget->addWidget(faceButtonsPage);
-    stackedWidget->addWidget(backButtonsPage);
     stackedWidget->addWidget(logsPage);
     stackedWidget->addWidget(settingsPage);
     stackedWidget->setCurrentIndex(0);
@@ -78,9 +79,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     QObject::connect(faceButtonsPage, &OWC::FaceButtonsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
     QObject::connect(faceButtonsPage, &OWC::FaceButtonsPage::resetFaceButtons, this, &MainWindow::onResetFaceButtons);
     QObject::connect(faceButtonsPage, &OWC::FaceButtonsPage::logSent, this, &MainWindow::onLogSent);
-    QObject::connect(backButtonsPage, &OWC::BackButtonsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
-    QObject::connect(backButtonsPage, &OWC::BackButtonsPage::resetBackButtons, this, &MainWindow::onResetBackButtons);
-    QObject::connect(backButtonsPage, &OWC::BackButtonsPage::logSent, this, &MainWindow::onLogSent);
     QObject::connect(logsPage, &OWC::LogsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
     QObject::connect(settingsPage, &OWC::SettingsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
     QObject::connect(settingsPage, &OWC::SettingsPage::resetSettings, this, &MainWindow::onResetSettings);
@@ -148,10 +146,12 @@ QSharedPointer<OWC::Controller> MainWindow::getDevice(const QString &product) co
         device = QSharedPointer<OWC::ControllerV1>::create(OWC::ControllerFeature::DeadZoneControlV1 | OWC::ControllerFeature::ShoulderLedsV1 | OWC::ControllerFeature::RumbleV1);
     else if (product == OWC::mini23 || product == OWC::mini24 || product == OWC::max2_22 || product == OWC::max2_25)
         device = QSharedPointer<OWC::ControllerV1>::create(OWC::ControllerFeature::DeadZoneControlV1 | OWC::ControllerFeature::RumbleV1);
-    //else if (product == OWC::win3)
-    //    device = QSharedPointer<OWC::ControllerV1>::create();
-    //    else if (product == OWC::win5 || product == OWC::mini25)
-    //        device = QSharedPointer<OWC::ControllerV2>::create();
+    /*else if (product == OWC::win3)
+        device = QSharedPointer<OWC::ControllerV1>::create();*/
+    else if (product == OWC::win5)
+        device = QSharedPointer<OWC::ControllerV2>::create(OWC::ControllerFeature::RumbleV1 | OWC::ControllerFeature::XinputMappingV1);
+    else if (product == OWC::mini25)
+        device = QSharedPointer<OWC::ControllerV2>::create(OWC::ControllerFeature::DeadZoneControlV1 | OWC::ControllerFeature::RumbleV1 | OWC::ControllerFeature::XinputMappingV1);
     else
         logsPage->writeLog(QString("unknown device: %1").arg(product));
 
@@ -176,6 +176,14 @@ bool MainWindow::isCompatible(const QString &product) const {
     } else if (product == OWC::max2_22 || product == OWC::max2_25) {
         version = qSharedPointerCast<OWC::ControllerV1>(gpd)->getKVersion();
         compCheck = version.first >= 1 && version.second >= 23;
+
+    } else if (product == OWC::win5) {
+        version = qSharedPointerCast<OWC::ControllerV2>(gpd)->getVersion();
+        compCheck = version.first >= 1 && version.second >= 8;
+
+    } else if (product == OWC::mini25) {
+        version = qSharedPointerCast<OWC::ControllerV2>(gpd)->getVersion();
+        compCheck = version.first >= 1 && version.second >= 22;
     }
 
     if (!compCheck)
@@ -209,23 +217,33 @@ void MainWindow::initApp() {
 
     if (gpd->getControllerType() == 1) {
         const QSharedPointer<OWC::ControllerV1> gpdV1 = qSharedPointerCast<OWC::ControllerV1>(gpd);
-        const std::pair<int, int> x = gpdV1->getXVersion();
-        const std::pair<int, int> k = gpdV1->getKVersion();
+        const auto [xmin, xmax] = gpdV1->getXVersion();
+        const auto [kmin, kmax] = gpdV1->getKVersion();
 
-        controllerVersionLbl->setText(QString("X%1.%2, K%3.%4").arg(x.first).arg(x.second).arg(k.first).arg(k.second));
+        backButtonsPage = new OWC::BackButtonsV1Page();
 
-    }/* else if (gpd->getControllerType() == 2) {
+        controllerVersionLbl->setText(QString("X%1.%2, K%3.%4").arg(xmin).arg(xmax).arg(kmin).arg(kmax));
+
+    } else if (gpd->getControllerType() == 2) {
         const QSharedPointer<OWC::ControllerV2> gpdV2 = qSharedPointerCast<OWC::ControllerV2>(gpd);
         const auto [major, minor] = gpdV2->getVersion();
 
+        backButtonsPage = new OWC::BackButtonsV2Page();
+
         controllerVersionLbl->setText(QString("%1.%2").arg(major).arg(minor));
-    }*/
+    }
+
+    stackedWidget->insertWidget(2, backButtonsPage);
 
     faceButtonsPage->setMapping(gpd);
     backButtonsPage->setMapping(gpd);
     settingsPage->initPage(gpd);
     settingsPage->setData(gpd);
     homePage->setDevice(prod);
+
+    QObject::connect(backButtonsPage, &OWC::BackButtonsV1Page::backToHome, this, &MainWindow::onBackToHomeClicked);
+    QObject::connect(backButtonsPage, &OWC::BackButtonsV1Page::resetBackButtons, this, &MainWindow::onResetBackButtons);
+    QObject::connect(backButtonsPage, &OWC::BackButtonsV1Page::logSent, this, &MainWindow::onLogSent);
 }
 
 void MainWindow::onLogSent(const QString& msg) const {

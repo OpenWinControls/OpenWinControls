@@ -18,7 +18,6 @@
 #pragma once
 
 #include <QVBoxLayout>
-#include <QSpinBox>
 #include <QKeyEvent>
 
 #include "Widgets/CharMapWidget.h"
@@ -26,43 +25,36 @@
 #include "../extern/yaml-cpp/include/yaml-cpp/yaml.h"
 
 namespace OWC {
-    class BackButtonsPage final: public QWidget {
+    class BackButtonsPage: public QWidget {
         Q_OBJECT
 
-    private:
-        struct KeySlot final {
-            QPushButton *btn = nullptr;
-            QSpinBox *startTime = nullptr;
-        };
-
+    protected:
+        QHBoxLayout *backBtnLyt = nullptr;
         QPushButton *backBtn = nullptr;
         QPushButton *resetBtn = nullptr;
         QPushButton *charMapBtn = nullptr;
         CharMapWidget *charMap = nullptr;
-        QList<KeySlot> lBtnList;
-        QList<KeySlot> rBtnList;
         QPushButton *pendingBtn = nullptr;
         QString oldPendingBtnText;
 
-        [[nodiscard]] QVBoxLayout *makeBackButtonUI(const QString &icon, QList<KeySlot> &slotList);
-
-    protected:
         void keyPressEvent(QKeyEvent *event) override;
 
     public:
-        BackButtonsPage();
+        explicit BackButtonsPage(const QString &helpLbl);
 
-        void setMapping(const QSharedPointer<Controller> &gpd) const;
-        [[nodiscard]] QString exportMappingToYaml() const;
-        void importMappingFromYaml(const YAML::Node &yaml) const;
-        void writeMapping(const QSharedPointer<Controller> &gpd);
+        virtual void setMapping(const QSharedPointer<Controller> &gpd) const = 0;
+        [[nodiscard]] virtual QString exportMappingToYaml() const = 0;
+        virtual void importMappingFromYaml(const YAML::Node &yaml) const = 0;
+        virtual void writeMapping(const QSharedPointer<Controller> &gpd) = 0;
 
     private slots:
         void onBackBtnClicked();
         void onResetBtnClicked();
         void onCharMapBtnClicked() const;
-        void onkeyButtonPressed();
         void onCharMapKeyPressed(const QString &key);
+
+    protected slots:
+        void onkeyButtonPressed();
 
     signals:
         void backToHome();

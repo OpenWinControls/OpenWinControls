@@ -27,6 +27,10 @@ set(PROJECT_SRC
   src/pages/FaceButtonsPage.cpp
   src/pages/BackButtonsPage.h
   src/pages/BackButtonsPage.cpp
+  src/pages/BackButtonsV1Page.h
+  src/pages/BackButtonsV1Page.cpp
+  src/pages/BackButtonsV2Page.h
+  src/pages/BackButtonsV2Page.cpp
   src/pages/LogsPage.h
   src/pages/LogsPage.cpp
   src/pages/SettingsPage.h
@@ -34,12 +38,12 @@ set(PROJECT_SRC
 
   src/include/ASCIIHIDMap.h
   src/include/ControllerFeature.h
+  src/include/GPDProducts.h
 
   src/main.cpp
   src/mainwindow.cpp
   src/mainwindow.h
   src/mainwindow.ui
-  src/include/GPDProducts.h
 )
 
 if (WIN32)
