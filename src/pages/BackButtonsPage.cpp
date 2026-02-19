@@ -54,8 +54,9 @@ namespace OWC {
         buttonsLyt->addWidget(backBtn);
         buttonsLyt->addWidget(resetBtn);
 
+        lyt->setContentsMargins(0, 0, 0, 0);
         lyt->addWidget(charMap);
-        lyt->addSpacing(15);
+        lyt->addSpacing(12);
         lyt->addWidget(scrollArea);
         lyt->addLayout(buttonsLyt);
 
