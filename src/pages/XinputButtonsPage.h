@@ -17,27 +17,25 @@
  */
 #pragma once
 
-#include <QPushButton>
-#include <QList>
-
-#include "../../include/CharMapMode.h"
+#include "FaceButtonsPage.h"
 
 namespace OWC {
-    class CharMapWidget final: public QWidget {
+    class XinputButtonsPage final: public FaceButtonsPage {
         Q_OBJECT
 
     private:
-        QList<QPushButton *> charBtnList;
-
-        void addKeys(const std::map<int, std::string> &keyMap, QHBoxLayout *lyt);
+        QPushButton *rAnalogUpBtn = nullptr;
+        QPushButton *rAnalogDownBtn = nullptr;
+        QPushButton *rAnalogLeftBtn = nullptr;
+        QPushButton *rAnalogRightBtn = nullptr;
 
     public:
-        explicit CharMapWidget(CharMapMode mode = CharMapMode::Keyboard);
+        XinputButtonsPage();
 
-    private slots:
-        void onKeyClicked();
+    protected slots:
+        void onResetBtnClicked() override;
 
     signals:
-        void keyPressed(const QString &key);
+        void resetXinputButtons();
     };
 }

@@ -15,8 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <QVBoxLayout>
-
 #include "HomePage.h"
 #include "../include/GPDProducts.h"
 
@@ -31,6 +29,8 @@ namespace OWC {
         QLabel *backLbl = new QLabel("Back buttons");
         QFont lblFont = frontLbl->font();
 
+        headLyt = new QHBoxLayout();
+        mappingMode = new QComboBox();
         faceButtonsMapBtn = new QPushButton("Customize");
         backButtonsMapBtn = new QPushButton("Customize");
         showLogsBtn = new QPushButton("Logs");
@@ -41,6 +41,7 @@ namespace OWC {
         frontPic = new QLabel();
         backPic = new QLabel();
 
+        mappingMode->addItem("Keyboard&Mouse");
         faceButtonsMapBtn->setMinimumHeight(40);
         backButtonsMapBtn->setMinimumHeight(40);
         lblFont.setBold(true);
@@ -70,6 +71,9 @@ namespace OWC {
         mapBackBtnLyt->addWidget(backButtonsMapBtn);
         mapBackBtnLyt->addStretch();
 
+        headLyt->addStretch();
+        headLyt->addWidget(mappingMode);
+
         bottomLyt->addWidget(showLogsBtn);
         bottomLyt->addStretch();
         bottomLyt->addWidget(settingsBtn);
@@ -80,6 +84,7 @@ namespace OWC {
         selectionLyt->addLayout(mapBackBtnLyt);
         selectionLyt->addLayout(mapFaceBtnLyt);
 
+        lyt->addLayout(headLyt);
         lyt->addStretch();
         lyt->addLayout(selectionLyt);
         lyt->addStretch();
@@ -98,6 +103,9 @@ namespace OWC {
 
     void HomePage::setDevice(const QString &product) const {
         bool found = false;
+
+        if (product == win5 || product == mini25)
+            mappingMode->addItem("Xinput");
 
         if (product == win4) {
             frontPic->setPixmap(QPixmap(":/win4f").scaled(254, 107, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
@@ -128,6 +136,32 @@ namespace OWC {
         enableButtons(found);
     }
 
+    void HomePage::setEmulationMode(const EmulationMode mode) const {
+        QLabel *emuMode = new QLabel();
+        QFont font = emuMode->font();
+
+        switch (mode) {
+            case EmulationMode::KeyboardMouse:
+                emuMode->setText("Keyboard&Mouse");
+                break;
+            case EmulationMode::Xinput:
+                emuMode->setText("Xinput");
+                break;
+            case EmulationMode::KeyboardSpecial:
+                emuMode->setText("Keyboard Special Mode");
+                break;
+            default:
+                emuMode->setText("Unknown");
+                break;
+        }
+
+        font.setItalic(true);
+        emuMode->setFont(font);
+
+        headLyt->insertWidget(0, new QLabel("Controller mode:"));
+        headLyt->insertWidget(1, emuMode);
+    }
+
     void HomePage::enableButtons(const bool enable) const {
         faceButtonsMapBtn->setEnabled(enable);
         backButtonsMapBtn->setEnabled(enable);
@@ -138,7 +172,10 @@ namespace OWC {
     }
 
     void HomePage::onFaceButtonsMapClicked() {
-        emit faceButtonsMap();
+        if (mappingMode->currentIndex() == 0)
+            emit keyboardMouseMap();
+        else
+            emit xinputMap();
     }
 
     void HomePage::onBackButtonsMapClicked() {

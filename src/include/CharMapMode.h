@@ -17,27 +17,10 @@
  */
 #pragma once
 
-#include <QPushButton>
-#include <QList>
-
-#include "../../include/CharMapMode.h"
-
 namespace OWC {
-    class CharMapWidget final: public QWidget {
-        Q_OBJECT
-
-    private:
-        QList<QPushButton *> charBtnList;
-
-        void addKeys(const std::map<int, std::string> &keyMap, QHBoxLayout *lyt);
-
-    public:
-        explicit CharMapWidget(CharMapMode mode = CharMapMode::Keyboard);
-
-    private slots:
-        void onKeyClicked();
-
-    signals:
-        void keyPressed(const QString &key);
+    enum struct CharMapMode {
+        Keyboard,
+        Xinput,
+        Mixed
     };
 }

@@ -44,7 +44,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     stackedWidget = new QStackedWidget();
     homePage = new OWC::HomePage();
-    faceButtonsPage = new OWC::FaceButtonsPage();
     logsPage = new OWC::LogsPage();
     settingsPage = new OWC::SettingsPage();
     controllerVersionLbl = new QLabel("0.0");
@@ -52,7 +51,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     appFont.setPointSize(12);
     setFont(appFont);
     stackedWidget->addWidget(homePage);
-    stackedWidget->addWidget(faceButtonsPage);
     stackedWidget->addWidget(logsPage);
     stackedWidget->addWidget(settingsPage);
     stackedWidget->setCurrentIndex(0);
@@ -66,16 +64,14 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     ui->centralwidget->setLayout(lyt);
 
-    QObject::connect(homePage, &OWC::HomePage::faceButtonsMap, this, &MainWindow::onHomeFaceButtonsMapClicked);
+    QObject::connect(homePage, &OWC::HomePage::keyboardMouseMap, this, &MainWindow::onHomeKeyboardMouseMapClicked);
+    QObject::connect(homePage, &OWC::HomePage::xinputMap, this, &MainWindow::onHomeXinputMapClicked);
     QObject::connect(homePage, &OWC::HomePage::backButtonsMap, this, &MainWindow::onHomeBackButtonsMapClicked);
     QObject::connect(homePage, &OWC::HomePage::showLogs, this, &MainWindow::onHomeShowLogsClicked);
     QObject::connect(homePage, &OWC::HomePage::settingsPage, this, &MainWindow::onHomeSettingsPageClicked);
     QObject::connect(homePage, &OWC::HomePage::applyChanges, this, &MainWindow::onHomeApplyChanges);
     QObject::connect(homePage, &OWC::HomePage::exportYaml, this, &MainWindow::onHomeExportYamlClicked);
     QObject::connect(homePage, &OWC::HomePage::importYaml, this, &MainWindow::onHomeImportYamlClicked);
-    QObject::connect(faceButtonsPage, &OWC::FaceButtonsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
-    QObject::connect(faceButtonsPage, &OWC::FaceButtonsPage::resetFaceButtons, this, &MainWindow::onResetFaceButtons);
-    QObject::connect(faceButtonsPage, &OWC::FaceButtonsPage::logSent, this, &MainWindow::onLogSent);
     QObject::connect(logsPage, &OWC::LogsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
     QObject::connect(settingsPage, &OWC::SettingsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
     QObject::connect(settingsPage, &OWC::SettingsPage::resetSettings, this, &MainWindow::onResetSettings);
@@ -226,18 +222,31 @@ void MainWindow::initApp() {
         const auto [major, minor] = gpdV2->getVersion();
 
         backButtonsPage = new OWC::BackButtonsV2Page();
+        xinputPage = new OWC::XinputButtonsPage();
+        xinputPageIdx = stackedWidget->addWidget(xinputPage);
 
         controllerVersionLbl->setText(QString("%1.%2").arg(major).arg(minor));
+        xinputPage->setMapping(gpd);
+        homePage->setEmulationMode(gpdV2->getEmulationMode());
+
+        QObject::connect(xinputPage, &OWC::FaceButtonsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
+        QObject::connect(xinputPage, &OWC::XinputButtonsPage::resetXinputButtons, this, &MainWindow::onResetXinputButtons);
+        QObject::connect(xinputPage, &OWC::FaceButtonsPage::logSent, this, &MainWindow::onLogSent);
     }
 
-    stackedWidget->addWidget(backButtonsPage);
+    kbdMousePage = new OWC::KeyboardMouseButtonsPage();
+    keyboardMousePageIdx = stackedWidget->addWidget(kbdMousePage);
+    backButtonsPageIdx = stackedWidget->addWidget(backButtonsPage);
 
-    faceButtonsPage->setMapping(gpd);
+    kbdMousePage->setMapping(gpd);
     backButtonsPage->setMapping(gpd);
     settingsPage->initPage(gpd);
     settingsPage->setData(gpd);
     homePage->setDevice(prod);
 
+    QObject::connect(kbdMousePage, &OWC::FaceButtonsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
+    QObject::connect(kbdMousePage, &OWC::KeyboardMouseButtonsPage::resetKeyboardMouseButtons, this, &MainWindow::onResetKeyboardMouseButtons);
+    QObject::connect(kbdMousePage, &OWC::FaceButtonsPage::logSent, this, &MainWindow::onLogSent);
     QObject::connect(backButtonsPage, &OWC::BackButtonsV1Page::backToHome, this, &MainWindow::onBackToHomeClicked);
     QObject::connect(backButtonsPage, &OWC::BackButtonsV1Page::resetBackButtons, this, &MainWindow::onResetBackButtons);
     QObject::connect(backButtonsPage, &OWC::BackButtonsV1Page::logSent, this, &MainWindow::onLogSent);
@@ -247,27 +256,34 @@ void MainWindow::onLogSent(const QString& msg) const {
     logsPage->writeLog(msg);
 }
 
-void MainWindow::onHomeFaceButtonsMapClicked() const {
-    stackedWidget->setCurrentIndex(1);
+void MainWindow::onHomeKeyboardMouseMapClicked() const {
+    stackedWidget->setCurrentIndex(keyboardMousePageIdx);
+}
+
+void MainWindow::onHomeXinputMapClicked() const {
+    stackedWidget->setCurrentIndex(xinputPageIdx);
 }
 
 void MainWindow::onHomeBackButtonsMapClicked() const {
-    stackedWidget->setCurrentIndex(stackedWidget->indexOf(backButtonsPage));
+    stackedWidget->setCurrentIndex(backButtonsPageIdx);
 }
 
 void MainWindow::onHomeShowLogsClicked() const {
-    stackedWidget->setCurrentIndex(2);
+    stackedWidget->setCurrentIndex(1);
 }
 
 void MainWindow::onHomeSettingsPageClicked() const {
-    stackedWidget->setCurrentIndex(3);
+    stackedWidget->setCurrentIndex(2);
 }
 
 void MainWindow::onHomeApplyChanges() {
     homePage->enableButtons(false);
-    faceButtonsPage->writeMapping(gpd);
+    kbdMousePage->writeMapping(gpd);
     backButtonsPage->writeMapping(gpd);
     settingsPage->writeSettings(gpd);
+
+    if (xinputPage != nullptr)
+        xinputPage->writeMapping(gpd);
 
     if (!gpd->writeConfig())
         QMessageBox::critical(this, QStringLiteral("Error"), QStringLiteral("Unable to write controller!"));
@@ -290,8 +306,11 @@ void MainWindow::onHomeExportYamlClicked() {
     }
 
     ts << "MAPPING_TYPE: " << gpd->getControllerType() << "\n" <<
-        faceButtonsPage->exportMappingToYaml() <<
+        kbdMousePage->exportMappingToYaml() <<
         backButtonsPage->exportMappingToYaml();
+
+    if (xinputPage != nullptr)
+        ts << xinputPage->exportMappingToYaml();
 
     ts.flush();
     outF.close();
@@ -327,9 +346,12 @@ void MainWindow::onHomeImportYamlClicked() {
             return;
         }
 
-        faceButtonsPage->importMappingFromYaml(yaml);
-        backButtonsPage->importMappingFromYaml(yaml);
         mappF.close();
+        kbdMousePage->importMappingFromYaml(yaml);
+        backButtonsPage->importMappingFromYaml(yaml);
+
+        if (xinputPage != nullptr)
+            xinputPage->importMappingFromYaml(yaml);
 
     } catch (const YAML::ParserException &e) {
         logsPage->writeLog(e.what());
@@ -344,8 +366,12 @@ void MainWindow::onBackToHomeClicked() const {
     stackedWidget->setCurrentIndex(0);
 }
 
-void MainWindow::onResetFaceButtons() const {
-    faceButtonsPage->setMapping(gpd);
+void MainWindow::onResetKeyboardMouseButtons() const {
+    kbdMousePage->setMapping(gpd);
+}
+
+void MainWindow::onResetXinputButtons() const {
+    xinputPage->setMapping(gpd);
 }
 
 void MainWindow::onResetBackButtons() const {

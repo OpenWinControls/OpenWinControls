@@ -18,23 +18,25 @@
 #pragma once
 
 #include <QVBoxLayout>
-#include <QKeyEvent>
 
 #include "Widgets/CharMapWidget.h"
 #include "../extern/libOpenWinControls/src/controller/Controller.h"
 #include "../extern/yaml-cpp/include/yaml-cpp/yaml.h"
 
 namespace OWC {
-    class FaceButtonsPage final: public QWidget {
+    class FaceButtonsPage: public QWidget {
         Q_OBJECT
 
     private:
         static constexpr int buttonWidth = 122;
-        QMap<std::string_view, std::pair<QPushButton *, Button>> btnMap;
         QPushButton *backBtn = nullptr;
         QPushButton *resetBtn = nullptr;
         QPushButton *charMapBtn = nullptr;
         CharMapWidget *charMap = nullptr;
+        QString oldPendingBtnText; // text backup to restore on cancel
+
+    protected:
+        QVBoxLayout *controlsLyt = nullptr;
         QPushButton *dpadUpBtn = nullptr;
         QPushButton *dpadDownBtn = nullptr;
         QPushButton *dpadLeftBtn = nullptr;
@@ -43,10 +45,10 @@ namespace OWC {
         QPushButton *bBtn = nullptr;
         QPushButton *xBtn = nullptr;
         QPushButton *yBtn = nullptr;
-        QPushButton *LAnalogUpBtn = nullptr;
-        QPushButton *LAnalogDownBtn = nullptr;
-        QPushButton *LAnalogLeftBtn = nullptr;
-        QPushButton *LAnalogRightBtn = nullptr;
+        QPushButton *lAnalogUpBtn = nullptr;
+        QPushButton *lAnalogDownBtn = nullptr;
+        QPushButton *lAnalogLeftBtn = nullptr;
+        QPushButton *lAnalogRightBtn = nullptr;
         QPushButton *startBtn = nullptr;
         QPushButton *selectBtn = nullptr;
         QPushButton *menuBtn = nullptr;
@@ -57,24 +59,17 @@ namespace OWC {
         QPushButton *r2Btn = nullptr;
         QPushButton *r3Btn = nullptr;
         QPushButton *pendingBtn = nullptr; // clicked, waiting for new key
-        QString oldPendingBtnText; // text backup to restore on cancel
+        QMap<std::string_view, std::pair<QPushButton *, Button>> btnMap;
 
-        [[nodiscard]] QVBoxLayout *makeDPadBlock();
-        [[nodiscard]] QVBoxLayout *makeLeftAnalogBlock();
-        [[nodiscard]] QVBoxLayout *makeActionsBlock();
-        [[nodiscard]] QVBoxLayout *makeL1L2Block();
-        [[nodiscard]] QVBoxLayout *makeR1R2Block();
-        [[nodiscard]] QVBoxLayout *makeStartBlock();
-        [[nodiscard]] QVBoxLayout *makeSelectBlock();
-        [[nodiscard]] QVBoxLayout *makeMenuBlock();
-        [[nodiscard]] QVBoxLayout *makeL3Block();
-        [[nodiscard]] QVBoxLayout *makeR3Block();
-
-    protected:
-        void keyPressEvent(QKeyEvent *event) override;
+        [[nodiscard]] QVBoxLayout *makeDirectionalBlock(QPushButton *upBtn, QPushButton *leftBtn,
+                                                        QPushButton *rightBtn, QPushButton *downBtn,
+                                                        const QString &icon, int iconSize) const;
+        [[nodiscard]] QVBoxLayout *makeShoulderBlock(QPushButton *btn1, QPushButton *btn2, const QString &icon1,
+                                                     const QString &icon2, int icon1W, int icon1H, int icon2W, int icon2H) const;
+        [[nodiscard]] QVBoxLayout *makeSingleBtnBlock(QPushButton *btn, const QString &icon, int iconW, int iconH) const;
 
     public:
-        FaceButtonsPage();
+        explicit FaceButtonsPage(CharMapMode charMapMode);
 
         void setMapping(const QSharedPointer<Controller> &gpd) const;
         [[nodiscard]] QString exportMappingToYaml() const;
@@ -83,14 +78,16 @@ namespace OWC {
 
     private slots:
         void onBackBtnClicked();
-        void onResetBtnClicked();
         void onCharMapBtnClicked() const;
-        void onkeyButtonPressed();
         void onCharMapKeyPressed(const QString &key);
+
+    protected slots:
+        virtual void onResetBtnClicked() = 0;
+
+        void onkeyButtonPressed();
 
     signals:
         void backToHome();
-        void resetFaceButtons();
         void logSent(const QString &msg);
     };
 }

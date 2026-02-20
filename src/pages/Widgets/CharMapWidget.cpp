@@ -21,9 +21,10 @@
 
 #include "CharMapWidget.h"
 #include "../../extern/libOpenWinControls/src/include/HIDUsageIDMap.h"
+#include "../../extern/libOpenWinControls/src/include/XinputUsageIDMap.h"
 
 namespace OWC {
-    CharMapWidget::CharMapWidget() {
+    CharMapWidget::CharMapWidget(const CharMapMode mode) {
         QHBoxLayout *lyt = new QHBoxLayout();
         QHBoxLayout *scrollWidgLyt = new QHBoxLayout();
         QScrollArea *scrollArea = new QScrollArea();
@@ -33,17 +34,17 @@ namespace OWC {
         scrollArea->setWidget(new QWidget);
         QScroller::grabGesture(scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
 
-        for (const auto &[code, key]: HIDUsageIDMap) {
-            QPushButton *charBtn = new QPushButton(QString::fromStdString(key));
+        if (mode == CharMapMode::Keyboard) {
+            addKeys(HIDUsageIDMap, scrollWidgLyt);
 
-            charBtn->setFlat(true);
-            charBtn->setMinimumHeight(60);
-            charBtn->setToolTip(QString("HID Usage ID: 0x%1").arg(QString::number(code, 16)));
+        } else if (mode == CharMapMode::Xinput) {
+            addKeys(XinputUsageIDMap, scrollWidgLyt);
 
-            scrollWidgLyt->addWidget(charBtn);
-            charBtnList.append(charBtn);
+        } else {
+            std::map<int, std::string> keys = HIDUsageIDMap;
 
-            QObject::connect(charBtn, &QPushButton::clicked, this, &CharMapWidget::onKeyClicked);
+            keys.insert(XinputUsageIDMap.begin(), XinputUsageIDMap.end());
+            addKeys(keys, scrollWidgLyt);
         }
 
         scrollArea->widget()->setLayout(scrollWidgLyt);
@@ -52,6 +53,21 @@ namespace OWC {
 
         setLayout(lyt);
         setFixedHeight(130);
+    }
+
+    void CharMapWidget::addKeys(const std::map<int, std::string> &keyMap, QHBoxLayout *lyt) {
+        for (const auto &[code, key]: keyMap) {
+            QPushButton *charBtn = new QPushButton(QString::fromStdString(key));
+
+            charBtn->setFlat(true);
+            charBtn->setMinimumHeight(60);
+            charBtn->setToolTip(QString("Usage ID: 0x%1").arg(QString::number(code, 16)));
+
+            lyt->addWidget(charBtn);
+            charBtnList.append(charBtn);
+
+            QObject::connect(charBtn, &QPushButton::clicked, this, &CharMapWidget::onKeyClicked);
+        }
     }
 
     void CharMapWidget::onKeyClicked() {

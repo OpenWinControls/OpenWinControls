@@ -5,7 +5,7 @@ Multiplatform GPD WinControls replacement
 ## Features
 
 - Import and export mappings from/to yaml files
-- Remap all buttons
+- Remap all buttons (in all modes , keyboard/xinput, where supported)
 - Deadzone, shoulder leds (win4) and vibration intensity settings
 - Built-in char map
 
@@ -31,7 +31,14 @@ sudo udevadm control --reload-rules && sudo udevadm trigger
 ## Usage
 
 Select a button you want to remap, either input the key from your keyboard,
-or, when not present, use the built-in char map.
+or use the built-in char map.
+
+**Controller V2 macros**
+
+Chain multiple keys by assigning an incremental start time and a fixed hold time to each slot.
+
+To simulate a single key press, set one key slot, start time to 0
+and hold time to something high like **300**.
 
 ## How to build
 

@@ -25,7 +25,7 @@
 #include "../extern/libOpenWinControls/src/include/HIDUsageIDMap.h"
 
 namespace OWC {
-    BackButtonsPage::BackButtonsPage(const QString &helpLbl) {
+    BackButtonsPage::BackButtonsPage(const QString &helpLbl, const CharMapMode charMapMode) {
         QVBoxLayout *lyt = new QVBoxLayout();
         QHBoxLayout *buttonsLyt = new QHBoxLayout();
         QLabel *helpTx = new QLabel(helpLbl);
@@ -36,7 +36,7 @@ namespace OWC {
         backBtn = new QPushButton("Home");
         resetBtn = new QPushButton("Reset");
         charMapBtn = new QPushButton("Char Map");
-        charMap = new CharMapWidget();
+        charMap = new CharMapWidget(charMapMode);
 
         charMap->setVisible(false);
         helpFont.setItalic(true);

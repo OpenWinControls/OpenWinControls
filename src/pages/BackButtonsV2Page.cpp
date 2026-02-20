@@ -21,7 +21,7 @@
 #include "../extern/libOpenWinControls/src/controller/ControllerV2.h"
 
 namespace OWC {
-    BackButtonsV2Page::BackButtonsV2Page(): BackButtonsPage(QStringLiteral("key slots, start times and hold times")) {
+    BackButtonsV2Page::BackButtonsV2Page(): BackButtonsPage(QStringLiteral("key slots, start times and hold times"), CharMapMode::Mixed) {
         activeSlotsL = new QSpinBox();
         activeSlotsR = new QSpinBox();
 

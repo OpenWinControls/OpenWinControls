@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.23)
 
-project(OpenWinControls VERSION 1.0 DESCRIPTION "Multiplatform GPD WinControls replacement" LANGUAGES CXX)
+project(OpenWinControls VERSION 2.0 DESCRIPTION "Multiplatform GPD WinControls replacement" LANGUAGES CXX)
 
 set(PROJECT_AUTHOR "kylon")
 set(CMAKE_CXX_STANDARD 20)
@@ -25,6 +25,10 @@ set(PROJECT_SRC
   src/pages/HomePage.cpp
   src/pages/FaceButtonsPage.h
   src/pages/FaceButtonsPage.cpp
+  src/pages/KeyboardMouseButtonsPage.h
+  src/pages/KeyboardMouseButtonsPage.cpp
+  src/pages/XinputButtonsPage.h
+  src/pages/XinputButtonsPage.cpp
   src/pages/BackButtonsPage.h
   src/pages/BackButtonsPage.cpp
   src/pages/BackButtonsV1Page.h
@@ -39,6 +43,7 @@ set(PROJECT_SRC
   src/include/ASCIIHIDMap.h
   src/include/ControllerFeature.h
   src/include/GPDProducts.h
+  src/include/CharMapMode.h
 
   src/main.cpp
   src/mainwindow.cpp

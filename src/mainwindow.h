@@ -21,7 +21,8 @@
 #include <QStackedWidget>
 
 #include "pages/HomePage.h"
-#include "pages/FaceButtonsPage.h"
+#include "pages/KeyboardMouseButtonsPage.h"
+#include "pages/XinputButtonsPage.h"
 #include "pages/BackButtonsPage.h"
 #include "pages/LogsPage.h"
 #include "pages/SettingsPage.h"
@@ -36,15 +37,19 @@ class MainWindow final: public QMainWindow {
     Q_OBJECT
 
 private:
+    Ui::MainWindow *ui;
     QStackedWidget *stackedWidget = nullptr;
     OWC::HomePage *homePage = nullptr;
-    OWC::FaceButtonsPage *faceButtonsPage = nullptr;
+    OWC::KeyboardMouseButtonsPage *kbdMousePage = nullptr;
+    OWC::XinputButtonsPage *xinputPage = nullptr;
     OWC::BackButtonsPage *backButtonsPage = nullptr;
     OWC::LogsPage *logsPage = nullptr;
     OWC::SettingsPage *settingsPage = nullptr;
     QLabel *controllerVersionLbl = nullptr;
     QSharedPointer<OWC::Controller> gpd;
-    Ui::MainWindow *ui;
+    int keyboardMousePageIdx;
+    int xinputPageIdx;
+    int backButtonsPageIdx;
 
     [[nodiscard]] QString getProduct() const;
     [[nodiscard]] QSharedPointer<OWC::Controller> getDevice(const QString &product) const;
@@ -57,7 +62,8 @@ public:
 
 private slots:
     void onLogSent(const QString &msg) const;
-    void onHomeFaceButtonsMapClicked() const;
+    void onHomeKeyboardMouseMapClicked() const;
+    void onHomeXinputMapClicked() const;
     void onHomeBackButtonsMapClicked() const;
     void onHomeShowLogsClicked() const;
     void onHomeSettingsPageClicked() const;
@@ -65,7 +71,8 @@ private slots:
     void onHomeExportYamlClicked();
     void onHomeImportYamlClicked();
     void onBackToHomeClicked() const;
-    void onResetFaceButtons() const;
+    void onResetKeyboardMouseButtons() const;
+    void onResetXinputButtons() const;
     void onResetBackButtons() const;
     void onResetSettings() const;
 };

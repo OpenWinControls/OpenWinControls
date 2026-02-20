@@ -42,7 +42,7 @@ namespace OWC {
         void keyPressEvent(QKeyEvent *event) override;
 
     public:
-        explicit BackButtonsPage(const QString &helpLbl);
+        BackButtonsPage(const QString &helpLbl, CharMapMode charMapMode);
 
         virtual void setMapping(const QSharedPointer<Controller> &gpd) const = 0;
         [[nodiscard]] virtual QString exportMappingToYaml() const = 0;

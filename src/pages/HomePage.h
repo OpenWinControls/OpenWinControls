@@ -17,14 +17,20 @@
  */
 #pragma once
 
+#include <QVBoxLayout>
 #include <QPushButton>
+#include <QComboBox>
 #include <QLabel>
+
+#include "../extern/libOpenWinControls/src/include/EmulationMode.h"
 
 namespace OWC {
     class HomePage final: public QWidget {
         Q_OBJECT
 
     private:
+        QHBoxLayout *headLyt = nullptr;
+        QComboBox *mappingMode = nullptr;
         QPushButton *faceButtonsMapBtn = nullptr;
         QPushButton *backButtonsMapBtn = nullptr;
         QPushButton *showLogsBtn = nullptr;
@@ -39,6 +45,7 @@ namespace OWC {
         HomePage();
 
         void setDevice(const QString &product) const;
+        void setEmulationMode(EmulationMode mode) const;
         void enableButtons(bool enable) const;
 
     private slots:
@@ -51,7 +58,8 @@ namespace OWC {
         void onImportYamlBtnClicked();
 
     signals:
-        void faceButtonsMap();
+        void keyboardMouseMap();
+        void xinputMap();
         void backButtonsMap();
         void showLogs();
         void settingsPage();
