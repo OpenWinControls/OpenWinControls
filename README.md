@@ -70,6 +70,12 @@ button icons - https://github.com/RobTheFiveNine/flat-gamepad-icons
 
 ---
 
-![](home.png)
+![](screens/home.png)
 
-![](facebtn.png)
+![](screens/backbuttons.png)
+
+![](screens/keyboardmouse.png)
+
+![](screens/xinput.png)
+
+_win 5 screens_
