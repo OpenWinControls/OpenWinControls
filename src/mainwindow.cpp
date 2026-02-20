@@ -36,8 +36,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     ui->setupUi(this);
     setWindowTitle(QString("%1 %2.%3").arg(APP_NAME).arg(APP_VER_MAJOR).arg(APP_VER_MINOR));
     setWindowIcon(QIcon(":/app/icon"));
-    setMinimumSize(1040, 690);
-    setMaximumSize(1040, 690);
+    setMinimumSize(1040, 700);
 
     QVBoxLayout *lyt = new QVBoxLayout();
     QHBoxLayout *bottomLyt = new QHBoxLayout();
