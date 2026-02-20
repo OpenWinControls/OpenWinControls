@@ -32,10 +32,12 @@ namespace OWC {
             QSpinBox *holdTime = nullptr;
         };
 
+        QSpinBox *activeSlotsL = nullptr;
+        QSpinBox *activeSlotsR = nullptr;
         QList<KeySlot> lBtnList;
         QList<KeySlot> rBtnList;
 
-        [[nodiscard]] QVBoxLayout *makeBackButtonUI(const QString &icon, QList<KeySlot> &slotList);
+        [[nodiscard]] QVBoxLayout *makeBackButtonUI(const QString &icon, QSpinBox *activeSlotsInpt, QList<KeySlot> &slotList);
 
     public:
         BackButtonsV2Page();

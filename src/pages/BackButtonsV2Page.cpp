@@ -22,22 +22,34 @@
 
 namespace OWC {
     BackButtonsV2Page::BackButtonsV2Page(): BackButtonsPage(QStringLiteral("key slots, start times and hold times")) {
-        backBtnLyt->addLayout(makeBackButtonUI("l4", lBtnList));
-        backBtnLyt->addLayout(makeBackButtonUI("r4", rBtnList));
+        activeSlotsL = new QSpinBox();
+        activeSlotsR = new QSpinBox();
+
+        activeSlotsL->setRange(0, 32);
+        activeSlotsR->setRange(0, 32);
+
+        backBtnLyt->addLayout(makeBackButtonUI("l4", activeSlotsL, lBtnList));
+        backBtnLyt->addLayout(makeBackButtonUI("r4", activeSlotsR, rBtnList));
     }
 
-    QVBoxLayout *BackButtonsV2Page::makeBackButtonUI(const QString &icon, QList<KeySlot> &slotList) {
+    QVBoxLayout *BackButtonsV2Page::makeBackButtonUI(const QString &icon,  QSpinBox *activeSlotsInpt, QList<KeySlot> &slotList) {
         QVBoxLayout *lyt = new QVBoxLayout();
         QHBoxLayout *iconLyt = new QHBoxLayout();
+        QHBoxLayout *activeSlotsLyt = new QHBoxLayout();
         QLabel *lIcon = new QLabel();
 
         lIcon->setPixmap(QPixmap(QString(":/icons/%1").arg(icon)).scaled(70, 70, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 
         iconLyt->setAlignment(Qt::AlignCenter);
         iconLyt->addWidget(lIcon);
+        activeSlotsLyt->setAlignment(Qt::AlignCenter);
+        activeSlotsLyt->addWidget(new QLabel("Active: "));
+        activeSlotsLyt->addWidget(activeSlotsInpt);
         lyt->setAlignment(Qt::AlignCenter);
         lyt->addLayout(iconLyt);
         lyt->addSpacing(15);
+        lyt->addLayout(activeSlotsLyt);
+        lyt->addSpacing(8);
 
         for (int i=0; i<32; ++i) {
             QHBoxLayout *slotLyt = new QHBoxLayout();
@@ -82,6 +94,9 @@ namespace OWC {
             rBtnList[i].startTime->setValue(gpd->getBackButtonStartTime(2, i+1));
             rBtnList[i].holdTime->setValue(gpdV2->getBackButtonHoldTime(2, i+1));
         }
+
+        activeSlotsL->setValue(gpdV2->getBackButtonActiveSlots(1));
+        activeSlotsR->setValue(gpdV2->getBackButtonActiveSlots(2));
     }
 
     QString BackButtonsV2Page::exportMappingToYaml() const {
@@ -99,6 +114,10 @@ namespace OWC {
                 "R4_K" << (i+1) << "_START_TIME: " << rBtnList[i].startTime->value() << "\n"
                 "R4_K" << (i+1) << "_HOLD_TIME: " << rBtnList[i].holdTime->value() << "\n";
         }
+
+        ts << "L4_ACTIVE_SLOTS: " << activeSlotsL->value() << "\n"
+            "R4_ACTIVE_SLOTS: " << activeSlotsR->value() << "\n";
+
         return yaml;
     }
 
@@ -132,6 +151,12 @@ namespace OWC {
             if (yaml[hold])
                 rBtnList[i].holdTime->setValue(yaml[hold].as<int>());
         }
+
+        if (yaml["L4_ACTIVE_SLOTS"])
+            activeSlotsL->setValue(std::clamp(yaml["L4_ACTIVE_SLOTS"].as<int>(), 0, 32));
+
+        if (yaml["R4_ACTIVE_SLOTS"])
+            activeSlotsR->setValue(std::clamp(yaml["R4_ACTIVE_SLOTS"].as<int>(), 0, 32));
     }
 
     void BackButtonsV2Page::writeMapping(const QSharedPointer<Controller> &gpd) {
@@ -152,5 +177,8 @@ namespace OWC {
             gpd->setBackButtonStartTime(2, i+1, rBtnList[i].startTime->value());
             gpdV2->setBackButtonHoldTime(2, i+1, rBtnList[i].holdTime->value());
         }
+
+        gpdV2->setBackButtonActiveSlots(1, activeSlotsL->value());
+        gpdV2->setBackButtonActiveSlots(2, activeSlotsR->value());
     }
 }
