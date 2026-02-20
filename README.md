@@ -9,6 +9,21 @@ Multiplatform GPD WinControls replacement
 - Deadzone, shoulder leds (win4) and vibration intensity settings
 - Built-in char map
 
+## Known device firmware bugs (must be fixed by GPD)
+
+### Win5
+
+- RT and LT ignore the keycode value in firmware config
+- All back button modes don't work as expected
+- Back buttons send F14 (for l4) and F15 (for r4) keycodes in addition to the user defined keycode,
+  disrupting the correct functionality of the macro mode
+- Controller may softlock itself when entering sleep mode by the OS, no longer processing commands,
+  requiring the user to manually switch mode back and forth using the physical button on device
+
+## Current controllerV2 limitations
+
+- To apply the changes permanently, switch the controller mode back and forth using the physical button on device
+
 ## Linux
 
 Root permissions are required.
