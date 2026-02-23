@@ -1,3 +1,7 @@
+## Future
+
+- Back buttons v2 page: show non-active slots as disabled
+
 ## 2.0
 
 - Fix Windows device detection
