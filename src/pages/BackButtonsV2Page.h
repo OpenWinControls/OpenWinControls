@@ -38,6 +38,7 @@ namespace OWC {
         QList<KeySlot> rBtnList;
 
         [[nodiscard]] QVBoxLayout *makeBackButtonUI(const QString &icon, QSpinBox *activeSlotsInpt, QList<KeySlot> &slotList);
+        void enableSlots(int count, bool l4) const;
 
     public:
         BackButtonsV2Page();
@@ -46,5 +47,9 @@ namespace OWC {
         [[nodiscard]] QString exportMappingToYaml() const override;
         void importMappingFromYaml(const YAML::Node &yaml) const override;
         void writeMapping(const QSharedPointer<Controller> &gpd) override;
+
+    private slots:
+        void onActiveSlotsLChanged(int val) const;
+        void onActiveSlotsRChanged(int val) const;
     };
 }

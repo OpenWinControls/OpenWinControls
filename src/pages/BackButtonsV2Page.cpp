@@ -26,10 +26,15 @@ namespace OWC {
         activeSlotsR = new QSpinBox();
 
         activeSlotsL->setRange(0, 32);
+        activeSlotsL->setValue(0);
         activeSlotsR->setRange(0, 32);
+        activeSlotsR->setValue(0);
 
         backBtnLyt->addLayout(makeBackButtonUI("l4", activeSlotsL, lBtnList));
         backBtnLyt->addLayout(makeBackButtonUI("r4", activeSlotsR, rBtnList));
+
+        QObject::connect(activeSlotsL, &QSpinBox::valueChanged, this, &BackButtonsV2Page::onActiveSlotsLChanged);
+        QObject::connect(activeSlotsR, &QSpinBox::valueChanged, this, &BackButtonsV2Page::onActiveSlotsRChanged);
     }
 
     QVBoxLayout *BackButtonsV2Page::makeBackButtonUI(const QString &icon,  QSpinBox *activeSlotsInpt, QList<KeySlot> &slotList) {
@@ -60,6 +65,9 @@ namespace OWC {
             slot->setFixedWidth(150);
             time->setRange(0, INT16_MAX - 1);
             hold->setRange(0, INT16_MAX - 1);
+            slot->setEnabled(false);
+            time->setEnabled(false);
+            hold->setEnabled(false);
 
             slotLyt->setAlignment(Qt::AlignLeft);
             slotLyt->addWidget(new QLabel(QString::number(i + 1).rightJustified(2, '0')));
@@ -78,6 +86,19 @@ namespace OWC {
         }
 
         return lyt;
+    }
+
+    void BackButtonsV2Page::enableSlots(const int count, const bool l4) const {
+        int i = 0;
+
+        for (const KeySlot &slot: (l4 ? lBtnList : rBtnList)) {
+            const bool enable = i < count;
+
+            slot.btn->setEnabled(enable);
+            slot.startTime->setEnabled(enable);
+            slot.holdTime->setEnabled(enable);
+            ++i;
+        }
     }
 
     void BackButtonsV2Page::setMapping(const QSharedPointer<Controller> &gpd) const {
@@ -180,5 +201,13 @@ namespace OWC {
 
         gpdV2->setBackButtonActiveSlots(1, activeSlotsL->value());
         gpdV2->setBackButtonActiveSlots(2, activeSlotsR->value());
+    }
+
+    void BackButtonsV2Page::onActiveSlotsLChanged(const int val) const {
+        enableSlots(val, true);
+    }
+
+    void BackButtonsV2Page::onActiveSlotsRChanged(const int val) const {
+        enableSlots(val, false);
     }
 }
