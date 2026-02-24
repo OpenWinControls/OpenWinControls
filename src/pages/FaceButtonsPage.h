@@ -33,7 +33,7 @@ namespace OWC {
         QPushButton *resetBtn = nullptr;
         QPushButton *charMapBtn = nullptr;
         CharMapWidget *charMap = nullptr;
-        QString oldPendingBtnText; // text backup to restore on cancel
+        mutable QString oldPendingBtnText; // text backup to restore on cancel
 
     protected:
         QVBoxLayout *controlsLyt = nullptr;
@@ -58,7 +58,7 @@ namespace OWC {
         QPushButton *r1Btn = nullptr;
         QPushButton *r2Btn = nullptr;
         QPushButton *r3Btn = nullptr;
-        QPushButton *pendingBtn = nullptr; // clicked, waiting for new key
+        mutable QPushButton *pendingBtn = nullptr; // clicked, waiting for new key
         QMap<std::string_view, std::pair<QPushButton *, Button>> btnMap;
 
         [[nodiscard]] QVBoxLayout *makeDirectionalBlock(QPushButton *upBtn, QPushButton *leftBtn,
@@ -79,12 +79,11 @@ namespace OWC {
     private slots:
         void onBackBtnClicked();
         void onCharMapBtnClicked() const;
-        void onCharMapKeyPressed(const QString &key);
+        void onCharMapKeyPressed(const QString &key) const;
+        void onkeyButtonPressed() const;
 
     protected slots:
         virtual void onResetBtnClicked() = 0;
-
-        void onkeyButtonPressed();
 
     signals:
         void backToHome();

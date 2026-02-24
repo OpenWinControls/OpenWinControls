@@ -100,7 +100,7 @@ namespace OWC {
         charMap->setVisible(!charMap->isVisible());
     }
 
-    void BackButtonsPage::onkeyButtonPressed() {
+    void BackButtonsPage::onkeyButtonPressed() const {
         QPushButton *btn = qobject_cast<QPushButton *>(QObject::sender());
 
         if (pendingBtn != nullptr) {
@@ -118,7 +118,7 @@ namespace OWC {
         pendingBtn->setText("...");
     }
 
-    void BackButtonsPage::onCharMapKeyPressed(const QString &key) {
+    void BackButtonsPage::onCharMapKeyPressed(const QString &key) const {
         if (pendingBtn == nullptr)
             return;
 

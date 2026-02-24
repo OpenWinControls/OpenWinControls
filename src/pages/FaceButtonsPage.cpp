@@ -223,7 +223,7 @@ namespace OWC {
         charMap->setVisible(!charMap->isVisible());
     }
 
-    void FaceButtonsPage::onkeyButtonPressed() {
+    void FaceButtonsPage::onkeyButtonPressed() const {
         QPushButton *btn = qobject_cast<QPushButton *>(QObject::sender());
 
         if (pendingBtn != nullptr) {
@@ -241,7 +241,7 @@ namespace OWC {
         pendingBtn->setText("...");
     }
 
-    void FaceButtonsPage::onCharMapKeyPressed(const QString &key) {
+    void FaceButtonsPage::onCharMapKeyPressed(const QString &key) const {
         if (pendingBtn == nullptr)
             return;
 

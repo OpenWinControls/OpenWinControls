@@ -33,8 +33,8 @@ namespace OWC {
         QPushButton *resetBtn = nullptr;
         QPushButton *charMapBtn = nullptr;
         CharMapWidget *charMap = nullptr;
-        QPushButton *pendingBtn = nullptr; // clicked, waiting for new key
-        QString oldPendingBtnText; // text backup to restore on cancel
+        mutable QPushButton *pendingBtn = nullptr; // clicked, waiting for new key
+        mutable QString oldPendingBtnText; // text backup to restore on cancel
 
     protected:
         QHBoxLayout *backBtnLyt = nullptr;
@@ -53,10 +53,10 @@ namespace OWC {
         void onBackBtnClicked();
         void onResetBtnClicked();
         void onCharMapBtnClicked() const;
-        void onCharMapKeyPressed(const QString &key);
+        void onCharMapKeyPressed(const QString &key) const;
 
     protected slots:
-        void onkeyButtonPressed();
+        void onkeyButtonPressed() const;
 
     signals:
         void backToHome();
