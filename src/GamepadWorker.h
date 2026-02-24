@@ -17,27 +17,40 @@
  */
 #pragma once
 
-#include "FaceButtonsPage.h"
+#include <QObject>
+#include <QHash>
+
+#include "extern/SDL/include/SDL3/SDL_gamepad.h"
 
 namespace OWC {
-    class XinputButtonsPage final: public FaceButtonsPage {
+    class GamepadWorker final: public QObject {
         Q_OBJECT
 
     private:
-        QPushButton *rAnalogUpBtn = nullptr;
-        QPushButton *rAnalogDownBtn = nullptr;
-        QPushButton *rAnalogLeftBtn = nullptr;
-        QPushButton *rAnalogRightBtn = nullptr;
+        struct AxisState final {
+            int leftX = 0;
+            int leftY = 0;
+            int rightX = 0;
+            int rightY = 0;
+        };
+
+        static constexpr int deadzone = 8000;
+        QHash<SDL_JoystickID, SDL_Gamepad *> sdlGamepadMap;
+        AxisState axisState;
+        bool enabled = false;
+
+        [[nodiscard]] bool isDeadzone(int axis) const;
 
     public:
-        XinputButtonsPage();
+        ~GamepadWorker() override;
 
-        void setGamepadKey(const QString &key) const;
-
-    protected slots:
-        void onResetBtnClicked() override;
+    public slots:
+        void startSDLEventsThread();
+        void enableEvents(bool enable);
 
     signals:
-        void resetXinputButtons();
+        void logSent(const QString &msg);
+        void initFail();
+        void gamepadButton(const QString &key);
     };
 }

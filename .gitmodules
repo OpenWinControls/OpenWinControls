@@ -4,3 +4,6 @@
 [submodule "src/extern/libOpenWinControls"]
 	path = src/extern/libOpenWinControls
 	url = https://github.com/OpenWinControls/libOpenWinControls
+[submodule "src/extern/SDL"]
+	path = src/extern/SDL
+	url = https://github.com/libsdl-org/SDL

@@ -88,6 +88,14 @@ namespace OWC {
         pendingBtn = nullptr;
     }
 
+    void BackButtonsPage::setGamepadKey(const QString &key) const {
+        if (pendingBtn == nullptr)
+            return;
+
+        pendingBtn->setText(key);
+        pendingBtn = nullptr;
+    }
+
     void BackButtonsPage::onBackBtnClicked() {
         emit backToHome();
     }

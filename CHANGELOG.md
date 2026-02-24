@@ -1,6 +1,7 @@
-## Future
+## 2.1
 
 - Back buttons v2 page: show non-active slots as disabled
+- Use SDL to catch controller buttons when remapping (where supported)
 
 ## 2.0
 

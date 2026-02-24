@@ -44,6 +44,7 @@ namespace OWC {
     public:
         BackButtonsPage(const QString &helpLbl, CharMapMode charMapMode);
 
+        void setGamepadKey(const QString &key) const;
         virtual void setMapping(const QSharedPointer<Controller> &gpd) const = 0;
         [[nodiscard]] virtual QString exportMappingToYaml() const = 0;
         virtual void importMappingFromYaml(const YAML::Node &yaml) const = 0;

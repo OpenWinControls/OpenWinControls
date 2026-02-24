@@ -31,6 +31,7 @@
 #include "extern/libOpenWinControls/src/include/ControllerFeature.h"
 #include "extern/libOpenWinControls/src/controller/ControllerV1.h"
 #include "extern/libOpenWinControls/src/controller/ControllerV2.h"
+#include "extern/SDL/include/SDL3/SDL_events.h"
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
@@ -80,6 +81,9 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 }
 
 MainWindow::~MainWindow() {
+    if (gamepadThread != nullptr)
+        quitGamepadThread();
+
     delete ui;
 }
 
@@ -228,6 +232,7 @@ void MainWindow::initApp() {
         controllerVersionLbl->setText(QString("%1.%2").arg(major).arg(minor));
         xinputPage->setMapping(gpd);
         homePage->setEmulationMode(gpdV2->getEmulationMode());
+        initGamepadThread();
 
         QObject::connect(xinputPage, &OWC::FaceButtonsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
         QObject::connect(xinputPage, &OWC::XinputButtonsPage::resetXinputButtons, this, &MainWindow::onResetXinputButtons);
@@ -252,6 +257,34 @@ void MainWindow::initApp() {
     QObject::connect(backButtonsPage, &OWC::BackButtonsV1Page::logSent, this, &MainWindow::onLogSent);
 }
 
+void MainWindow::initGamepadThread() {
+    gamepadThread = new QThread();
+    gamepadWorker = new OWC::GamepadWorker();
+
+    gamepadWorker->moveToThread(gamepadThread);
+
+    QObject::connect(gamepadThread, &QThread::started, gamepadWorker, &OWC::GamepadWorker::startSDLEventsThread);
+    QObject::connect(this, &MainWindow::enableSDLEvents, gamepadWorker, &OWC::GamepadWorker::enableEvents);
+    QObject::connect(gamepadWorker, &OWC::GamepadWorker::initFail, this, &MainWindow::onGamepadInitFail);
+    QObject::connect(gamepadWorker, &OWC::GamepadWorker::logSent, this, &MainWindow::onLogSent);
+    QObject::connect(gamepadWorker, &OWC::GamepadWorker::gamepadButton, this, &MainWindow::onGamepadButton);
+
+    gamepadThread->start();
+}
+
+void MainWindow::quitGamepadThread() {
+    SDL_Event sdlEvt {.type = SDL_EVENT_QUIT};
+
+    SDL_PushEvent(&sdlEvt);
+    gamepadThread->quit();
+    gamepadThread->wait();
+    delete gamepadThread;
+    delete gamepadWorker;
+
+    gamepadThread = nullptr;
+    gamepadWorker = nullptr;
+}
+
 void MainWindow::onLogSent(const QString& msg) const {
     logsPage->writeLog(msg);
 }
@@ -260,11 +293,15 @@ void MainWindow::onHomeKeyboardMouseMapClicked() const {
     stackedWidget->setCurrentIndex(keyboardMousePageIdx);
 }
 
-void MainWindow::onHomeXinputMapClicked() const {
+void MainWindow::onHomeXinputMapClicked() {
+    emit enableSDLEvents(true);
     stackedWidget->setCurrentIndex(xinputPageIdx);
 }
 
-void MainWindow::onHomeBackButtonsMapClicked() const {
+void MainWindow::onHomeBackButtonsMapClicked() {
+    if (gamepadThread != nullptr)
+        emit enableSDLEvents(true);
+
     stackedWidget->setCurrentIndex(backButtonsPageIdx);
 }
 
@@ -362,7 +399,8 @@ void MainWindow::onHomeImportYamlClicked() {
     logsPage->writeLog(QString("imported mapping from file: %1").arg(map));
 }
 
-void MainWindow::onBackToHomeClicked() const {
+void MainWindow::onBackToHomeClicked() {
+    emit enableSDLEvents(false);
     stackedWidget->setCurrentIndex(0);
 }
 
@@ -380,4 +418,17 @@ void MainWindow::onResetBackButtons() const {
 
 void MainWindow::onResetSettings() const {
     settingsPage->setData(gpd);
+}
+
+void MainWindow::onGamepadButton(const QString &key) const {
+    const int curPage = stackedWidget->currentIndex();
+
+    if (curPage == xinputPageIdx)
+        xinputPage->setGamepadKey(key);
+    else if (curPage == backButtonsPageIdx)
+        backButtonsPage->setGamepadKey(key);
+}
+
+void MainWindow::onGamepadInitFail() {
+    quitGamepadThread();
 }

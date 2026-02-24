@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.23)
 
-project(OpenWinControls VERSION 2.0 DESCRIPTION "Multiplatform GPD WinControls replacement" LANGUAGES CXX)
+project(OpenWinControls VERSION 2.1 DESCRIPTION "Multiplatform GPD WinControls replacement" LANGUAGES CXX)
 
 set(PROJECT_AUTHOR "kylon")
 set(CMAKE_CXX_STANDARD 20)
@@ -46,10 +46,37 @@ set(PROJECT_SRC
   src/include/CharMapMode.h
 
   src/main.cpp
+  src/GamepadWorker.h
+  src/GamepadWorker.cpp
   src/mainwindow.cpp
   src/mainwindow.h
   src/mainwindow.ui
 )
+
+set(SDL_TESTS OFF)
+set(SDL_TEST_LIBRARY OFF)
+set(SDL_EXAMPLES OFF)
+set(SDL_DISABLE_INSTALL ON)
+set(SDL_DISABLE_INSTALL_DOCS ON)
+set(SDL_INSTALL_TESTS OFF)
+set(SDL_STATIC ON)
+set(SDL_SHARED OFF)
+set(SDL_SHARED_DEFAULT OFF)
+set(SDL_SHARED_AVAILABLE OFF)
+set(SDL_AUDIO OFF)
+set(SDL_VIDEO OFF)
+set(SDL_GPU OFF)
+set(SDL_RENDER OFF)
+set(SDL_CAMERA OFF)
+set(SDL_HAPTIC OFF)
+set(SDL_POWER OFF)
+set(SDL_JOYSTICK ON)
+set(SDL_VIRTUAL_JOYSTICK OFF)
+set(SDL_SENSOR OFF)
+set(SDL_DIALOG OFF)
+set(SDL_UNIX_CONSOLE_BUILD ON)
+add_subdirectory(src/extern/SDL EXCLUDE_FROM_ALL)
+set_property(TARGET SDL3-static PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 if (WIN32)
   configure_file(src/resources/win.rc.in ${CMAKE_CURRENT_SOURCE_DIR}/win.rc)
@@ -70,7 +97,7 @@ if (has_ipo)
   set_property(TARGET ${PROJECT_NAME} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif ()
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt::Core Qt::Widgets lowc::owc yaml-cpp::yaml-cpp)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt::Core Qt::Widgets lowc::owc yaml-cpp::yaml-cpp SDL3::SDL3)
 
 include(GNUInstallDirs)
 install(TARGETS ${PROJECT_NAME}

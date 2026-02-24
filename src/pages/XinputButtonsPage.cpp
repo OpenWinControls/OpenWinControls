@@ -61,6 +61,14 @@ namespace OWC {
         controlsLyt->addLayout(row3Lyt);
     }
 
+    void XinputButtonsPage::setGamepadKey(const QString &key) const {
+        if (pendingBtn == nullptr)
+            return;
+
+        pendingBtn->setText(key);
+        pendingBtn = nullptr;
+    }
+
     void XinputButtonsPage::onResetBtnClicked() {
         emit resetXinputButtons();
     }

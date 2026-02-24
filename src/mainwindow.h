@@ -19,7 +19,9 @@
 
 #include <QMainWindow>
 #include <QStackedWidget>
+#include <QThread>
 
+#include "GamepadWorker.h"
 #include "pages/HomePage.h"
 #include "pages/KeyboardMouseButtonsPage.h"
 #include "pages/XinputButtonsPage.h"
@@ -46,6 +48,8 @@ private:
     OWC::LogsPage *logsPage = nullptr;
     OWC::SettingsPage *settingsPage = nullptr;
     QLabel *controllerVersionLbl = nullptr;
+    OWC::GamepadWorker *gamepadWorker = nullptr;
+    QThread *gamepadThread = nullptr;
     QSharedPointer<OWC::Controller> gpd;
     int keyboardMousePageIdx;
     int xinputPageIdx;
@@ -55,6 +59,8 @@ private:
     [[nodiscard]] QSharedPointer<OWC::Controller> getDevice(const QString &product) const;
     [[nodiscard]] bool isCompatible(const QString &product) const;
     void initApp();
+    void initGamepadThread();
+    void quitGamepadThread();
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
@@ -63,16 +69,21 @@ public:
 private slots:
     void onLogSent(const QString &msg) const;
     void onHomeKeyboardMouseMapClicked() const;
-    void onHomeXinputMapClicked() const;
-    void onHomeBackButtonsMapClicked() const;
+    void onHomeXinputMapClicked();
+    void onHomeBackButtonsMapClicked();
     void onHomeShowLogsClicked() const;
     void onHomeSettingsPageClicked() const;
     void onHomeApplyChanges();
     void onHomeExportYamlClicked();
     void onHomeImportYamlClicked();
-    void onBackToHomeClicked() const;
+    void onBackToHomeClicked();
     void onResetKeyboardMouseButtons() const;
     void onResetXinputButtons() const;
     void onResetBackButtons() const;
     void onResetSettings() const;
+    void onGamepadInitFail();
+    void onGamepadButton(const QString &key) const;
+
+signals:
+    void enableSDLEvents(bool enable);
 };
