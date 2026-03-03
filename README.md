@@ -14,11 +14,6 @@ Multiplatform GPD WinControls replacement
 ### Win5
 
 - RT and LT ignore the keycode value in firmware config
-- All back button modes don't work as expected
-- Back buttons send F14 (for l4) and F15 (for r4) keycodes in addition to the user defined keycode,
-  disrupting the correct functionality of the macro mode
-- Controller may softlock itself when entering sleep mode by the OS, no longer processing commands,
-  requiring the user to manually switch mode back and forth using the physical button on device
 
 ## Current controllerV2 limitations
 
