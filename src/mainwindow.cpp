@@ -41,6 +41,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     QVBoxLayout *lyt = new QVBoxLayout();
     QHBoxLayout *bottomLyt = new QHBoxLayout();
+    QLabel *repoLinkLbl = new QLabel("([sources](https://github.com/OpenWinControls/OpenWinControls))");
     QFont appFont = font();
 
     stackedWidget = new QStackedWidget();
@@ -51,6 +52,10 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     appFont.setPointSize(12);
     setFont(appFont);
+    repoLinkLbl->setTextFormat(Qt::MarkdownText);
+    repoLinkLbl->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    repoLinkLbl->setOpenExternalLinks(true);
+    repoLinkLbl->setAlignment(Qt::AlignCenter);
     stackedWidget->addWidget(homePage);
     stackedWidget->addWidget(logsPage);
     stackedWidget->addWidget(settingsPage);
@@ -60,6 +65,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     bottomLyt->addWidget(controllerVersionLbl);
     bottomLyt->addStretch();
     bottomLyt->addWidget(new QLabel("kylon - GPLv3"));
+    bottomLyt->addWidget(repoLinkLbl);
     lyt->addWidget(stackedWidget);
     lyt->addLayout(bottomLyt);
 
