@@ -71,14 +71,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     ui->centralwidget->setLayout(lyt);
 
-    QObject::connect(homePage, &OWC::HomePage::keyboardMouseMap, this, &MainWindow::onHomeKeyboardMouseMapClicked);
-    QObject::connect(homePage, &OWC::HomePage::xinputMap, this, &MainWindow::onHomeXinputMapClicked);
-    QObject::connect(homePage, &OWC::HomePage::backButtonsMap, this, &MainWindow::onHomeBackButtonsMapClicked);
     QObject::connect(homePage, &OWC::HomePage::showLogs, this, &MainWindow::onHomeShowLogsClicked);
-    QObject::connect(homePage, &OWC::HomePage::settingsPage, this, &MainWindow::onHomeSettingsPageClicked);
-    QObject::connect(homePage, &OWC::HomePage::applyChanges, this, &MainWindow::onHomeApplyChanges);
-    QObject::connect(homePage, &OWC::HomePage::exportYaml, this, &MainWindow::onHomeExportYamlClicked);
-    QObject::connect(homePage, &OWC::HomePage::importYaml, this, &MainWindow::onHomeImportYamlClicked);
     QObject::connect(logsPage, &OWC::LogsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
     QObject::connect(settingsPage, &OWC::SettingsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
     QObject::connect(settingsPage, &OWC::SettingsPage::resetSettings, this, &MainWindow::onResetSettings);
@@ -255,6 +248,13 @@ void MainWindow::initApp() {
     settingsPage->setData(gpd);
     homePage->setDevice(prod);
 
+    QObject::connect(homePage, &OWC::HomePage::keyboardMouseMap, this, &MainWindow::onHomeKeyboardMouseMapClicked);
+    QObject::connect(homePage, &OWC::HomePage::xinputMap, this, &MainWindow::onHomeXinputMapClicked);
+    QObject::connect(homePage, &OWC::HomePage::backButtonsMap, this, &MainWindow::onHomeBackButtonsMapClicked);
+    QObject::connect(homePage, &OWC::HomePage::exportYaml, this, &MainWindow::onHomeExportYamlClicked);
+    QObject::connect(homePage, &OWC::HomePage::importYaml, this, &MainWindow::onHomeImportYamlClicked);
+    QObject::connect(homePage, &OWC::HomePage::settingsPage, this, &MainWindow::onHomeSettingsPageClicked);
+    QObject::connect(homePage, &OWC::HomePage::applyChanges, this, &MainWindow::onHomeApplyChanges);
     QObject::connect(kbdMousePage, &OWC::FaceButtonsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
     QObject::connect(kbdMousePage, &OWC::KeyboardMouseButtonsPage::resetKeyboardMouseButtons, this, &MainWindow::onResetKeyboardMouseButtons);
     QObject::connect(kbdMousePage, &OWC::FaceButtonsPage::logSent, this, &MainWindow::onLogSent);
