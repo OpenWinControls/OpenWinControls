@@ -21,6 +21,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QFile>
+#include <QStandardPaths>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -44,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     QLabel *repoLinkLbl = new QLabel("([sources](https://github.com/OpenWinControls/OpenWinControls))");
     QFont appFont = font();
 
+    appDataPath = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
     stackedWidget = new QStackedWidget();
     homePage = new OWC::HomePage();
     logsPage = new OWC::LogsPage();
@@ -60,6 +62,14 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     stackedWidget->addWidget(logsPage);
     stackedWidget->addWidget(settingsPage);
     stackedWidget->setCurrentIndex(0);
+
+    if (!QDir().exists(appDataPath) && !QDir().mkdir(appDataPath)) {
+        logsPage->writeLog(QString("failed to create data folder: %1").arg(appDataPath));
+        appDataPath.clear();
+
+    } else {
+        logsPage->writeLog(QString("data path: %1").arg(appDataPath));
+    }
 
     bottomLyt->addWidget(new QLabel("Controller version:"));
     bottomLyt->addWidget(controllerVersionLbl);
@@ -239,8 +249,10 @@ void MainWindow::initApp() {
     }
 
     kbdMousePage = new OWC::KeyboardMouseButtonsPage();
+    yamlBrowserPage = new OWC::YamlBrowserPage(appDataPath, gpd->getControllerType());
     keyboardMousePageIdx = stackedWidget->addWidget(kbdMousePage);
     backButtonsPageIdx = stackedWidget->addWidget(backButtonsPage);
+    yamlBrowserPageIdx = stackedWidget->addWidget(yamlBrowserPage);
 
     kbdMousePage->setMapping(gpd);
     backButtonsPage->setMapping(gpd);
@@ -251,6 +263,7 @@ void MainWindow::initApp() {
     QObject::connect(homePage, &OWC::HomePage::keyboardMouseMap, this, &MainWindow::onHomeKeyboardMouseMapClicked);
     QObject::connect(homePage, &OWC::HomePage::xinputMap, this, &MainWindow::onHomeXinputMapClicked);
     QObject::connect(homePage, &OWC::HomePage::backButtonsMap, this, &MainWindow::onHomeBackButtonsMapClicked);
+    QObject::connect(homePage, &OWC::HomePage::yamlBrowser, this, &MainWindow::onHomeYamlBrowserClicked);
     QObject::connect(homePage, &OWC::HomePage::exportYaml, this, &MainWindow::onHomeExportYamlClicked);
     QObject::connect(homePage, &OWC::HomePage::importYaml, this, &MainWindow::onHomeImportYamlClicked);
     QObject::connect(homePage, &OWC::HomePage::settingsPage, this, &MainWindow::onHomeSettingsPageClicked);
@@ -261,6 +274,9 @@ void MainWindow::initApp() {
     QObject::connect(backButtonsPage, &OWC::BackButtonsV1Page::backToHome, this, &MainWindow::onBackToHomeClicked);
     QObject::connect(backButtonsPage, &OWC::BackButtonsV1Page::resetBackButtons, this, &MainWindow::onResetBackButtons);
     QObject::connect(backButtonsPage, &OWC::BackButtonsV1Page::logSent, this, &MainWindow::onLogSent);
+    QObject::connect(yamlBrowserPage, &OWC::YamlBrowserPage::backToHome, this, &MainWindow::onBackToHomeClicked);
+    QObject::connect(yamlBrowserPage, &OWC::YamlBrowserPage::logSent, this, &MainWindow::onLogSent);
+    QObject::connect(yamlBrowserPage, &OWC::YamlBrowserPage::importProfile, this, &MainWindow::onYamlBrowserImportProfile);
 }
 
 void MainWindow::initGamepadThread() {
@@ -291,6 +307,14 @@ void MainWindow::quitGamepadThread() {
     gamepadWorker = nullptr;
 }
 
+void MainWindow::importYamlMapping(const YAML::Node &yaml) const {
+    kbdMousePage->importMappingFromYaml(yaml);
+    backButtonsPage->importMappingFromYaml(yaml);
+
+    if (xinputPage != nullptr)
+        xinputPage->importMappingFromYaml(yaml);
+}
+
 void MainWindow::onLogSent(const QString& msg) const {
     logsPage->writeLog(msg);
 }
@@ -313,6 +337,10 @@ void MainWindow::onHomeBackButtonsMapClicked() {
 
 void MainWindow::onHomeShowLogsClicked() const {
     stackedWidget->setCurrentIndex(1);
+}
+
+void MainWindow::onHomeYamlBrowserClicked() const {
+    stackedWidget->setCurrentIndex(yamlBrowserPageIdx);
 }
 
 void MainWindow::onHomeSettingsPageClicked() const {
@@ -390,11 +418,7 @@ void MainWindow::onHomeImportYamlClicked() {
         }
 
         mappF.close();
-        kbdMousePage->importMappingFromYaml(yaml);
-        backButtonsPage->importMappingFromYaml(yaml);
-
-        if (xinputPage != nullptr)
-            xinputPage->importMappingFromYaml(yaml);
+        importYamlMapping(yaml);
 
     } catch (const YAML::ParserException &e) {
         logsPage->writeLog(e.what());
@@ -403,6 +427,20 @@ void MainWindow::onHomeImportYamlClicked() {
     }
 
     logsPage->writeLog(QString("imported mapping from file: %1").arg(map));
+}
+
+void MainWindow::onYamlBrowserImportProfile(const QString &yml) const {
+    try {
+        const YAML::Node yaml = YAML::Load(yml.toStdString());
+
+        importYamlMapping(yaml);
+
+    } catch (const YAML::ParserException &e) {
+        logsPage->writeLog(e.what());
+        return;
+    }
+
+    logsPage->writeLog(QStringLiteral("imported mapping from profile"));
 }
 
 void MainWindow::onBackToHomeClicked() {

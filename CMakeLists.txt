@@ -6,7 +6,7 @@ set(PROJECT_AUTHOR "kylon")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 6.10 REQUIRED COMPONENTS Core Widgets)
+find_package(Qt6 6.10 REQUIRED COMPONENTS Core Widgets Network)
 
 qt_standard_project_setup()
 
@@ -19,6 +19,13 @@ qt_add_resources(QT_RESOURCE
 )
 
 set(PROJECT_SRC
+  src/pages/Include/DownloadWorker.h
+  src/pages/Include/DownloadWorker.cpp
+
+  src/pages/Widgets/FlowLayout.h
+  src/pages/Widgets/FlowLayout.cpp
+  src/pages/Widgets/YmlProfileBox.h
+  src/pages/Widgets/YmlProfileBox.cpp
   src/pages/Widgets/CharMapWidget.h
   src/pages/Widgets/CharMapWidget.cpp
   src/pages/HomePage.h
@@ -39,6 +46,8 @@ set(PROJECT_SRC
   src/pages/LogsPage.cpp
   src/pages/SettingsPage.h
   src/pages/SettingsPage.cpp
+  src/pages/YamlBrowserPage.h
+  src/pages/YamlBrowserPage.cpp
 
   src/include/ASCIIHIDMap.h
   src/include/ControllerFeature.h
@@ -97,7 +106,7 @@ if (has_ipo)
   set_property(TARGET ${PROJECT_NAME} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif ()
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt::Core Qt::Widgets lowc::owc yaml-cpp::yaml-cpp SDL3::SDL3)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt::Core Qt::Widgets Qt::Network lowc::owc yaml-cpp::yaml-cpp SDL3::SDL3)
 
 include(GNUInstallDirs)
 install(TARGETS ${PROJECT_NAME}

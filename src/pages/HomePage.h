@@ -34,6 +34,7 @@ namespace OWC {
         QPushButton *faceButtonsMapBtn = nullptr;
         QPushButton *backButtonsMapBtn = nullptr;
         QPushButton *showLogsBtn = nullptr;
+        QPushButton *ymlBrowserBtn = nullptr;
         QPushButton *settingsBtn = nullptr;
         QPushButton *applyBtn = nullptr;
         QPushButton *exportYamlBtn = nullptr;
@@ -52,6 +53,7 @@ namespace OWC {
         void onFaceButtonsMapClicked();
         void onBackButtonsMapClicked();
         void onShowLogsBtnClicked();
+        void onYamlBrowserClicked();
         void onSettingsClicked();
         void onApplyBtnClicked();
         void onExportYamlBtnClicked();
@@ -62,6 +64,7 @@ namespace OWC {
         void xinputMap();
         void backButtonsMap();
         void showLogs();
+        void yamlBrowser();
         void settingsPage();
         void applyChanges();
         void exportYaml();

@@ -34,6 +34,7 @@ namespace OWC {
         faceButtonsMapBtn = new QPushButton("Customize");
         backButtonsMapBtn = new QPushButton("Customize");
         showLogsBtn = new QPushButton("Logs");
+        ymlBrowserBtn = new QPushButton("Profiles");
         settingsBtn = new QPushButton("Settings");
         applyBtn = new QPushButton("Apply");
         exportYamlBtn = new QPushButton("Export mapping");
@@ -75,6 +76,7 @@ namespace OWC {
         headLyt->addWidget(mappingMode);
 
         bottomLyt->addWidget(showLogsBtn);
+        bottomLyt->addWidget(ymlBrowserBtn);
         bottomLyt->addStretch();
         bottomLyt->addWidget(settingsBtn);
         bottomLyt->addWidget(applyBtn);
@@ -95,6 +97,7 @@ namespace OWC {
         QObject::connect(faceButtonsMapBtn, &QPushButton::clicked, this, &HomePage::onFaceButtonsMapClicked);
         QObject::connect(backButtonsMapBtn, &QPushButton::clicked, this, &HomePage::onBackButtonsMapClicked);
         QObject::connect(showLogsBtn, &QPushButton::clicked, this, &HomePage::onShowLogsBtnClicked);
+        QObject::connect(ymlBrowserBtn, &QPushButton::clicked, this, &HomePage::onYamlBrowserClicked);
         QObject::connect(settingsBtn, &QPushButton::clicked, this, &HomePage::onSettingsClicked);
         QObject::connect(applyBtn, &QPushButton::clicked, this, &HomePage::onApplyBtnClicked);
         QObject::connect(exportYamlBtn, &QPushButton::clicked, this, &HomePage::onExportYamlBtnClicked);
@@ -184,6 +187,10 @@ namespace OWC {
 
     void HomePage::onShowLogsBtnClicked() {
         emit showLogs();
+    }
+
+    void HomePage::onYamlBrowserClicked() {
+        emit yamlBrowser();
     }
 
     void HomePage::onSettingsClicked() {

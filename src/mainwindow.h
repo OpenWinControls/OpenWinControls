@@ -28,6 +28,7 @@
 #include "pages/BackButtonsPage.h"
 #include "pages/LogsPage.h"
 #include "pages/SettingsPage.h"
+#include "pages/YamlBrowserPage.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -47,13 +48,16 @@ private:
     OWC::BackButtonsPage *backButtonsPage = nullptr;
     OWC::LogsPage *logsPage = nullptr;
     OWC::SettingsPage *settingsPage = nullptr;
+    OWC::YamlBrowserPage *yamlBrowserPage = nullptr;
     QLabel *controllerVersionLbl = nullptr;
     OWC::GamepadWorker *gamepadWorker = nullptr;
     QThread *gamepadThread = nullptr;
     QSharedPointer<OWC::Controller> gpd;
+    QString appDataPath;
     int keyboardMousePageIdx;
     int xinputPageIdx;
     int backButtonsPageIdx;
+    int yamlBrowserPageIdx;
 
     [[nodiscard]] QString getProduct() const;
     [[nodiscard]] QSharedPointer<OWC::Controller> getDevice(const QString &product) const;
@@ -61,6 +65,7 @@ private:
     void initApp();
     void initGamepadThread();
     void quitGamepadThread();
+    void importYamlMapping(const YAML::Node &yaml) const;
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
@@ -72,10 +77,12 @@ private slots:
     void onHomeXinputMapClicked();
     void onHomeBackButtonsMapClicked();
     void onHomeShowLogsClicked() const;
+    void onHomeYamlBrowserClicked() const;
     void onHomeSettingsPageClicked() const;
     void onHomeApplyChanges();
     void onHomeExportYamlClicked();
     void onHomeImportYamlClicked();
+    void onYamlBrowserImportProfile(const QString &yml) const;
     void onBackToHomeClicked();
     void onResetKeyboardMouseButtons() const;
     void onResetXinputButtons() const;
