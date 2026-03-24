@@ -85,6 +85,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     QObject::connect(logsPage, &OWC::LogsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
     QObject::connect(settingsPage, &OWC::SettingsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
     QObject::connect(settingsPage, &OWC::SettingsPage::resetSettings, this, &MainWindow::onResetSettings);
+    QObject::connect(settingsPage, &OWC::SettingsPage::configReset, this, &MainWindow::onSettingsConfigResetClicked);
 
     initApp();
 }
@@ -427,6 +428,13 @@ void MainWindow::onHomeImportYamlClicked() {
     }
 
     logsPage->writeLog(QString("imported mapping from file: %1").arg(map));
+}
+
+void MainWindow::onSettingsConfigResetClicked() {
+    if (!gpd->resetConfig())
+        QMessageBox::critical(this, "Configuration reset", "Failed");
+    else
+        QMessageBox::information(this, "Configuration reset", "Success");
 }
 
 void MainWindow::onYamlBrowserImportProfile(const QString &yml) const {

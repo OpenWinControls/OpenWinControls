@@ -82,6 +82,7 @@ private slots:
     void onHomeApplyChanges();
     void onHomeExportYamlClicked();
     void onHomeImportYamlClicked();
+    void onSettingsConfigResetClicked();
     void onYamlBrowserImportProfile(const QString &yml) const;
     void onBackToHomeClicked();
     void onResetKeyboardMouseButtons() const;

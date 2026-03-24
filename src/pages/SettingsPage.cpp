@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <QColorDialog>
+#include <QMessageBox>
 
 #include "SettingsPage.h"
 #include "../include/ControllerFeature.h"
@@ -25,9 +26,11 @@ namespace OWC {
         QHBoxLayout *buttonsLyt = new QHBoxLayout();
 
         lyt = new QVBoxLayout();
+        configResetBtn = new QPushButton("Configuration reset");
         backBtn = new QPushButton("Home");
         resetBtn = new QPushButton("Reset");
 
+        buttonsLyt->addWidget(configResetBtn);
         buttonsLyt->addStretch();
         buttonsLyt->addWidget(backBtn);
         buttonsLyt->addWidget(resetBtn);
@@ -37,6 +40,7 @@ namespace OWC {
 
         setLayout(lyt);
 
+        QObject::connect(configResetBtn, &QPushButton::clicked, this, &SettingsPage::onConfigResetBtnClicked);
         QObject::connect(backBtn, &QPushButton::clicked, this, &SettingsPage::onBackBtnClicked);
         QObject::connect(resetBtn, &QPushButton::clicked, this, &SettingsPage::onResetBtnClicked);
     }
@@ -257,6 +261,26 @@ namespace OWC {
             gpd->setLedMode(static_cast<LedMode>(ledMode->currentIndex()));
             gpd->setLedColor(color.red(), color.green(), color.blue());
         }
+    }
+
+    void SettingsPage::onConfigResetBtnClicked() {
+        QMessageBox *mbox = new QMessageBox(this);
+        const QPushButton *yesBtn = mbox->addButton("Yes", QMessageBox::YesRole);
+        QPushButton *noBtn = mbox->addButton("No", QMessageBox::NoRole);
+
+        mbox->setWindowTitle(QStringLiteral("Controller configuration reset"));
+        mbox->setText(QStringLiteral("Reset controller configuration data?"));
+        mbox->setDetailedText(QStringLiteral(
+            "This option tries to repair corrupted configuration data.\n"
+            "This is only needed in case another app, or manual intervention, has corrupted it."
+        ));
+        mbox->setDefaultButton(noBtn);
+        mbox->exec();
+
+        if (mbox->clickedButton() == yesBtn)
+            emit configReset();
+
+        mbox->deleteLater();
     }
 
     void SettingsPage::onBackBtnClicked() {

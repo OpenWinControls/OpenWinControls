@@ -30,6 +30,7 @@ namespace OWC {
 
     private:
         QVBoxLayout *lyt = nullptr;
+        QPushButton *configResetBtn = nullptr;
         QPushButton *backBtn = nullptr;
         QPushButton *resetBtn = nullptr;
         QComboBox *rumble = nullptr;
@@ -57,6 +58,7 @@ namespace OWC {
         void writeSettings(const QSharedPointer<Controller> &gpd) const;
 
     private slots:
+        void onConfigResetBtnClicked();
         void onBackBtnClicked();
         void onResetBtnClicked();
         void onLedColorChooserBtnClicked();
@@ -69,5 +71,6 @@ namespace OWC {
     signals:
         void backToHome();
         void resetSettings();
+        void configReset();
     };
 }
