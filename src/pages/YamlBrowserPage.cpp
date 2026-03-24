@@ -210,6 +210,7 @@ namespace OWC {
     void YamlBrowserPage::onDownloadFailed() {
         emit logSent(QStringLiteral("Failed to download from repo"));
         stopDownloadThread();
+        profileView->clear();
         refreshBtn->setEnabled(true);
     }
 
@@ -272,7 +273,7 @@ namespace OWC {
         refreshBtn->setEnabled(false);
         importYmlBtn->setEnabled(false);
         downloadYmlBtn->setEnabled(false);
-        profileView->clear();
+        profileView->setText("Downloading..");
         startDownloadThread();
 
         QObject::connect(downloadWrk, &DownloadWorker::success, this, &YamlBrowserPage::onGHYmlDownloadSuccess);
