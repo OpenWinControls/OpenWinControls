@@ -421,7 +421,7 @@ void MainWindow::onHomeImportYamlClicked() {
         mappF.close();
         importYamlMapping(yaml);
 
-    } catch (const YAML::ParserException &e) {
+    } catch (const YAML::Exception &e) {
         logsPage->writeLog(e.what());
         mappF.close();
         return;
@@ -443,7 +443,7 @@ void MainWindow::onYamlBrowserImportProfile(const QString &yml) const {
 
         importYamlMapping(yaml);
 
-    } catch (const YAML::ParserException &e) {
+    } catch (const YAML::Exception &e) {
         logsPage->writeLog(e.what());
         return;
     }
