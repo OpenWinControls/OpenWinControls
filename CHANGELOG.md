@@ -1,3 +1,9 @@
+## 2.2
+
+- Fix swapped start and select icons
+- Implement community profiles browser ([repo](https://github.com/OpenWinControls/CommunityProfiles))
+- Add **Configuration reset** to _Settings_
+
 ## 2.1
 
 - Back buttons v2 page: show non-active slots as disabled
