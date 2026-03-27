@@ -36,12 +36,20 @@ set(PROJECT_SRC
   src/pages/KeyboardMouseButtonsPage.cpp
   src/pages/XinputButtonsPage.h
   src/pages/XinputButtonsPage.cpp
-  src/pages/BackButtonsPage.h
-  src/pages/BackButtonsPage.cpp
-  src/pages/BackButtonsV1Page.h
-  src/pages/BackButtonsV1Page.cpp
-  src/pages/BackButtonsV2Page.h
-  src/pages/BackButtonsV2Page.cpp
+  src/pages/backButtons/Widgets/BackButtonV1Widget.h
+  src/pages/backButtons/Widgets/BackButtonV1Widget.cpp
+  src/pages/backButtons/Widgets/KeySlotV1Widget.h
+  src/pages/backButtons/Widgets/KeySlotV1Widget.cpp
+  src/pages/backButtons/Widgets/BackButtonV2Widget.h
+  src/pages/backButtons/Widgets/BackButtonV2Widget.cpp
+  src/pages/backButtons/Widgets/KeySlotV2Widget.h
+  src/pages/backButtons/Widgets/KeySlotV2Widget.cpp
+  src/pages/backButtons/BackButtonsPage.h
+  src/pages/backButtons/BackButtonsPage.cpp
+  src/pages/backButtons/BackButtonsV1Page.h
+  src/pages/backButtons/BackButtonsV1Page.cpp
+  src/pages/backButtons/BackButtonsV2Page.h
+  src/pages/backButtons/BackButtonsV2Page.cpp
   src/pages/LogsPage.h
   src/pages/LogsPage.cpp
   src/pages/SettingsPage.h

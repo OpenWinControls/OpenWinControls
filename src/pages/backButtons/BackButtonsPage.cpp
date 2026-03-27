@@ -21,8 +21,8 @@
 #include <QScroller>
 
 #include "BackButtonsPage.h"
-#include "../include/ASCIIHIDMap.h"
-#include "../extern/libOpenWinControls/src/include/HIDUsageIDMap.h"
+#include "../../include/ASCIIHIDMap.h"
+#include "../../extern/libOpenWinControls/src/include/HIDUsageIDMap.h"
 
 namespace OWC {
     BackButtonsPage::BackButtonsPage(const QString &helpLbl, const CharMapMode charMapMode) {
@@ -41,7 +41,6 @@ namespace OWC {
         charMap->setVisible(false);
         helpFont.setItalic(true);
         helpTx->setFont(helpFont);
-        scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         scrollArea->setWidgetResizable(true);
         scrollArea->setWidget(new QWidget);
         QScroller::grabGesture(scrollArea->viewport(), QScroller::LeftMouseButtonGesture);

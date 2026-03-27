@@ -25,8 +25,8 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "pages/BackButtonsV1Page.h"
-#include "pages/BackButtonsV2Page.h"
+#include "pages/backButtons/BackButtonsV1Page.h"
+#include "pages/backButtons/BackButtonsV2Page.h"
 #include "version.h"
 #include "include/GPDProducts.h"
 #include "extern/libOpenWinControls/src/include/ControllerFeature.h"

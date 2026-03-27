@@ -18,7 +18,7 @@
 #pragma once
 
 #include "BackButtonsPage.h"
-#include "backButtons/Widgets/BackButtonV1Widget.h"
+#include "Widgets/BackButtonV1Widget.h"
 
 namespace OWC {
     class BackButtonsV1Page final: public BackButtonsPage {

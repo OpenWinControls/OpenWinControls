@@ -18,7 +18,7 @@
 #include <QLabel>
 
 #include "BackButtonsV2Page.h"
-#include "../extern/libOpenWinControls/src/include/ControllerFeature.h"
+#include "../../extern/libOpenWinControls/src/include/ControllerFeature.h"
 
 namespace OWC {
     BackButtonsV2Page::BackButtonsV2Page(): BackButtonsPage(QStringLiteral("key slots, start times and hold times"), CharMapMode::Mixed) {

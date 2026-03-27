@@ -25,7 +25,7 @@
 #include "pages/HomePage.h"
 #include "pages/KeyboardMouseButtonsPage.h"
 #include "pages/XinputButtonsPage.h"
-#include "pages/BackButtonsPage.h"
+#include "pages/backButtons/BackButtonsPage.h"
 #include "pages/LogsPage.h"
 #include "pages/SettingsPage.h"
 #include "pages/YamlBrowserPage.h"

@@ -20,9 +20,9 @@
 #include <QVBoxLayout>
 #include <QKeyEvent>
 
-#include "Widgets/CharMapWidget.h"
-#include "../extern/libOpenWinControls/src/controller/Controller.h"
-#include "../extern/yaml-cpp/include/yaml-cpp/yaml.h"
+#include "../Widgets/CharMapWidget.h"
+#include "../../extern/libOpenWinControls/src/controller/Controller.h"
+#include "../../extern/yaml-cpp/include/yaml-cpp/yaml.h"
 
 namespace OWC {
     class BackButtonsPage: public QWidget {
