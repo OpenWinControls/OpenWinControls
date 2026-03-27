@@ -156,7 +156,7 @@ QSharedPointer<OWC::Controller> MainWindow::getDevice(const QString &product) co
     /*else if (product == OWC::win3)
         device = QSharedPointer<OWC::ControllerV1>::create();*/
     else if (product == OWC::win5)
-        device = QSharedPointer<OWC::ControllerV2>::create(OWC::ControllerFeature::RumbleV1 | OWC::ControllerFeature::XinputMappingV1);
+        device = QSharedPointer<OWC::ControllerV2>::create(OWC::ControllerFeature::RumbleV1 | OWC::ControllerFeature::XinputMappingV1 | OWC::ControllerFeature::BackButton4);
     else if (product == OWC::mini25)
         device = QSharedPointer<OWC::ControllerV2>::create(OWC::ControllerFeature::DeadZoneControlV1 | OWC::ControllerFeature::RumbleV1 | OWC::ControllerFeature::XinputMappingV1);
     else
