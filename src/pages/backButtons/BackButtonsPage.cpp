@@ -107,13 +107,11 @@ namespace OWC {
         charMap->setVisible(!charMap->isVisible());
     }
 
-    void BackButtonsPage::onkeyButtonPressed() const {
-        QPushButton *btn = qobject_cast<QPushButton *>(QObject::sender());
-
+    void BackButtonsPage::onkeyButtonPressed(QPushButton *btn) const {
         if (pendingBtn != nullptr) {
             pendingBtn->setText(oldPendingBtnText);
 
-            if (btn != nullptr && pendingBtn == btn) { // cancel edit
+            if (pendingBtn == btn) { // cancel edit
                 pendingBtn = nullptr;
                 return;
             }

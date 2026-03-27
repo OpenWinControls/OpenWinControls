@@ -38,5 +38,8 @@ namespace OWC {
 
     private slots:
         void onKeySlotBtnClicked();
+
+    signals:
+        void pendingEditBtn(QPushButton *keyBtn);
     };
 }

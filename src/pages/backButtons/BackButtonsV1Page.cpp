@@ -28,7 +28,9 @@ namespace OWC {
         backBtnLyt->addWidget(r4);
 
         QObject::connect(l4, &BackButtonV1Widget::logSent, this, &BackButtonsV1Page::onBackButtonLogSent);
+        QObject::connect(l4, &BackButtonV1Widget::pendingEditBtn, this, &BackButtonsV1Page::onkeyButtonPressed);
         QObject::connect(r4, &BackButtonV1Widget::logSent, this, &BackButtonsV1Page::onBackButtonLogSent);
+        QObject::connect(r4, &BackButtonV1Widget::pendingEditBtn, this, &BackButtonsV1Page::onkeyButtonPressed);
     }
 
     void BackButtonsV1Page::setMapping(const QSharedPointer<Controller> &gpd) const {

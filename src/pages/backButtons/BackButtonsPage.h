@@ -59,7 +59,7 @@ namespace OWC {
         void onCharMapKeyPressed(const QString &key) const;
 
     protected slots:
-        void onkeyButtonPressed() const;
+        void onkeyButtonPressed(QPushButton *btn) const;
 
     signals:
         void backToHome();

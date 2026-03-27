@@ -43,6 +43,6 @@ namespace OWC {
     }
 
     void KeySlotV1Widget::onKeySlotBtnClicked() {
-
+        emit pendingEditBtn(keySlotBtn);
     }
 }
