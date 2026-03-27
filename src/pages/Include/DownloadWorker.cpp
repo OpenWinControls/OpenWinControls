@@ -15,16 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <QFile>
-
 #include "DownloadWorker.h"
 
 namespace OWC {
-    void DownloadWorker::downloadFile(const QString &url, const QString &path) {
+    void DownloadWorker::downloadFile(const QString &url) {
         QNetworkRequest req = QNetworkRequest(QUrl(url));
         QNetworkReply *reply;
-
-        outPath = path;
 
         netAccess.reset(new QNetworkAccessManager);
         netAccess->setAutoDeleteReplies(true);
@@ -39,29 +35,10 @@ namespace OWC {
     }
 
     void DownloadWorker::onDownloadFinisched(QNetworkReply *reply) {
-        if (reply->error() != QNetworkReply::NoError) {
+        if (reply->error() != QNetworkReply::NoError)
             emit failed();
-            return;
-        }
-
-        const QByteArray fileContent = reply->readAll();
-        QFile out(outPath);
-
-        if (!out.open(QFile::WriteOnly)) {
-            emit logSent(QString("failed to open file for write: %1").arg(out.errorString()));
-            emit failed();
-            return;
-        }
-
-        if (out.write(fileContent) == -1) {
-            emit logSent(QString("failed to write file: %1").arg(out.errorString()));
-            emit failed();
-            return;
-        }
-
-        out.flush();
-        out.close();
-        emit success();
+        else
+            emit success(reply->readAll());
     }
 
     void DownloadWorker::onReplyError(const QNetworkReply::NetworkError code) {

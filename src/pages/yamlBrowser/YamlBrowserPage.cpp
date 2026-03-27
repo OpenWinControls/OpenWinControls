@@ -40,9 +40,7 @@ namespace OWC {
 
         appDataPath = dataPath;
         controllerType = QString("v%1").arg(type);
-        ghYmlTmpPath = QString("%1/ghyml").arg(dataPath);
         ymlsPath = QString("%1/profiles").arg(dataPath);
-        dbPath = QString("%1/owcdb").arg(appDataPath);
         localYmlContainer = new FlowLayout();
         ghYmlContainer = new FlowLayout();
         backBtn = new QPushButton("Home");
@@ -162,14 +160,8 @@ namespace OWC {
         }
     }
 
-    void YamlBrowserPage::listGHProfiles() {
-        QFile dbF(dbPath);
-        QTextStream ts(&dbF);
-
-        if (!dbF.open(QFile::Text | QFile::ReadOnly)) {
-            emit logSent(QString("failed to read db file: %1").arg(dbF.errorString()));
-            return;
-        }
+    void YamlBrowserPage::listGHProfiles(const QByteArray &db) {
+        QTextStream ts(db);
 
         while (!ts.atEnd()) {
             const QList<QString> lineData = ts.readLine().split('/');
@@ -204,7 +196,7 @@ namespace OWC {
 
         QObject::connect(downloadWrk, &DownloadWorker::success, this, &YamlBrowserPage::onDBDownloadSuccess);
 
-        emit startDownload(dbUrl, QString("%1/owcdb").arg(appDataPath));
+        emit startDownload(dbUrl);
     }
 
     void YamlBrowserPage::onDownloadFailed() {
@@ -214,24 +206,17 @@ namespace OWC {
         refreshBtn->setEnabled(true);
     }
 
-    void YamlBrowserPage::onDBDownloadSuccess() {
-        QFile dbF(dbPath);
-
+    void YamlBrowserPage::onDBDownloadSuccess(const QByteArray &db) {
         stopDownloadThread();
 
-        if (dbF.open(QFile::Text | QFile::ReadOnly)) {
-            QTextStream ts(&dbF);
-            const QString ghVer = ts.readLine();
+        QTextStream ts(db);
+        const QString ghVer = ts.readLine();
 
-            if (ghVer != dbVersion) {
-                dbVersion = ghVer;
+        if (ghVer != dbVersion) {
+            dbVersion = ghVer;
 
-                clearYmlLayout(ghYmlContainer);
-                listGHProfiles();
-            }
-        } else {
-            emit logSent(QString("failed to read version string: %1").arg(dbF.errorString()));
-            QMessageBox::critical(this, "Download", "Failed, see logs");
+            clearYmlLayout(ghYmlContainer);
+            listGHProfiles(db);
         }
 
         refreshBtn->setEnabled(true);
@@ -278,24 +263,15 @@ namespace OWC {
 
         QObject::connect(downloadWrk, &DownloadWorker::success, this, &YamlBrowserPage::onGHYmlDownloadSuccess);
 
-        emit startDownload(QString("%1/%2/%3.yaml").arg(baseYmlUrl, controllerType, name), ghYmlTmpPath);
+        emit startDownload(QString("%1/%2/%3.yaml").arg(baseYmlUrl, controllerType, name));
     }
 
-    void YamlBrowserPage::onGHYmlDownloadSuccess() {
-        QFile yml(ghYmlTmpPath);
-
+    void YamlBrowserPage::onGHYmlDownloadSuccess(const QByteArray &yml) {
         stopDownloadThread();
         refreshBtn->setEnabled(true);
-
-        if (!yml.open(QFile::Text | QFile::ReadOnly)) {
-            emit logSent(QString("failed to read github yaml file: %1").arg(yml.errorString()));
-            return;
-        }
-
-        profileView->setText(yml.readAll());
+        profileView->setText(yml);
         importYmlBtn->setEnabled(true);
         downloadYmlBtn->setEnabled(true);
-        yml.remove();
     }
 
     void YamlBrowserPage::onYmlImportClicked() {

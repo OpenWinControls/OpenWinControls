@@ -47,15 +47,13 @@ namespace OWC {
         QString controllerType;
         QString dbVersion;
         QString curViewGHProfileName;
-        QString ghYmlTmpPath;
         QString ymlsPath;
-        QString dbPath;
 
         void startDownloadThread();
         void stopDownloadThread();
         void clearYmlLayout(FlowLayout *lyt) const;
         void listLocalProfiles();
-        void listGHProfiles();
+        void listGHProfiles(const QByteArray &db);
 
     public:
         YamlBrowserPage(const QString &dataPath, int type);
@@ -65,11 +63,11 @@ namespace OWC {
         void onBackBtnClicked();
         void onRefreshBtnClicked();
         void onDownloadFailed();
-        void onDBDownloadSuccess();
+        void onDBDownloadSuccess(const QByteArray &db);
         void onViewLocalProfile(const QString &name);
         void onDeleteLocalProfile(const QString &name, const YmlProfileBox *wdg);
         void onViewGHProfile(const QString &name);
-        void onGHYmlDownloadSuccess();
+        void onGHYmlDownloadSuccess(const QByteArray &yml);
         void onYmlImportClicked();
         void onYmlDownloadClicked();
         void onFsFolderChanged(const QString &path);
@@ -77,7 +75,7 @@ namespace OWC {
     signals:
         void logSent(const QString &msg);
         void backToHome();
-        void startDownload(const QString &url, const QString &path);
+        void startDownload(const QString &url);
         void importProfile(const QString &yml);
     };
 }

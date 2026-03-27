@@ -25,18 +25,17 @@ namespace OWC {
 
     private:
         QScopedPointer<QNetworkAccessManager> netAccess;
-        QString outPath;
 
     private slots:
         void onDownloadFinisched(QNetworkReply *reply);
         void onReplyError(QNetworkReply::NetworkError code);
 
     public slots:
-        void downloadFile(const QString &url, const QString &path);
+        void downloadFile(const QString &url);
 
     signals:
         void logSent(const QString &msg);
         void failed();
-        void success();
+        void success(const QByteArray &data);
     };
 }
