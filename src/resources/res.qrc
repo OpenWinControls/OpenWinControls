@@ -45,6 +45,7 @@
         <file alias="r2">icons/r2.png</file>
         <file alias="r3">icons/r3.png</file>
         <file alias="r4">icons/r4.png</file>
+        <file alias="r5">icons/r5.png</file>
     </qresource>
     <qresource prefix="/app">
         <file alias="icon">owc.ico</file>
