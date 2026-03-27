@@ -17,39 +17,28 @@
  */
 #pragma once
 
-#include <QSpinBox>
-
 #include "BackButtonsPage.h"
+#include "backButtons/Widgets/BackButtonV2Widget.h"
 
 namespace OWC {
     class BackButtonsV2Page final: public BackButtonsPage {
         Q_OBJECT
 
     private:
-        struct KeySlot final {
-            QPushButton *btn = nullptr;
-            QSpinBox *startTime = nullptr;
-            QSpinBox *holdTime = nullptr;
-        };
-
-        QSpinBox *activeSlotsL = nullptr;
-        QSpinBox *activeSlotsR = nullptr;
-        QList<KeySlot> lBtnList;
-        QList<KeySlot> rBtnList;
-
-        [[nodiscard]] QVBoxLayout *makeBackButtonUI(const QString &icon, QSpinBox *activeSlotsInpt, QList<KeySlot> &slotList);
-        void enableSlots(int count, bool l4) const;
+        BackButtonV2Widget *l4 = nullptr;
+        BackButtonV2Widget *r4 = nullptr;
+        BackButtonV2Widget *r5 = nullptr;
 
     public:
         BackButtonsV2Page();
 
+        void initPage(const QSharedPointer<Controller> &gpd) override;
         void setMapping(const QSharedPointer<Controller> &gpd) const override;
+        void writeMapping(const QSharedPointer<Controller> &gpd) override;
         [[nodiscard]] QString exportMappingToYaml() const override;
         void importMappingFromYaml(const YAML::Node &yaml) const override;
-        void writeMapping(const QSharedPointer<Controller> &gpd) override;
 
     private slots:
-        void onActiveSlotsLChanged(int val) const;
-        void onActiveSlotsRChanged(int val) const;
+        void onBackButtonLogSent(const QString &msg);
     };
 }

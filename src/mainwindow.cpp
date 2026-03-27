@@ -255,9 +255,10 @@ void MainWindow::initApp() {
     backButtonsPageIdx = stackedWidget->addWidget(backButtonsPage);
     yamlBrowserPageIdx = stackedWidget->addWidget(yamlBrowserPage);
 
+    backButtonsPage->initPage(gpd);
+    settingsPage->initPage(gpd);
     kbdMousePage->setMapping(gpd);
     backButtonsPage->setMapping(gpd);
-    settingsPage->initPage(gpd);
     settingsPage->setData(gpd);
     homePage->setDevice(prod);
 
