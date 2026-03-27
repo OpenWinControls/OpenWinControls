@@ -17,31 +17,26 @@
  */
 #pragma once
 
-#include <QSpinBox>
-
 #include "BackButtonsPage.h"
+#include "backButtons/Widgets/BackButtonV1Widget.h"
 
 namespace OWC {
     class BackButtonsV1Page final: public BackButtonsPage {
         Q_OBJECT
 
     private:
-        struct KeySlot final {
-            QPushButton *btn = nullptr;
-            QSpinBox *startTime = nullptr;
-        };
-
-        QList<KeySlot> lBtnList;
-        QList<KeySlot> rBtnList;
-
-        [[nodiscard]] QVBoxLayout *makeBackButtonUI(const QString &icon, QList<KeySlot> &slotList);
+        BackButtonV1Widget *l4 = nullptr;
+        BackButtonV1Widget *r4 = nullptr;
 
     public:
         BackButtonsV1Page();
 
         void setMapping(const QSharedPointer<Controller> &gpd) const override;
+        void writeMapping(const QSharedPointer<Controller> &gpd) override;
         [[nodiscard]] QString exportMappingToYaml() const override;
         void importMappingFromYaml(const YAML::Node &yaml) const override;
-        void writeMapping(const QSharedPointer<Controller> &gpd) override;
+
+    private slots:
+        void onBackButtonLogSent(const QString &msg);
     };
 }
