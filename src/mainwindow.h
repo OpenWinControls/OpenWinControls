@@ -28,7 +28,7 @@
 #include "pages/backButtons/BackButtonsPage.h"
 #include "pages/LogsPage.h"
 #include "pages/SettingsPage.h"
-#include "pages/YamlBrowserPage.h"
+#include "pages/yamlBrowser/YamlBrowserPage.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

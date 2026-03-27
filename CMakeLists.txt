@@ -24,8 +24,6 @@ set(PROJECT_SRC
 
   src/pages/Widgets/FlowLayout.h
   src/pages/Widgets/FlowLayout.cpp
-  src/pages/Widgets/YmlProfileBox.h
-  src/pages/Widgets/YmlProfileBox.cpp
   src/pages/Widgets/CharMapWidget.h
   src/pages/Widgets/CharMapWidget.cpp
   src/pages/HomePage.h
@@ -54,8 +52,10 @@ set(PROJECT_SRC
   src/pages/LogsPage.cpp
   src/pages/SettingsPage.h
   src/pages/SettingsPage.cpp
-  src/pages/YamlBrowserPage.h
-  src/pages/YamlBrowserPage.cpp
+  src/pages/yamlBrowser/Widgets/YmlProfileBox.h
+  src/pages/yamlBrowser/Widgets/YmlProfileBox.cpp
+  src/pages/yamlBrowser/YamlBrowserPage.h
+  src/pages/yamlBrowser/YamlBrowserPage.cpp
 
   src/include/ASCIIHIDMap.h
   src/include/ControllerFeature.h

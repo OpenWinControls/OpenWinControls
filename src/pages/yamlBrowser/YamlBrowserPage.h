@@ -21,9 +21,9 @@
 #include <QTextEdit>
 #include <QFileSystemWatcher>
 
-#include "Widgets/FlowLayout.h"
+#include "../Widgets/FlowLayout.h"
 #include "Widgets/YmlProfileBox.h"
-#include "Include/DownloadWorker.h"
+#include "../Include/DownloadWorker.h"
 
 namespace OWC {
     class YamlBrowserPage final: public QWidget {
