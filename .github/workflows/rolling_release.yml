@@ -6,7 +6,7 @@ on:
     paths: ['**.cpp', '**.h', 'CMakeLists.txt']
 
   workflow_dispatch:
-
+  
 jobs:
   win_release:
     runs-on: windows-latest
@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: jurplel/install-qt-action@v4
         with:
-          version: '6.11'
+          version: '6.10.2'
           modules: qtimageformats qtmultimedia
 
       - uses: actions/checkout@main
@@ -29,7 +29,7 @@ jobs:
         run: |
           cd OpenWinControls
           git submodule update --init --recursive
-
+        
       - name: prepare release folder
         run: mkdir "owc_windows"
 
@@ -60,7 +60,7 @@ jobs:
     steps:
       - uses: jurplel/install-qt-action@v4
         with:
-          version: '6.11'
+          version: '6.10.2'
           modules: qtimageformats qtmultimedia qtwaylandcompositor
 
       - uses: actions/checkout@main
@@ -82,7 +82,7 @@ jobs:
         run: |
           wget https://archive.ubuntu.com/ubuntu/pool/main/t/tiff/libtiff5_4.3.0-6ubuntu0.12_amd64.deb
           sudo apt install ./libtiff5_4.3.0-6ubuntu0.12_amd64.deb
-
+          
       - name: download linuxdeploy and plugins
         run: |
           wget -q --show-progress https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
@@ -90,7 +90,7 @@ jobs:
           curl -fsSLo linuxdeploy-plugin-checkrt.sh https://github.com/darealshinji/linuxdeploy-plugin-checkrt/releases/download/continuous/linuxdeploy-plugin-checkrt.sh
           chmod +x linuxdeploy-plugin-checkrt.sh
           chmod +x linuxdeploy-*.AppImage
-
+          
       - name: prepare release folders
         run: mkdir "owc_linux"
 
@@ -128,7 +128,7 @@ jobs:
           name: OpenWinControls-x86_64
           path: OpenWinControls-x86_64.AppImage
           retention-days: 1
-
+          
   publish_release:
     runs-on: ubuntu-latest
     needs: [win_release, linux_release]
@@ -150,14 +150,14 @@ jobs:
           [**Changelog**](https://github.com/OpenWinControls/OpenWinControls/blob/main/CHANGELOG.md)\n\n
           ### Linux\n\n
           Official AUR git package [here](https://aur.archlinux.org/packages/openwincontrols-git)" > rel_notes.md
-
+          
       - name: remove old release
         env:
           GH_TOKEN: ${{ secrets.GTK }}
           GH_REPO: ${{ github.repository }}
         run: gh release delete continuous -y
         continue-on-error: true
-
+        
       - name: publish release
         env:
           GH_TOKEN: ${{ secrets.GTK }}
