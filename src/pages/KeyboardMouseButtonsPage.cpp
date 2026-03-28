@@ -18,34 +18,69 @@
 #include "KeyboardMouseButtonsPage.h"
 #include "../include/ASCIIHIDMap.h"
 #include "../extern/libOpenWinControls/src/include/HIDUsageIDMap.h"
+#include "faceButtons/Widgets/DirectionalButtonBlockWidget.h"
+#include "faceButtons/Widgets/ShoulderButtonBlockWidget.h"
+#include "faceButtons/Widgets/SingleButtonBlockWidget.h"
 
 namespace OWC {
     KeyboardMouseButtonsPage::KeyboardMouseButtonsPage(): FaceButtonsPage(CharMapMode::Keyboard) {
-        btnMap = {
-            {"A", {aBtn, Button::KBD_A}},
-            {"B", {bBtn, Button::KBD_B}},
-            {"X", {xBtn, Button::KBD_X}},
-            {"Y", {yBtn, Button::KBD_Y}},
-            {"DPAD_UP", {dpadUpBtn, Button::KBD_DPAD_UP}},
-            {"DPAD_DOWN", {dpadDownBtn, Button::KBD_DPAD_DOWN}},
-            {"DPAD_LEFT", {dpadLeftBtn, Button::KBD_DPAD_LEFT}},
-            {"DPAD_RIGHT", {dpadRight, Button::KBD_DPAD_RIGHT}},
-            {"L_ANALOG_UP", {lAnalogUpBtn, Button::KBD_LANALOG_UP}},
-            {"L_ANALOG_DOWN", {lAnalogDownBtn, Button::KBD_LANALOG_DOWN}},
-            {"L_ANALOG_LEFT", {lAnalogLeftBtn, Button::KBD_LANALOG_LEFT}},
-            {"L_ANALOG_RIGHT", {lAnalogRightBtn, Button::KBD_LANALOG_RIGHT}},
-            {"L1", {l1Btn, Button::KBD_L1}},
-            {"L2", {l2Btn, Button::KBD_L2}},
-            {"L3", {l3Btn, Button::KBD_L3}},
-            {"R1", {r1Btn, Button::KBD_R1}},
-            {"R2", {r2Btn, Button::KBD_R2}},
-            {"R3", {r3Btn, Button::KBD_R3}},
-            {"START", {startBtn, Button::KBD_START}},
-            {"SELECT", {selectBtn, Button::KBD_SELECT}},
-            {"MENU", {menuBtn, Button::KBD_MENU}}
+        QHBoxLayout *row1Lyt = new QHBoxLayout();
+        QHBoxLayout *row2Lyt = new QHBoxLayout();
+        DirectionalButtonBlockWidget *dpad;
+        DirectionalButtonBlockWidget *actions;
+        DirectionalButtonBlockWidget *ls;
+        ShoulderButtonBlockWidget *shoulderL;
+        ShoulderButtonBlockWidget *shoulderR;
+        SingleButtonBlockWidget *l3;
+        SingleButtonBlockWidget *r3;
+        SingleButtonBlockWidget *start;
+        SingleButtonBlockWidget *select;
+        SingleButtonBlockWidget *menu;
+
+        buttonList = {
+            dpad = new DirectionalButtonBlockWidget(Button::KBD_DPAD_UP, Button::KBD_DPAD_LEFT, Button::KBD_DPAD_RIGHT, Button::KBD_DPAD_DOWN, "DPAD_UP", "DPAD_LEFT", "DPAD_RIGHT", "DPAD_DOWN", "dpad", 75),
+            shoulderL = new ShoulderButtonBlockWidget(Button::KBD_L2, Button::KBD_L1, "L2", "L1", "l2", "l1", 55, 55, 70, 30),
+            shoulderR = new ShoulderButtonBlockWidget(Button::KBD_R2, Button::KBD_R1, "R2", "R1", "r2", "r1", 55, 55, 70, 30),
+            actions = new DirectionalButtonBlockWidget(Button::KBD_Y, Button::KBD_X, Button::KBD_B, Button::KBD_A, "Y", "X", "B", "A", "face", 80),
+            ls = new DirectionalButtonBlockWidget(Button::KBD_LANALOG_UP, Button::KBD_LANALOG_LEFT, Button::KBD_LANALOG_RIGHT, Button::KBD_LANALOG_DOWN, "L_ANALOG_UP", "L_ANALOG_LEFT", "L_ANALOG_RIGHT", "L_ANALOG_DOWN", "ls", 62),
+            l3 = new SingleButtonBlockWidget(Button::KBD_L3, "L3", "l3", 55, 55),
+            r3 = new SingleButtonBlockWidget(Button::KBD_R3, "R3", "r3", 55, 55),
+            start = new SingleButtonBlockWidget(Button::KBD_START, "START", "start", 70, 30),
+            select = new SingleButtonBlockWidget(Button::KBD_SELECT, "SELECT", "select", 70, 30),
+            menu = new SingleButtonBlockWidget(Button::KBD_MENU, "MENU", "menu", 70, 30)
         };
 
+        row1Lyt->addWidget(dpad);
+        row1Lyt->addStretch();
+        row1Lyt->addWidget(shoulderL);
+        row1Lyt->addWidget(shoulderR);
+        row1Lyt->addStretch();
+        row1Lyt->addWidget(actions);
+
+        row2Lyt->addWidget(ls);
+        row2Lyt->addStretch();
+        row2Lyt->addWidget(l3);
+        row2Lyt->addWidget(r3);
+        row2Lyt->addStretch();
+        row2Lyt->addWidget(start);
+        row2Lyt->addWidget(select);
+        row2Lyt->addWidget(menu);
+
+        controlsLyt->addLayout(row1Lyt);
+        controlsLyt->addSpacing(12);
+        controlsLyt->addLayout(row2Lyt);
         controlsLyt->addStretch();
+
+        QObject::connect(dpad, &DirectionalButtonBlockWidget::pendingEditBtn, this, &KeyboardMouseButtonsPage::onkeyButtonPressed);
+        QObject::connect(shoulderL, &ShoulderButtonBlockWidget::pendingEditBtn, this, &KeyboardMouseButtonsPage::onkeyButtonPressed);
+        QObject::connect(shoulderR, &ShoulderButtonBlockWidget::pendingEditBtn, this, &KeyboardMouseButtonsPage::onkeyButtonPressed);
+        QObject::connect(actions, &DirectionalButtonBlockWidget::pendingEditBtn, this, &KeyboardMouseButtonsPage::onkeyButtonPressed);
+        QObject::connect(ls, &DirectionalButtonBlockWidget::pendingEditBtn, this, &KeyboardMouseButtonsPage::onkeyButtonPressed);
+        QObject::connect(l3, &SingleButtonBlockWidget::pendingEditBtn, this, &KeyboardMouseButtonsPage::onkeyButtonPressed);
+        QObject::connect(r3, &SingleButtonBlockWidget::pendingEditBtn, this, &KeyboardMouseButtonsPage::onkeyButtonPressed);
+        QObject::connect(start, &SingleButtonBlockWidget::pendingEditBtn, this, &KeyboardMouseButtonsPage::onkeyButtonPressed);
+        QObject::connect(select, &SingleButtonBlockWidget::pendingEditBtn, this, &KeyboardMouseButtonsPage::onkeyButtonPressed);
+        QObject::connect(menu, &SingleButtonBlockWidget::pendingEditBtn, this, &KeyboardMouseButtonsPage::onkeyButtonPressed);
     }
 
     void KeyboardMouseButtonsPage::keyPressEvent(QKeyEvent *event) {

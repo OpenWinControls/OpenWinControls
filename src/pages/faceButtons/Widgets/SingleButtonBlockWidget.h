@@ -17,22 +17,23 @@
  */
 #pragma once
 
-#include "FaceButtonsPage.h"
-#include "faceButtons/Widgets/ButtonBlockWidget.h"
+#include "ButtonBlockWidget.h"
 
 namespace OWC {
-    class XinputButtonsPage final: public FaceButtonsPage {
+    class SingleButtonBlockWidget final: public ButtonBlockWidget {
         Q_OBJECT
 
+    private:
+        QPushButton *keyBtn = nullptr;
+        Button owcButton;
+        std::string_view ymlKey;
+
     public:
-        XinputButtonsPage();
+        SingleButtonBlockWidget(Button owcBtn, std::string_view yamlKey, const QString &icon, int iconScaleW, int iconScaleH);
 
-        void setGamepadKey(const QString &key) const;
-
-    protected slots:
-        void onResetBtnClicked() override;
-
-    signals:
-        void resetXinputButtons();
+        void setMapping(const QSharedPointer<Controller> &gpd) const override;
+        void writeMapping(const QSharedPointer<Controller> &gpd) override;
+        [[nodiscard]] QString exportMappingToYaml() const override;
+        void importMappingFromYaml(const YAML::Node &yaml) const override;
     };
 }

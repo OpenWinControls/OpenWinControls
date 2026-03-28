@@ -28,6 +28,13 @@ set(PROJECT_SRC
   src/pages/Widgets/CharMapWidget.cpp
   src/pages/HomePage.h
   src/pages/HomePage.cpp
+  src/pages/faceButtons/Widgets/ButtonBlockWidget.h
+  src/pages/faceButtons/Widgets/DirectionalButtonBlockWidget.h
+  src/pages/faceButtons/Widgets/DirectionalButtonBlockWidget.cpp
+  src/pages/faceButtons/Widgets/ShoulderButtonBlockWidget.h
+  src/pages/faceButtons/Widgets/ShoulderButtonBlockWidget.cpp
+  src/pages/faceButtons/Widgets/SingleButtonBlockWidget.h
+  src/pages/faceButtons/Widgets/SingleButtonBlockWidget.cpp
   src/pages/FaceButtonsPage.h
   src/pages/FaceButtonsPage.cpp
   src/pages/KeyboardMouseButtonsPage.h

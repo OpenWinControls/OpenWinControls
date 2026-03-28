@@ -17,22 +17,31 @@
  */
 #pragma once
 
-#include "FaceButtonsPage.h"
-#include "faceButtons/Widgets/ButtonBlockWidget.h"
+#include <QPushButton>
+
+#include "../../../extern/libOpenWinControls/src/controller/Controller.h"
+#include "../../../extern/yaml-cpp/include/yaml-cpp/yaml.h"
 
 namespace OWC {
-    class XinputButtonsPage final: public FaceButtonsPage {
+    class ButtonBlockWidget: public QWidget {
         Q_OBJECT
 
-    public:
-        XinputButtonsPage();
+    protected:
+        static constexpr int buttonWidth = 122;
 
-        void setGamepadKey(const QString &key) const;
+    public:
+        virtual void setMapping(const QSharedPointer<Controller> &gpd) const = 0;
+        virtual void writeMapping(const QSharedPointer<Controller> &gpd) = 0;
+        [[nodiscard]] virtual QString exportMappingToYaml() const = 0;
+        virtual void importMappingFromYaml(const YAML::Node &yaml) const = 0;
 
     protected slots:
-        void onResetBtnClicked() override;
+        void onKeyBtnPressed() {
+            emit pendingEditBtn(qobject_cast<QPushButton *>(QObject::sender()));
+        }
 
     signals:
-        void resetXinputButtons();
+        void logSent(const QString &msg);
+        void pendingEditBtn(QPushButton *keyBtn);
     };
 }
