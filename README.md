@@ -19,6 +19,8 @@ Multiplatform GPD WinControls replacement
 
 - To apply the changes permanently, switch the controller mode back and forth using the physical button on device
 
+Help is appreciated to solve this!
+
 ## Linux
 
 Root permissions are required.
