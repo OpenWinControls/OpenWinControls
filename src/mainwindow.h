@@ -23,8 +23,8 @@
 
 #include "GamepadWorker.h"
 #include "pages/HomePage.h"
-#include "pages/KeyboardMouseButtonsPage.h"
-#include "pages/XinputButtonsPage.h"
+#include "pages/faceButtons/KeyboardMouseButtonsPage.h"
+#include "pages/faceButtons/XinputButtonsPage.h"
 #include "pages/backButtons/BackButtonsPage.h"
 #include "pages/LogsPage.h"
 #include "pages/SettingsPage.h"

@@ -35,12 +35,12 @@ set(PROJECT_SRC
   src/pages/faceButtons/Widgets/ShoulderButtonBlockWidget.cpp
   src/pages/faceButtons/Widgets/SingleButtonBlockWidget.h
   src/pages/faceButtons/Widgets/SingleButtonBlockWidget.cpp
-  src/pages/FaceButtonsPage.h
-  src/pages/FaceButtonsPage.cpp
-  src/pages/KeyboardMouseButtonsPage.h
-  src/pages/KeyboardMouseButtonsPage.cpp
-  src/pages/XinputButtonsPage.h
-  src/pages/XinputButtonsPage.cpp
+  src/pages/faceButtons/FaceButtonsPage.h
+  src/pages/faceButtons/FaceButtonsPage.cpp
+  src/pages/faceButtons/KeyboardMouseButtonsPage.h
+  src/pages/faceButtons/KeyboardMouseButtonsPage.cpp
+  src/pages/faceButtons/XinputButtonsPage.h
+  src/pages/faceButtons/XinputButtonsPage.cpp
   src/pages/backButtons/Widgets/BackButtonV1Widget.h
   src/pages/backButtons/Widgets/BackButtonV1Widget.cpp
   src/pages/backButtons/Widgets/KeySlotV1Widget.h

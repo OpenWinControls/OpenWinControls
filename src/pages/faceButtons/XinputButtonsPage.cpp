@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "XinputButtonsPage.h"
-#include "faceButtons/Widgets/DirectionalButtonBlockWidget.h"
-#include "faceButtons/Widgets/ShoulderButtonBlockWidget.h"
-#include "faceButtons/Widgets/SingleButtonBlockWidget.h"
+#include "Widgets/DirectionalButtonBlockWidget.h"
+#include "Widgets/ShoulderButtonBlockWidget.h"
+#include "Widgets/SingleButtonBlockWidget.h"
 
 namespace OWC {
     XinputButtonsPage::XinputButtonsPage(): FaceButtonsPage(CharMapMode::Xinput) {

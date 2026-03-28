@@ -18,7 +18,7 @@
 #pragma once
 
 #include "FaceButtonsPage.h"
-#include "faceButtons/Widgets/ButtonBlockWidget.h"
+#include "Widgets/ButtonBlockWidget.h"
 
 namespace OWC {
     class XinputButtonsPage final: public FaceButtonsPage {

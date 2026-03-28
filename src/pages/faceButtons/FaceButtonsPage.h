@@ -19,10 +19,10 @@
 
 #include <QVBoxLayout>
 
-#include "Widgets/CharMapWidget.h"
-#include "faceButtons/Widgets/ButtonBlockWidget.h"
-#include "../extern/libOpenWinControls/src/controller/Controller.h"
-#include "../extern/yaml-cpp/include/yaml-cpp/yaml.h"
+#include "../Widgets/CharMapWidget.h"
+#include "Widgets/ButtonBlockWidget.h"
+#include "../../extern/libOpenWinControls/src/controller/Controller.h"
+#include "../../extern/yaml-cpp/include/yaml-cpp/yaml.h"
 
 namespace OWC {
     class FaceButtonsPage: public QWidget {

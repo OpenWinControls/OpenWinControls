@@ -16,11 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "KeyboardMouseButtonsPage.h"
-#include "../include/ASCIIHIDMap.h"
-#include "../extern/libOpenWinControls/src/include/HIDUsageIDMap.h"
-#include "faceButtons/Widgets/DirectionalButtonBlockWidget.h"
-#include "faceButtons/Widgets/ShoulderButtonBlockWidget.h"
-#include "faceButtons/Widgets/SingleButtonBlockWidget.h"
+#include "../../include/ASCIIHIDMap.h"
+#include "../../extern/libOpenWinControls/src/include/HIDUsageIDMap.h"
+#include "Widgets/DirectionalButtonBlockWidget.h"
+#include "Widgets/ShoulderButtonBlockWidget.h"
+#include "Widgets/SingleButtonBlockWidget.h"
 
 namespace OWC {
     KeyboardMouseButtonsPage::KeyboardMouseButtonsPage(): FaceButtonsPage(CharMapMode::Keyboard) {
