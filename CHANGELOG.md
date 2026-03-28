@@ -1,3 +1,7 @@
+## 2.6
+
+- Hotfix: fix R4 not being set for V1 devices
+
 ## 2.5
 
 - Support win 5 R5 button (controller switch mode button)
