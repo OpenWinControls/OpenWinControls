@@ -40,7 +40,7 @@ namespace OWC {
 
     void BackButtonsV1Page::writeMapping(const QSharedPointer<Controller> &gpd) {
         l4->writeMapping(gpd);
-        r4->setMapping(gpd);
+        r4->writeMapping(gpd);
     }
 
     QString BackButtonsV1Page::exportMappingToYaml() const {
