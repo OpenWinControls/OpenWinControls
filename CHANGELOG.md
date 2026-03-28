@@ -1,3 +1,9 @@
+## 2.5
+
+- Support win 5 R5 button (controller switch mode button)
+- Profiles page no longer writes DB and tmp files to disk
+- Major under the hood refactoring
+
 ## 2.4
 
 - Do not crash when importing malformed yamls
