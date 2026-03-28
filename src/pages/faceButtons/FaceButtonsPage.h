@@ -55,6 +55,7 @@ namespace OWC {
 
     protected slots:
         virtual void onResetBtnClicked() = 0;
+        void onLogSent(const QString &msg);
         void onkeyButtonPressed(QPushButton *btn) const;
 
     signals:

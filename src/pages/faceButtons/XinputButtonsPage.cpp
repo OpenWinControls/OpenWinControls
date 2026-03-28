@@ -77,16 +77,27 @@ namespace OWC {
         controlsLyt->addLayout(row3Lyt);
         controlsLyt->addStretch();
 
+        QObject::connect(dpad, &DirectionalButtonBlockWidget::logSent, this, &XinputButtonsPage::onLogSent);
         QObject::connect(dpad, &DirectionalButtonBlockWidget::pendingEditBtn, this, &XinputButtonsPage::onkeyButtonPressed);
+        QObject::connect(shoulderL, &ShoulderButtonBlockWidget::logSent, this, &XinputButtonsPage::onLogSent);
         QObject::connect(shoulderL, &ShoulderButtonBlockWidget::pendingEditBtn, this, &XinputButtonsPage::onkeyButtonPressed);
+        QObject::connect(shoulderR, &ShoulderButtonBlockWidget::logSent, this, &XinputButtonsPage::onLogSent);
         QObject::connect(shoulderR, &ShoulderButtonBlockWidget::pendingEditBtn, this, &XinputButtonsPage::onkeyButtonPressed);
+        QObject::connect(actions, &DirectionalButtonBlockWidget::logSent, this, &XinputButtonsPage::onLogSent);
         QObject::connect(actions, &DirectionalButtonBlockWidget::pendingEditBtn, this, &XinputButtonsPage::onkeyButtonPressed);
+        QObject::connect(ls, &DirectionalButtonBlockWidget::logSent, this, &XinputButtonsPage::onLogSent);
         QObject::connect(ls, &DirectionalButtonBlockWidget::pendingEditBtn, this, &XinputButtonsPage::onkeyButtonPressed);
+        QObject::connect(l3, &SingleButtonBlockWidget::logSent, this, &XinputButtonsPage::onLogSent);
         QObject::connect(l3, &SingleButtonBlockWidget::pendingEditBtn, this, &XinputButtonsPage::onkeyButtonPressed);
+        QObject::connect(r3, &SingleButtonBlockWidget::logSent, this, &XinputButtonsPage::onLogSent);
         QObject::connect(r3, &SingleButtonBlockWidget::pendingEditBtn, this, &XinputButtonsPage::onkeyButtonPressed);
+        QObject::connect(start, &SingleButtonBlockWidget::logSent, this, &XinputButtonsPage::onLogSent);
         QObject::connect(start, &SingleButtonBlockWidget::pendingEditBtn, this, &XinputButtonsPage::onkeyButtonPressed);
+        QObject::connect(select, &SingleButtonBlockWidget::logSent, this, &XinputButtonsPage::onLogSent);
         QObject::connect(select, &SingleButtonBlockWidget::pendingEditBtn, this, &XinputButtonsPage::onkeyButtonPressed);
+        QObject::connect(menu, &SingleButtonBlockWidget::logSent, this, &XinputButtonsPage::onLogSent);
         QObject::connect(menu, &SingleButtonBlockWidget::pendingEditBtn, this, &XinputButtonsPage::onkeyButtonPressed);
+        QObject::connect(rs, &DirectionalButtonBlockWidget::logSent, this, &XinputButtonsPage::onLogSent);
         QObject::connect(rs, &DirectionalButtonBlockWidget::pendingEditBtn, this, &XinputButtonsPage::onkeyButtonPressed);
     }
 

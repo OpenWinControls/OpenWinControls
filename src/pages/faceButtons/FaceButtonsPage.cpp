@@ -92,6 +92,10 @@ namespace OWC {
         charMap->setVisible(!charMap->isVisible());
     }
 
+    void FaceButtonsPage::onLogSent(const QString &msg) {
+        emit logSent(msg);
+    }
+
     void FaceButtonsPage::onkeyButtonPressed(QPushButton *btn) const {
         if (pendingBtn != nullptr) {
             pendingBtn->setText(oldPendingBtnText);
