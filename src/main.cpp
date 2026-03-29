@@ -30,9 +30,10 @@ int main(int argc, char *argv[]) {
     SetProcessPreferredUILanguages(MUI_LANGUAGE_NAME, L"en-US\0en\0\0", &langCount);
 #endif
 
+    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
     QApplication a(argc, argv);
     MainWindow w;
 
-    w.show();
+    w.showMaximized();
     return a.exec();
 }
