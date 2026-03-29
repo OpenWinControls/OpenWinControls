@@ -11,6 +11,14 @@ Multiplatform GPD WinControls replacement
 
 ## Known device firmware bugs (must be fixed by GPD)
 
+### All
+
+- Mouse codes (left/right/middle click, fast cursor), when assigned to **back buttons**,
+don't work until controller mode is switched once to mouse mode after boot.
+You can switch back to gamepad after that, but be aware that they may still not work as expected.
+Controller V2 seems to have more issues when mouse codes are assigned to them, compared to V1.
+[**This is very very unlikely to be fixed!**]
+
 ### Win5
 
 - RT and LT ignore the keycode value in firmware config
