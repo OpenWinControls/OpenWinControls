@@ -1,3 +1,7 @@
+## future
+
+- try to fix window size issues when scaling is set in OS settings
+
 ## 2.6
 
 - Hotfix: fix R4 not being set for V1 devices
