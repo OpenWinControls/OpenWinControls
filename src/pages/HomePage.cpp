@@ -115,7 +115,7 @@ namespace OWC {
             backPic->setPixmap(QPixmap(":/win4b").scaled(254, 107, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             found = true;
 
-        } else if (product == mini24 || product == mini25 || product == OWC::mini25L) {
+        } else if (product == mini24 || product == mini25 || product == mini25L) {
             frontPic->setPixmap(QPixmap(":/minif").scaled(160, 155, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             backPic->setPixmap(QPixmap(":/minib").scaled(200, 150, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             found = true;
