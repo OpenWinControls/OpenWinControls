@@ -150,13 +150,13 @@ QSharedPointer<OWC::Controller> MainWindow::getDevice(const QString &product) co
 
     if (product == OWC::win4)
         device = QSharedPointer<OWC::ControllerV1>::create(OWC::ControllerFeature::DeadZoneControlV1 | OWC::ControllerFeature::ShoulderLedsV1 | OWC::ControllerFeature::RumbleV1);
-    else if (product == OWC::mini23 || product == OWC::mini24 || product == OWC::max2_22 || product == OWC::max2_25)
+    else if (product == OWC::mini24 || product == OWC::max2_22 || product == OWC::max2_25)
         device = QSharedPointer<OWC::ControllerV1>::create(OWC::ControllerFeature::DeadZoneControlV1 | OWC::ControllerFeature::RumbleV1);
     /*else if (product == OWC::win3)
         device = QSharedPointer<OWC::ControllerV1>::create();*/
     else if (product == OWC::win5)
         device = QSharedPointer<OWC::ControllerV2>::create(OWC::ControllerFeature::RumbleV1 | OWC::ControllerFeature::XinputMappingV1 | OWC::ControllerFeature::BackButton4);
-    else if (product == OWC::mini25)
+    else if (product == OWC::mini25 || product == OWC::mini25L)
         device = QSharedPointer<OWC::ControllerV2>::create(OWC::ControllerFeature::DeadZoneControlV1 | OWC::ControllerFeature::RumbleV1 | OWC::ControllerFeature::XinputMappingV1);
     else
         logsPage->writeLog(QString("unknown device: %1").arg(product));
@@ -175,7 +175,7 @@ bool MainWindow::isCompatible(const QString &product) const {
        version = qSharedPointerCast<OWC::ControllerV1>(gpd)->getKVersion();
        compCheck = version.first >= 4 && version.second >= 7;
 
-    } else if (product == OWC::mini23 || product == OWC::mini24) {
+    } else if (product == OWC::mini24) {
         version = qSharedPointerCast<OWC::ControllerV1>(gpd)->getKVersion();
         compCheck = version.first >= 5 && version.second >= 3;
 
@@ -187,7 +187,7 @@ bool MainWindow::isCompatible(const QString &product) const {
         version = qSharedPointerCast<OWC::ControllerV2>(gpd)->getVersion();
         compCheck = version.first >= 1 && version.second >= 8;
 
-    } else if (product == OWC::mini25) {
+    } else if (product == OWC::mini25 || product == OWC::mini25L) {
         version = qSharedPointerCast<OWC::ControllerV2>(gpd)->getVersion();
         compCheck = version.first >= 1 && version.second >= 22;
     }
