@@ -9,6 +9,12 @@ Multiplatform GPD WinControls replacement
 - Deadzone, shoulder leds (win4) and vibration intensity settings
 - Built-in char map
 
+## Requirements
+
+OpenWinControls expect your device to be running the latest controller firmware,
+if the app is not recognizing your controller, please make sure you are running latest firmware,
+and if not, download it from GPD site.
+
 ## Known device firmware bugs (must be fixed by GPD)
 
 ### All
