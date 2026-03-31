@@ -228,7 +228,10 @@ void MainWindow::initApp() {
 
         backButtonsPage = new OWC::BackButtonsV1Page();
 
-        controllerVersionLbl->setText(QString("X%1.%2, K%3.%4").arg(xmin).arg(xmax).arg(kmin).arg(kmax));
+        controllerVersionLbl->setText(QString("X%1.%2, K%3.%4").arg(QString::number(xmin, 16))
+                                                                .arg(QString::number(xmax, 16))
+                                                                .arg(QString::number(kmin, 16))
+                                                                .arg(QString::number(kmax, 16)));
 
     } else if (gpd->getControllerType() == 2) {
         const QSharedPointer<OWC::ControllerV2> gpdV2 = qSharedPointerCast<OWC::ControllerV2>(gpd);
@@ -238,7 +241,7 @@ void MainWindow::initApp() {
         xinputPage = new OWC::XinputButtonsPage();
         xinputPageIdx = stackedWidget->addWidget(xinputPage);
 
-        controllerVersionLbl->setText(QString("%1.%2").arg(major).arg(minor));
+        controllerVersionLbl->setText(QString("%1.%2").arg(QString::number(major, 16)).arg(QString::number(minor, 16)));
         xinputPage->setMapping(gpd);
         homePage->setEmulationMode(gpdV2->getEmulationMode());
         initGamepadThread();
