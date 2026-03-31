@@ -173,23 +173,23 @@ bool MainWindow::isCompatible(const QString &product) const {
 
    } else*/ if (product == OWC::win4) {
        version = qSharedPointerCast<OWC::ControllerV1>(gpd)->getKVersion();
-       compCheck = version.first >= 4 && version.second >= 7;
+       compCheck = version.first >= 0x4 && version.second >= 0x7;
 
     } else if (product == OWC::mini24) {
         version = qSharedPointerCast<OWC::ControllerV1>(gpd)->getKVersion();
-        compCheck = version.first >= 5 && version.second >= 3;
+        compCheck = version.first >= 0x5 && version.second >= 0x3;
 
     } else if (product == OWC::max2_22 || product == OWC::max2_25) {
         version = qSharedPointerCast<OWC::ControllerV1>(gpd)->getKVersion();
-        compCheck = version.first >= 1 && version.second >= 23;
+        compCheck = version.first >= 1 && version.second >= 0x23;
 
     } else if (product == OWC::win5) {
         version = qSharedPointerCast<OWC::ControllerV2>(gpd)->getVersion();
-        compCheck = version.first >= 1 && version.second >= 8;
+        compCheck = version.first >= 1 && version.second >= 0x8;
 
     } else if (product == OWC::mini25 || product == OWC::mini25L) {
         version = qSharedPointerCast<OWC::ControllerV2>(gpd)->getVersion();
-        compCheck = version.first >= 1 && version.second >= 22;
+        compCheck = version.first >= 1 && version.second >= 0x22;
     }
 
     if (!compCheck)
