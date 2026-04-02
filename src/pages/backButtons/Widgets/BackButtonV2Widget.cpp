@@ -128,10 +128,8 @@ namespace OWC {
     }
 
     void BackButtonV2Widget::onActiveSlotsChanged(const int val) const {
-        for (int i=0,l=keySlots.length(); i<l; ++i) {
+        for (int i=0,l=keySlots.length(); i<l; ++i)
             keySlots[i]->setEnabled(i < val);
-            ++i;
-        }
     }
 
     void BackButtonV2Widget::onPendingEditBtn(QPushButton *keyBtn) {
