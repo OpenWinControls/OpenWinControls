@@ -1,3 +1,7 @@
+## future
+
+- fix controller v2 back buttons ui
+
 ## 2.7
 
 - Try to fix window size issues when scaling is set in OS settings
