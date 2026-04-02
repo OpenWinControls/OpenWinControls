@@ -35,9 +35,7 @@ namespace OWC {
     }
 
     void DownloadWorker::onDownloadFinisched(QNetworkReply *reply) {
-        if (reply->error() != QNetworkReply::NoError)
-            emit failed();
-        else
+        if (reply->error() == QNetworkReply::NoError)
             emit success(reply->readAll());
     }
 
