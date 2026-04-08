@@ -212,12 +212,16 @@ void MainWindow::initApp() {
         logsPage->writeLog(QStringLiteral("device initialization failed"));
         return;
 
-    } else if (!gpd->readConfig()) {
-        logsPage->writeLog(QStringLiteral("failed to read firmware config"));
+    } else if (!gpd->readVersion()) {
+        logsPage->writeLog(QStringLiteral("failed to read firmware version"));
         return;
 
     } else if (!isCompatible(prod)) {
         logsPage->writeLog(QStringLiteral("no compatible controller found"));
+        return;
+
+    } else if (!gpd->readConfig()) {
+        logsPage->writeLog(QStringLiteral("failed to read firmware config"));
         return;
     }
 
