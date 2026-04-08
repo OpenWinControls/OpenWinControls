@@ -1,6 +1,8 @@
 ## future
 
-- fix controller v2 back buttons ui
+- Fx controller v2 back buttons ui
+- Update SDL to 3.4.4
+- Update libOpenWinControls
 
 ## 2.7
 
