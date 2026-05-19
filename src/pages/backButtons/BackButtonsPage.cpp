@@ -25,20 +25,18 @@
 #include "../../extern/libOpenWinControls/src/include/HIDUsageIDMap.h"
 
 namespace OWC {
-    BackButtonsPage::BackButtonsPage(const QString &helpLbl, const CharMapMode charMapMode) {
+    BackButtonsPage::BackButtonsPage(const QString &helpLbl) {
         QVBoxLayout *lyt = new QVBoxLayout();
         QHBoxLayout *buttonsLyt = new QHBoxLayout();
         QLabel *helpTx = new QLabel(helpLbl);
         QScrollArea *scrollArea = new QScrollArea();
         QFont helpFont = helpTx->font();
+        QPushButton *backBtn = new QPushButton("Home");
+        QPushButton *resetBtn = new QPushButton("Reset");
+        QPushButton *charMapBtn = new QPushButton("Char Map");
 
         backBtnLyt = new QHBoxLayout();
-        backBtn = new QPushButton("Home");
-        resetBtn = new QPushButton("Reset");
-        charMapBtn = new QPushButton("Char Map");
-        charMap = new CharMapWidget(charMapMode);
 
-        charMap->setVisible(false);
         helpFont.setItalic(true);
         helpTx->setFont(helpFont);
         scrollArea->setWidgetResizable(true);
@@ -54,7 +52,6 @@ namespace OWC {
         buttonsLyt->addWidget(resetBtn);
 
         lyt->setContentsMargins(0, 0, 0, 0);
-        lyt->addWidget(charMap);
         lyt->addSpacing(12);
         lyt->addWidget(scrollArea);
         lyt->addLayout(buttonsLyt);
@@ -64,7 +61,6 @@ namespace OWC {
         QObject::connect(backBtn, &QPushButton::clicked, this, &BackButtonsPage::onBackBtnClicked);
         QObject::connect(resetBtn, &QPushButton::clicked, this, &BackButtonsPage::onResetBtnClicked);
         QObject::connect(charMapBtn, &QPushButton::clicked, this, &BackButtonsPage::onCharMapBtnClicked);
-        QObject::connect(charMap, &CharMapWidget::keyPressed, this, &BackButtonsPage::onCharMapKeyPressed);
     }
 
     void BackButtonsPage::keyPressEvent(QKeyEvent *event) {
@@ -87,7 +83,7 @@ namespace OWC {
         pendingBtn = nullptr;
     }
 
-    void BackButtonsPage::setGamepadKey(const QString &key) const {
+    void BackButtonsPage::setPendingButton(const QString &key) const {
         if (pendingBtn == nullptr)
             return;
 
@@ -103,8 +99,8 @@ namespace OWC {
         emit resetBackButtons();
     }
 
-    void BackButtonsPage::onCharMapBtnClicked() const {
-        charMap->setVisible(!charMap->isVisible());
+    void BackButtonsPage::onCharMapBtnClicked() {
+        emit showCharMap();
     }
 
     void BackButtonsPage::onkeyButtonPressed(QPushButton *btn) const {
@@ -121,13 +117,5 @@ namespace OWC {
         oldPendingBtnText = pendingBtn->text();
 
         pendingBtn->setText("...");
-    }
-
-    void BackButtonsPage::onCharMapKeyPressed(const QString &key) const {
-        if (pendingBtn == nullptr)
-            return;
-
-        pendingBtn->setText(key);
-        pendingBtn = nullptr;
     }
 }

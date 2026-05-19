@@ -22,18 +22,16 @@
 #include "FaceButtonsPage.h"
 
 namespace OWC {
-    FaceButtonsPage::FaceButtonsPage(const CharMapMode charMapMode) {
+    FaceButtonsPage::FaceButtonsPage() {
         QVBoxLayout *lyt = new QVBoxLayout();
         QHBoxLayout *buttonsLyt = new QHBoxLayout();
         QScrollArea *scrollArea = new QScrollArea();
+        QPushButton *backBtn = new QPushButton("Home");
+        QPushButton *resetBtn = new QPushButton("Reset");
+        QPushButton *charMapBtn = new QPushButton("Char Map");
 
         controlsLyt = new QVBoxLayout();
-        backBtn = new QPushButton("Home");
-        resetBtn = new QPushButton("Reset");
-        charMapBtn = new QPushButton("Char Map");
-        charMap = new CharMapWidget(charMapMode);
 
-        charMap->setVisible(false);
         scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         scrollArea->setWidgetResizable(true);
         scrollArea->setWidget(new QWidget);
@@ -45,7 +43,6 @@ namespace OWC {
         buttonsLyt->addWidget(resetBtn);
 
         lyt->setContentsMargins(0, 0, 0, 0);
-        lyt->addWidget(charMap);
         lyt->addSpacing(12);
         lyt->addWidget(scrollArea);
         lyt->addLayout(buttonsLyt);
@@ -56,7 +53,6 @@ namespace OWC {
         QObject::connect(backBtn, &QPushButton::clicked, this, &FaceButtonsPage::onBackBtnClicked);
         QObject::connect(resetBtn, &QPushButton::clicked, this, &FaceButtonsPage::onResetBtnClicked);
         QObject::connect(charMapBtn, &QPushButton::clicked, this, &FaceButtonsPage::onCharMapBtnClicked);
-        QObject::connect(charMap, &CharMapWidget::keyPressed, this, &FaceButtonsPage::onCharMapKeyPressed);
     }
 
     void FaceButtonsPage::setMapping(const QSharedPointer<Controller> &gpd) const {
@@ -84,12 +80,20 @@ namespace OWC {
             btn->importMappingFromYaml(yaml);
     }
 
+    void FaceButtonsPage::setPendingButton(const QString &key) const {
+        if (pendingBtn == nullptr)
+            return;
+
+        pendingBtn->setText(key);
+        pendingBtn = nullptr;
+    }
+
     void FaceButtonsPage::onBackBtnClicked() {
         emit backToHome();
     }
 
-    void FaceButtonsPage::onCharMapBtnClicked() const {
-        charMap->setVisible(!charMap->isVisible());
+    void FaceButtonsPage::onCharMapBtnClicked() {
+        emit showCharMap();
     }
 
     void FaceButtonsPage::onLogSent(const QString &msg) {
@@ -110,13 +114,5 @@ namespace OWC {
         oldPendingBtnText = pendingBtn->text();
 
         pendingBtn->setText("...");
-    }
-
-    void FaceButtonsPage::onCharMapKeyPressed(const QString &key) const {
-        if (pendingBtn == nullptr)
-            return;
-
-        pendingBtn->setText(key);
-        pendingBtn = nullptr;
     }
 }

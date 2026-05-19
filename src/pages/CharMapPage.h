@@ -17,27 +17,37 @@
  */
 #pragma once
 
-#include <QPushButton>
-#include <QList>
-
-#include "../../include/CharMapMode.h"
+#include "Widgets/FlowLayout.h"
+#include "../include/CharMapMode.h"
 
 namespace OWC {
-    class CharMapWidget final: public QWidget {
+    class CharMapPage final: public QWidget {
         Q_OBJECT
 
     private:
-        QList<QPushButton *> charBtnList;
+        QWidget *kbMouseSection = nullptr;
+        QWidget *gamepadSection = nullptr;
 
-        void addKeys(const std::map<int, std::string> &keyMap, QHBoxLayout *lyt);
+        [[nodiscard]] QPushButton *makeKeyBtn(int code) const;
+        [[nodiscard]] FlowLayout *makeAlphabetSection() const;
+        [[nodiscard]] FlowLayout *makeNumbersSection() const;
+        [[nodiscard]] FlowLayout *makeFKeysSection() const;
+        [[nodiscard]] FlowLayout *makeKBKeysSection() const;
+        [[nodiscard]] FlowLayout *makeMouseSection() const;
+        [[nodiscard]] FlowLayout *makeSpecialSection() const;
+        [[nodiscard]] FlowLayout *makeGamepadSection() const;
 
     public:
-        explicit CharMapWidget(CharMapMode mode = CharMapMode::Keyboard);
+        explicit CharMapPage(bool hasGamepadKeys);
+
+        void setMode(CharMapMode mode) const;
 
     private slots:
         void onKeyClicked();
+        void onBackBtnClicked();
 
     signals:
         void keyPressed(const QString &key);
+        void hideCharMap();
     };
 }

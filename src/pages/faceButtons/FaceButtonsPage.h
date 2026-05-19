@@ -19,7 +19,6 @@
 
 #include <QVBoxLayout>
 
-#include "../Widgets/CharMapWidget.h"
 #include "Widgets/ButtonBlockWidget.h"
 #include "../../extern/libOpenWinControls/src/controller/Controller.h"
 #include "../../extern/yaml-cpp/include/yaml-cpp/yaml.h"
@@ -29,10 +28,6 @@ namespace OWC {
         Q_OBJECT
 
     private:
-        QPushButton *backBtn = nullptr;
-        QPushButton *resetBtn = nullptr;
-        QPushButton *charMapBtn = nullptr;
-        CharMapWidget *charMap = nullptr;
         mutable QString oldPendingBtnText; // text backup to restore on cancel
 
     protected:
@@ -41,17 +36,17 @@ namespace OWC {
         QList<ButtonBlockWidget *> buttonList;
 
     public:
-        explicit FaceButtonsPage(CharMapMode charMapMode);
+        FaceButtonsPage();
 
         void setMapping(const QSharedPointer<Controller> &gpd) const;
         void writeMapping(const QSharedPointer<Controller> &gpd);
         [[nodiscard]] QString exportMappingToYaml() const;
         void importMappingFromYaml(const YAML::Node &yaml) const;
+        void setPendingButton(const QString &key) const;
 
     private slots:
         void onBackBtnClicked();
-        void onCharMapBtnClicked() const;
-        void onCharMapKeyPressed(const QString &key) const;
+        void onCharMapBtnClicked();
 
     protected slots:
         virtual void onResetBtnClicked() = 0;
@@ -60,6 +55,7 @@ namespace OWC {
 
     signals:
         void backToHome();
+        void showCharMap();
         void logSent(const QString &msg);
     };
 }

@@ -24,10 +24,10 @@ set(PROJECT_SRC
 
   src/pages/Widgets/FlowLayout.h
   src/pages/Widgets/FlowLayout.cpp
-  src/pages/Widgets/CharMapWidget.h
-  src/pages/Widgets/CharMapWidget.cpp
   src/pages/HomePage.h
   src/pages/HomePage.cpp
+  src/pages/CharMapPage.h
+  src/pages/CharMapPage.cpp
   src/pages/faceButtons/Widgets/ButtonBlockWidget.h
   src/pages/faceButtons/Widgets/DirectionalButtonBlockWidget.h
   src/pages/faceButtons/Widgets/DirectionalButtonBlockWidget.cpp

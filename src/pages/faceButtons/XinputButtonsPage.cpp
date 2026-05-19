@@ -21,7 +21,7 @@
 #include "Widgets/SingleButtonBlockWidget.h"
 
 namespace OWC {
-    XinputButtonsPage::XinputButtonsPage(): FaceButtonsPage(CharMapMode::Xinput) {
+    XinputButtonsPage::XinputButtonsPage() {
         QHBoxLayout *row1Lyt = new QHBoxLayout();
         QHBoxLayout *row2Lyt = new QHBoxLayout();
         QHBoxLayout *row3Lyt = new QHBoxLayout();
@@ -99,14 +99,6 @@ namespace OWC {
         QObject::connect(menu, &SingleButtonBlockWidget::pendingEditBtn, this, &XinputButtonsPage::onkeyButtonPressed);
         QObject::connect(rs, &DirectionalButtonBlockWidget::logSent, this, &XinputButtonsPage::onLogSent);
         QObject::connect(rs, &DirectionalButtonBlockWidget::pendingEditBtn, this, &XinputButtonsPage::onkeyButtonPressed);
-    }
-
-    void XinputButtonsPage::setGamepadKey(const QString &key) const {
-        if (pendingBtn == nullptr)
-            return;
-
-        pendingBtn->setText(key);
-        pendingBtn = nullptr;
     }
 
     void XinputButtonsPage::onResetBtnClicked() {

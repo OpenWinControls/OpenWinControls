@@ -243,24 +243,27 @@ void MainWindow::initApp() {
 
         backButtonsPage = new OWC::BackButtonsV2Page();
         xinputPage = new OWC::XinputButtonsPage();
-        xinputPageIdx = stackedWidget->addWidget(xinputPage);
 
+        stackedWidget->addWidget(xinputPage);
         controllerVersionLbl->setText(QString("%1.%2").arg(QString::number(major, 16)).arg(QString::number(minor, 16)));
         xinputPage->setMapping(gpd);
         homePage->setEmulationMode(gpdV2->getEmulationMode());
         initGamepadThread();
 
+        QObject::connect(xinputPage, &OWC::FaceButtonsPage::showCharMap, this, &MainWindow::onXinputCharMapClicked);
         QObject::connect(xinputPage, &OWC::FaceButtonsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
         QObject::connect(xinputPage, &OWC::XinputButtonsPage::resetXinputButtons, this, &MainWindow::onResetXinputButtons);
         QObject::connect(xinputPage, &OWC::FaceButtonsPage::logSent, this, &MainWindow::onLogSent);
     }
 
+    charMapPage = new OWC::CharMapPage(gpd->getControllerType() == 2);
     kbdMousePage = new OWC::KeyboardMouseButtonsPage();
     yamlBrowserPage = new OWC::YamlBrowserPage(appDataPath, gpd->getControllerType());
-    keyboardMousePageIdx = stackedWidget->addWidget(kbdMousePage);
-    backButtonsPageIdx = stackedWidget->addWidget(backButtonsPage);
-    yamlBrowserPageIdx = stackedWidget->addWidget(yamlBrowserPage);
 
+    stackedWidget->addWidget(charMapPage);
+    stackedWidget->addWidget(kbdMousePage);
+    stackedWidget->addWidget(backButtonsPage);
+    stackedWidget->addWidget(yamlBrowserPage);
     backButtonsPage->initPage(gpd);
     settingsPage->initPage(gpd);
     kbdMousePage->setMapping(gpd);
@@ -276,12 +279,16 @@ void MainWindow::initApp() {
     QObject::connect(homePage, &OWC::HomePage::importYaml, this, &MainWindow::onHomeImportYamlClicked);
     QObject::connect(homePage, &OWC::HomePage::settingsPage, this, &MainWindow::onHomeSettingsPageClicked);
     QObject::connect(homePage, &OWC::HomePage::applyChanges, this, &MainWindow::onHomeApplyChanges);
+    QObject::connect(charMapPage, &OWC::CharMapPage::hideCharMap, this, &MainWindow::onHideCharMapClicked);
+    QObject::connect(charMapPage, &OWC::CharMapPage::keyPressed, this, &MainWindow::onCharMapKeyPressed);
+    QObject::connect(kbdMousePage, &OWC::FaceButtonsPage::showCharMap, this, &MainWindow::onKeyboardMouseCharMapClicked);
     QObject::connect(kbdMousePage, &OWC::FaceButtonsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
     QObject::connect(kbdMousePage, &OWC::KeyboardMouseButtonsPage::resetKeyboardMouseButtons, this, &MainWindow::onResetKeyboardMouseButtons);
     QObject::connect(kbdMousePage, &OWC::FaceButtonsPage::logSent, this, &MainWindow::onLogSent);
-    QObject::connect(backButtonsPage, &OWC::BackButtonsV1Page::backToHome, this, &MainWindow::onBackToHomeClicked);
-    QObject::connect(backButtonsPage, &OWC::BackButtonsV1Page::resetBackButtons, this, &MainWindow::onResetBackButtons);
-    QObject::connect(backButtonsPage, &OWC::BackButtonsV1Page::logSent, this, &MainWindow::onLogSent);
+    QObject::connect(backButtonsPage, &OWC::BackButtonsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
+    QObject::connect(backButtonsPage, &OWC::BackButtonsPage::showCharMap, this, &MainWindow::onBackButtonsCharMapClicked);
+    QObject::connect(backButtonsPage, &OWC::BackButtonsPage::resetBackButtons, this, &MainWindow::onResetBackButtons);
+    QObject::connect(backButtonsPage, &OWC::BackButtonsPage::logSent, this, &MainWindow::onLogSent);
     QObject::connect(yamlBrowserPage, &OWC::YamlBrowserPage::backToHome, this, &MainWindow::onBackToHomeClicked);
     QObject::connect(yamlBrowserPage, &OWC::YamlBrowserPage::logSent, this, &MainWindow::onLogSent);
     QObject::connect(yamlBrowserPage, &OWC::YamlBrowserPage::importProfile, this, &MainWindow::onYamlBrowserImportProfile);
@@ -328,19 +335,19 @@ void MainWindow::onLogSent(const QString& msg) const {
 }
 
 void MainWindow::onHomeKeyboardMouseMapClicked() const {
-    stackedWidget->setCurrentIndex(keyboardMousePageIdx);
+    stackedWidget->setCurrentWidget(kbdMousePage);
 }
 
 void MainWindow::onHomeXinputMapClicked() {
     emit enableSDLEvents(true);
-    stackedWidget->setCurrentIndex(xinputPageIdx);
+    stackedWidget->setCurrentWidget(xinputPage);
 }
 
 void MainWindow::onHomeBackButtonsMapClicked() {
     if (gamepadThread != nullptr)
         emit enableSDLEvents(true);
 
-    stackedWidget->setCurrentIndex(backButtonsPageIdx);
+    stackedWidget->setCurrentWidget(backButtonsPage);
 }
 
 void MainWindow::onHomeShowLogsClicked() const {
@@ -348,7 +355,7 @@ void MainWindow::onHomeShowLogsClicked() const {
 }
 
 void MainWindow::onHomeYamlBrowserClicked() const {
-    stackedWidget->setCurrentIndex(yamlBrowserPageIdx);
+    stackedWidget->setCurrentWidget(yamlBrowserPage);
 }
 
 void MainWindow::onHomeSettingsPageClicked() const {
@@ -437,6 +444,53 @@ void MainWindow::onHomeImportYamlClicked() {
     logsPage->writeLog(QString("imported mapping from file: %1").arg(map));
 }
 
+void MainWindow::onKeyboardMouseCharMapClicked() {
+    previousPage = kbdMousePage;
+
+    charMapPage->setMode(OWC::CharMapMode::Keyboard);
+    stackedWidget->setCurrentWidget(charMapPage);
+}
+
+void MainWindow::onXinputCharMapClicked() {
+    previousPage = xinputPage;
+
+    if (gamepadThread != nullptr)
+        emit enableSDLEvents(false);
+
+    charMapPage->setMode(OWC::CharMapMode::Xinput);
+    stackedWidget->setCurrentWidget(charMapPage);
+}
+
+void MainWindow::onBackButtonsCharMapClicked() {
+    previousPage = backButtonsPage;
+
+    if (gamepadThread != nullptr)
+        emit enableSDLEvents(false);
+
+    charMapPage->setMode(gpd->getControllerType() == 1 ? OWC::CharMapMode::Keyboard : OWC::CharMapMode::Mixed);
+    stackedWidget->setCurrentWidget(charMapPage);
+}
+
+void MainWindow::onHideCharMapClicked() {
+    if (gamepadThread != nullptr && previousPage != kbdMousePage)
+        emit enableSDLEvents(true);
+
+    stackedWidget->setCurrentWidget(previousPage);
+    previousPage = nullptr;
+}
+
+void MainWindow::onCharMapKeyPressed(const QString &key) const {
+    if (previousPage == nullptr)
+        return;
+
+    if (previousPage == kbdMousePage)
+        kbdMousePage->setPendingButton(key);
+    else if (previousPage == xinputPage)
+        xinputPage->setPendingButton(key);
+    else if (previousPage == backButtonsPage)
+        backButtonsPage->setPendingButton(key);
+}
+
 void MainWindow::onSettingsConfigResetClicked() {
     if (!gpd->resetConfig())
         QMessageBox::critical(this, "Configuration reset", "Failed");
@@ -480,12 +534,12 @@ void MainWindow::onResetSettings() const {
 }
 
 void MainWindow::onGamepadButton(const QString &key) const {
-    const int curPage = stackedWidget->currentIndex();
+    const QWidget *curPage = stackedWidget->currentWidget();
 
-    if (curPage == xinputPageIdx)
-        xinputPage->setGamepadKey(key);
-    else if (curPage == backButtonsPageIdx)
-        backButtonsPage->setGamepadKey(key);
+    if (curPage == xinputPage)
+        xinputPage->setPendingButton(key);
+    else if (curPage == backButtonsPage)
+        backButtonsPage->setPendingButton(key);
 }
 
 void MainWindow::onGamepadInitFail() {

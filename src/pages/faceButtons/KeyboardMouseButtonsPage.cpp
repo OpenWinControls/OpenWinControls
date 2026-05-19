@@ -23,7 +23,7 @@
 #include "Widgets/SingleButtonBlockWidget.h"
 
 namespace OWC {
-    KeyboardMouseButtonsPage::KeyboardMouseButtonsPage(): FaceButtonsPage(CharMapMode::Keyboard) {
+    KeyboardMouseButtonsPage::KeyboardMouseButtonsPage() {
         QHBoxLayout *row1Lyt = new QHBoxLayout();
         QHBoxLayout *row2Lyt = new QHBoxLayout();
         DirectionalButtonBlockWidget *dpad;

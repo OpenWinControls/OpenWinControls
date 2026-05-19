@@ -21,7 +21,7 @@
 #include "../../extern/libOpenWinControls/src/include/ControllerFeature.h"
 
 namespace OWC {
-    BackButtonsV2Page::BackButtonsV2Page(): BackButtonsPage(QStringLiteral("key slots, start times and hold times"), CharMapMode::Mixed) {
+    BackButtonsV2Page::BackButtonsV2Page(): BackButtonsPage(QStringLiteral("key slots, start times and hold times")) {
         l4 = new BackButtonV2Widget(1, 32, "l4");
         r4 = new BackButtonV2Widget(2, 32, "r4");
 

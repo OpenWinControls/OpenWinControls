@@ -23,6 +23,7 @@
 
 #include "GamepadWorker.h"
 #include "pages/HomePage.h"
+#include "pages/CharMapPage.h"
 #include "pages/faceButtons/KeyboardMouseButtonsPage.h"
 #include "pages/faceButtons/XinputButtonsPage.h"
 #include "pages/backButtons/BackButtonsPage.h"
@@ -43,6 +44,7 @@ private:
     Ui::MainWindow *ui;
     QStackedWidget *stackedWidget = nullptr;
     OWC::HomePage *homePage = nullptr;
+    OWC::CharMapPage *charMapPage = nullptr;
     OWC::KeyboardMouseButtonsPage *kbdMousePage = nullptr;
     OWC::XinputButtonsPage *xinputPage = nullptr;
     OWC::BackButtonsPage *backButtonsPage = nullptr;
@@ -52,12 +54,9 @@ private:
     QLabel *controllerVersionLbl = nullptr;
     OWC::GamepadWorker *gamepadWorker = nullptr;
     QThread *gamepadThread = nullptr;
+    QWidget *previousPage = nullptr;
     QSharedPointer<OWC::Controller> gpd;
     QString appDataPath;
-    int keyboardMousePageIdx;
-    int xinputPageIdx;
-    int backButtonsPageIdx;
-    int yamlBrowserPageIdx;
 
     [[nodiscard]] QString getProduct() const;
     [[nodiscard]] QSharedPointer<OWC::Controller> getDevice(const QString &product) const;
@@ -82,6 +81,11 @@ private slots:
     void onHomeApplyChanges();
     void onHomeExportYamlClicked();
     void onHomeImportYamlClicked();
+    void onKeyboardMouseCharMapClicked();
+    void onXinputCharMapClicked();
+    void onBackButtonsCharMapClicked();
+    void onHideCharMapClicked();
+    void onCharMapKeyPressed(const QString &key) const;
     void onSettingsConfigResetClicked();
     void onYamlBrowserImportProfile(const QString &yml) const;
     void onBackToHomeClicked();

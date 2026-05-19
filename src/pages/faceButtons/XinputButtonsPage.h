@@ -26,8 +26,6 @@ namespace OWC {
     public:
         XinputButtonsPage();
 
-        void setGamepadKey(const QString &key) const;
-
     protected slots:
         void onResetBtnClicked() override;
 

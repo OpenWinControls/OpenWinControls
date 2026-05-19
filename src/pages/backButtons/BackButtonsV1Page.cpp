@@ -20,7 +20,7 @@
 #include "BackButtonsV1Page.h"
 
 namespace OWC {
-    BackButtonsV1Page::BackButtonsV1Page(): BackButtonsPage(QStringLiteral("macro key slots and start times"), CharMapMode::Keyboard) {
+    BackButtonsV1Page::BackButtonsV1Page(): BackButtonsPage(QStringLiteral("macro key slots and start times")) {
         l4 = new BackButtonV1Widget(1, 3, "l4");
         r4 = new BackButtonV1Widget(2, 3, "r4");
 

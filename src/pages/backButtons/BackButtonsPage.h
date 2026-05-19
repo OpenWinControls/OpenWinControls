@@ -19,8 +19,8 @@
 
 #include <QVBoxLayout>
 #include <QKeyEvent>
+#include <QPushButton>
 
-#include "../Widgets/CharMapWidget.h"
 #include "../../extern/libOpenWinControls/src/controller/Controller.h"
 #include "../../extern/yaml-cpp/include/yaml-cpp/yaml.h"
 
@@ -29,10 +29,6 @@ namespace OWC {
         Q_OBJECT
 
     private:
-        QPushButton *backBtn = nullptr;
-        QPushButton *resetBtn = nullptr;
-        QPushButton *charMapBtn = nullptr;
-        CharMapWidget *charMap = nullptr;
         mutable QPushButton *pendingBtn = nullptr; // clicked, waiting for new key
         mutable QString oldPendingBtnText; // text backup to restore on cancel
 
@@ -42,11 +38,11 @@ namespace OWC {
         void keyPressEvent(QKeyEvent *event) override;
 
     public:
-        BackButtonsPage(const QString &helpLbl, CharMapMode charMapMode);
+        explicit BackButtonsPage(const QString &helpLbl);
 
         virtual void initPage(const QSharedPointer<Controller> &gpd) {}
 
-        void setGamepadKey(const QString &key) const;
+        void setPendingButton(const QString &key) const;
         virtual void setMapping(const QSharedPointer<Controller> &gpd) const = 0;
         virtual void writeMapping(const QSharedPointer<Controller> &gpd) = 0;
         [[nodiscard]] virtual QString exportMappingToYaml() const = 0;
@@ -55,14 +51,14 @@ namespace OWC {
     private slots:
         void onBackBtnClicked();
         void onResetBtnClicked();
-        void onCharMapBtnClicked() const;
-        void onCharMapKeyPressed(const QString &key) const;
+        void onCharMapBtnClicked();
 
     protected slots:
         void onkeyButtonPressed(QPushButton *btn) const;
 
     signals:
         void backToHome();
+        void showCharMap();
         void resetBackButtons();
         void logSent(const QString &msg);
     };
