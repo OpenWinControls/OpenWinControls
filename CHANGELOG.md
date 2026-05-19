@@ -1,8 +1,10 @@
-## future
+## 2.8
 
+- Rework char map into a page
 - Fx controller v2 back buttons ui
-- Update SDL to 3.4.4
+- Update SDL to 3.4.8
 - Update libOpenWinControls
+- Update yaml module
 
 ## 2.7
 
