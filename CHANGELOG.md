@@ -1,3 +1,8 @@
+## Future
+
+- Update SDL to 3.4.10
+- Minor optimization
+
 ## 2.8
 
 - Rework char map into a page
