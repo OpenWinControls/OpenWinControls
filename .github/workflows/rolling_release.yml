@@ -157,7 +157,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GTK }}
           GH_REPO: ${{ github.repository }}
-        run: gh release delete continuous -y
+        run: gh release delete continuous --cleanup-tag -y
         continue-on-error: true
 
       - name: publish release
