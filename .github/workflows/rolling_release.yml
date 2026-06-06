@@ -148,8 +148,8 @@ jobs:
         run: >
           echo -e "Continuous build\n\n
           [**Changelog**](https://github.com/OpenWinControls/OpenWinControls/blob/main/CHANGELOG.md)\n\n
-          OpenWinControls-Windows.zip: Windows 10/11 release binary.\n\n
-          OpenWinControls-x86_64.AppImage: Universal linux release binary.\n\n
+          _OpenWinControls-Windows.zip_: Windows 10/11 release binary.\n\n
+          _OpenWinControls-x86_64.AppImage_: Universal linux release binary.\n\n
           ### Archlinux\n\n
           Official AUR git package [here](https://aur.archlinux.org/packages/openwincontrols-git)" > rel_notes.md
 
@@ -157,7 +157,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GTK }}
           GH_REPO: ${{ github.repository }}
-        run: gh release delete continuous --cleanup-tag -y
+        run: gh release delete $(gh release view -R "${{ github.server_url }}/${{ github.repository }}" --json tagName -q .tagName) --cleanup-tag -y
         continue-on-error: true
 
       - name: publish release
@@ -165,7 +165,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GTK }}
           GH_REPO: ${{ github.repository }}
         run: >
-          gh release create continuous
+          gh release create $(date +"%m%d%Y")
           OpenWinControls-Windows.zip
           OpenWinControls-x86_64/OpenWinControls-x86_64.AppImage
           --draft=false
