@@ -18,6 +18,8 @@
 #include "DownloadWorker.h"
 
 namespace OWC {
+    using namespace Qt::StringLiterals;
+
     void DownloadWorker::downloadFile(const QString &url) {
         QNetworkRequest req = QNetworkRequest(QUrl(url));
         QNetworkReply *reply;
@@ -25,7 +27,7 @@ namespace OWC {
         netAccess.reset(new QNetworkAccessManager);
         netAccess->setAutoDeleteReplies(true);
 
-        req.setHeader(QNetworkRequest::UserAgentHeader, "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:145.0) Gecko/20100101 Firefox/145.0");
+        req.setHeader(QNetworkRequest::UserAgentHeader, u"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:145.0) Gecko/20100101 Firefox/145.0"_s);
 
         QObject::connect(netAccess.get(), &QNetworkAccessManager::finished, this, &DownloadWorker::onDownloadFinisched);
 

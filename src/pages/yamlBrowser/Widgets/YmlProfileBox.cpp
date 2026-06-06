@@ -21,11 +21,13 @@
 #include "YmlProfileBox.h"
 
 namespace OWC {
+    using namespace Qt::StringLiterals;
+
     YmlProfileBox::YmlProfileBox(const QString &name, const bool isLocal) {
         QVBoxLayout *lyt = new QVBoxLayout();
-        QLabel *title = new QLabel(name.length() > 13 ? name.first(13).append("..") : name);
+        QLabel *title = new QLabel(name.length() > 13 ? name.first(13).append(u".."_s) : name);
 
-        viewBtn = new QPushButton("View");
+        viewBtn = new QPushButton(u"View"_s);
         ymlName = name;
 
         title->setAlignment(Qt::AlignCenter);
@@ -42,7 +44,7 @@ namespace OWC {
         setLayout(lyt);
 
         if (isLocal) {
-            deleteBtn = new QPushButton("Delete");
+            deleteBtn = new QPushButton(u"Delete"_s);
 
             deleteBtn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 

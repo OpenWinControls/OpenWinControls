@@ -23,13 +23,15 @@
 #include "LogsPage.h"
 
 namespace OWC {
+    using namespace Qt::StringLiterals;
+
     LogsPage::LogsPage() {
         QVBoxLayout *lyt = new QVBoxLayout();
         QHBoxLayout *buttonLyt = new QHBoxLayout();
 
-        clearBtn = new QPushButton("Clear");
-        saveBtn = new QPushButton("Save");
-        backBtn = new QPushButton("Home");
+        clearBtn = new QPushButton(u"Clear"_s);
+        saveBtn = new QPushButton(u"Save"_s);
+        backBtn = new QPushButton(u"Home"_s);
         logContainer = new QTextEdit();
 
         logContainer->setWordWrapMode(QTextOption::NoWrap);
@@ -60,7 +62,7 @@ namespace OWC {
     }
 
     void LogsPage::onSaveBtnClicked() {
-        const QString out = QFileDialog::getSaveFileName(this, "Save logs", "", "Text (*.txt)");
+        const QString out = QFileDialog::getSaveFileName(this, u"Save logs"_s, "", u"Text (*.txt)"_s);
 
         if (out.isEmpty())
             return;

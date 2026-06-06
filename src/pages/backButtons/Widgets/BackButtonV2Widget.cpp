@@ -21,6 +21,8 @@
 #include "BackButtonV2Widget.h"
 
 namespace OWC {
+    using namespace Qt::StringLiterals;
+
     BackButtonV2Widget::BackButtonV2Widget(const int buttonNum, const int maxKeySlots, const QString &icon) {
         QVBoxLayout *lyt = new QVBoxLayout();
         QHBoxLayout *activeSlotsLyt = new QHBoxLayout();
@@ -37,7 +39,7 @@ namespace OWC {
         iconLbl->setPixmap(QPixmap(QString(":/icons/%1").arg(icon)).scaled(70, 70, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 
         activeSlotsLyt->setAlignment(Qt::AlignCenter);
-        activeSlotsLyt->addWidget(new QLabel("Active: "));
+        activeSlotsLyt->addWidget(new QLabel(u"Active: "_s));
         activeSlotsLyt->addWidget(activeSlots);
 
         lyt->setAlignment(Qt::AlignCenter);

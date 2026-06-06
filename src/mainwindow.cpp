@@ -34,14 +34,16 @@
 #include "extern/libOpenWinControls/src/controller/ControllerV2.h"
 #include "extern/SDL/include/SDL3/SDL_events.h"
 
+using namespace Qt::StringLiterals;
+
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
     setWindowTitle(QString("%1 %2.%3").arg(APP_NAME).arg(APP_VER_MAJOR).arg(APP_VER_MINOR));
-    setWindowIcon(QIcon(":/app/icon"));
+    setWindowIcon(QIcon(u":/app/icon"_s));
 
     QVBoxLayout *lyt = new QVBoxLayout();
     QHBoxLayout *bottomLyt = new QHBoxLayout();
-    QLabel *repoLinkLbl = new QLabel("([sources](https://github.com/OpenWinControls/OpenWinControls))");
+    QLabel *repoLinkLbl = new QLabel(u"([sources](https://github.com/OpenWinControls/OpenWinControls))"_s);
     QFont appFont = font();
 
     appDataPath = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
@@ -49,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     homePage = new OWC::HomePage();
     logsPage = new OWC::LogsPage();
     settingsPage = new OWC::SettingsPage();
-    controllerVersionLbl = new QLabel("0.0");
+    controllerVersionLbl = new QLabel(u"0.0"_s);
 
     appFont.setPointSize(12);
     setFont(appFont);
@@ -70,10 +72,10 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
         logsPage->writeLog(QString("data path: %1").arg(appDataPath));
     }
 
-    bottomLyt->addWidget(new QLabel("Controller version:"));
+    bottomLyt->addWidget(new QLabel(u"Controller version:"_s));
     bottomLyt->addWidget(controllerVersionLbl);
     bottomLyt->addStretch();
-    bottomLyt->addWidget(new QLabel("kylon - GPLv3"));
+    bottomLyt->addWidget(new QLabel(u"kylon - GPLv3"_s));
     bottomLyt->addWidget(repoLinkLbl);
     lyt->addWidget(stackedWidget);
     lyt->addLayout(bottomLyt);
@@ -98,7 +100,7 @@ MainWindow::~MainWindow() {
 
 QString MainWindow::getProduct() const {
 #ifdef __linux__
-    QFile prodF("/sys/class/dmi/id/board_name");
+    QFile prodF(u"/sys/class/dmi/id/board_name"_s);
 
     if (!prodF.open(QFile::ReadOnly | QFile::Text)) {
         logsPage->writeLog(QString("failed to read product name: %1").arg(prodF.errorString()));
@@ -209,19 +211,19 @@ void MainWindow::initApp() {
     gpd->enableLogging(logCB);
 
     if (!gpd->init()) {
-        logsPage->writeLog(QStringLiteral("device initialization failed"));
+        logsPage->writeLog(u"device initialization failed"_s);
         return;
 
     } else if (!gpd->readVersion()) {
-        logsPage->writeLog(QStringLiteral("failed to read firmware version"));
+        logsPage->writeLog(u"failed to read firmware version"_s);
         return;
 
     } else if (!isCompatible(prod)) {
-        logsPage->writeLog(QStringLiteral("no compatible controller found"));
+        logsPage->writeLog(u"no compatible controller found"_s);
         return;
 
     } else if (!gpd->readConfig()) {
-        logsPage->writeLog(QStringLiteral("failed to read firmware config"));
+        logsPage->writeLog(u"failed to read firmware config"_s);
         return;
     }
 
@@ -372,13 +374,13 @@ void MainWindow::onHomeApplyChanges() {
         xinputPage->writeMapping(gpd);
 
     if (!gpd->writeConfig())
-        QMessageBox::critical(this, QStringLiteral("Error"), QStringLiteral("Unable to write controller!"));
+        QMessageBox::critical(this, u"Error"_s, u"Unable to write controller!"_s);
 
     homePage->enableButtons(true);
 }
 
 void MainWindow::onHomeExportYamlClicked() {
-    const QString out = QFileDialog::getSaveFileName(this, "Export mapping to file", "", "Yaml (*.yaml)");
+    const QString out = QFileDialog::getSaveFileName(this, u"Export mapping to file"_s, "", u"Yaml (*.yaml)"_s);
 
     if (out.isEmpty())
         return;
@@ -404,7 +406,7 @@ void MainWindow::onHomeExportYamlClicked() {
 }
 
 void MainWindow::onHomeImportYamlClicked() {
-    const QString map = QFileDialog::getOpenFileName(this, "Import mapping from file", "", "Yaml (*.yaml)");
+    const QString map = QFileDialog::getOpenFileName(this, u"Import mapping from file"_s, "", u"Yaml (*.yaml)"_s);
 
     if (map.isEmpty())
         return;
@@ -421,7 +423,7 @@ void MainWindow::onHomeImportYamlClicked() {
         const YAML::Node yaml = YAML::Load(content.toStdString());
 
         if (!yaml.IsMap()) {
-            logsPage->writeLog("Imported file does not contain a valid yaml map");
+            logsPage->writeLog(u"Imported file does not contain a valid yaml map"_s);
             return;
         }
 
@@ -493,9 +495,9 @@ void MainWindow::onCharMapKeyPressed(const QString &key) const {
 
 void MainWindow::onSettingsConfigResetClicked() {
     if (!gpd->resetConfig())
-        QMessageBox::critical(this, "Configuration reset", "Failed");
+        QMessageBox::critical(this, u"Configuration reset"_s, u"Failed"_s);
     else
-        QMessageBox::information(this, "Configuration reset", "Success");
+        QMessageBox::information(this, u"Configuration reset"_s, u"Success"_s);
 }
 
 void MainWindow::onYamlBrowserImportProfile(const QString &yml) const {
@@ -509,7 +511,7 @@ void MainWindow::onYamlBrowserImportProfile(const QString &yml) const {
         return;
     }
 
-    logsPage->writeLog(QStringLiteral("imported mapping from profile"));
+    logsPage->writeLog(u"imported mapping from profile"_s);
 }
 
 void MainWindow::onBackToHomeClicked() {

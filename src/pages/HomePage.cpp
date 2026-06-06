@@ -19,30 +19,32 @@
 #include "../include/GPDProducts.h"
 
 namespace OWC {
+    using namespace Qt::StringLiterals;
+
     HomePage::HomePage() {
         QVBoxLayout *lyt = new QVBoxLayout();
         QHBoxLayout *selectionLyt = new QHBoxLayout();
         QVBoxLayout *mapFaceBtnLyt = new QVBoxLayout();
         QVBoxLayout *mapBackBtnLyt = new QVBoxLayout();
         QHBoxLayout *bottomLyt = new QHBoxLayout();
-        QLabel *frontLbl = new QLabel("Face buttons");
-        QLabel *backLbl = new QLabel("Back buttons");
+        QLabel *frontLbl = new QLabel(u"Face buttons"_s);
+        QLabel *backLbl = new QLabel(u"Back buttons"_s);
         QFont lblFont = frontLbl->font();
 
         headLyt = new QHBoxLayout();
         mappingMode = new QComboBox();
-        faceButtonsMapBtn = new QPushButton("Customize");
-        backButtonsMapBtn = new QPushButton("Customize");
-        showLogsBtn = new QPushButton("Logs");
-        ymlBrowserBtn = new QPushButton("Profiles");
-        settingsBtn = new QPushButton("Settings");
-        applyBtn = new QPushButton("Apply");
-        exportYamlBtn = new QPushButton("Export mapping");
-        importYamlBtn = new QPushButton("Import mapping");
+        faceButtonsMapBtn = new QPushButton(u"Customize"_s);
+        backButtonsMapBtn = new QPushButton(u"Customize"_s);
+        showLogsBtn = new QPushButton(u"Logs"_s);
+        ymlBrowserBtn = new QPushButton(u"Profiles"_s);
+        settingsBtn = new QPushButton(u"Settings"_s);
+        applyBtn = new QPushButton(u"Apply"_s);
+        exportYamlBtn = new QPushButton(u"Export mapping"_s);
+        importYamlBtn = new QPushButton(u"Import mapping"_s);
         frontPic = new QLabel();
         backPic = new QLabel();
 
-        mappingMode->addItem("Keyboard&Mouse");
+        mappingMode->addItem(u"Keyboard&Mouse"_s);
         faceButtonsMapBtn->setMinimumHeight(40);
         backButtonsMapBtn->setMinimumHeight(40);
         lblFont.setBold(true);
@@ -52,9 +54,9 @@ namespace OWC {
         backLbl->setFont(lblFont);
         backLbl->setAlignment(Qt::AlignCenter);
         frontPic->setAlignment(Qt::AlignCenter);
-        frontPic->setPixmap(QPixmap(":/unkd"));
+        frontPic->setPixmap(QPixmap(u":/unkd"_s));
         backPic->setAlignment(Qt::AlignCenter);
-        backPic->setPixmap(QPixmap(":/unkd"));
+        backPic->setPixmap(QPixmap(u":/unkd"_s));
         faceButtonsMapBtn->setFixedWidth(280);
         backButtonsMapBtn->setFixedWidth(280);
         enableButtons(false);
@@ -108,31 +110,31 @@ namespace OWC {
         bool found = false;
 
         if (product == win5 || product == mini25)
-            mappingMode->addItem("Xinput");
+            mappingMode->addItem(u"Xinput"_s);
 
         if (product == win4) {
-            frontPic->setPixmap(QPixmap(":/win4f").scaled(254, 107, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-            backPic->setPixmap(QPixmap(":/win4b").scaled(254, 107, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            frontPic->setPixmap(QPixmap(u":/win4f"_s).scaled(254, 107, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            backPic->setPixmap(QPixmap(u":/win4b"_s).scaled(254, 107, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             found = true;
 
         } else if (product == mini24 || product == mini25 || product == mini25L) {
-            frontPic->setPixmap(QPixmap(":/minif").scaled(160, 155, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-            backPic->setPixmap(QPixmap(":/minib").scaled(200, 150, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            frontPic->setPixmap(QPixmap(u":/minif"_s).scaled(160, 155, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            backPic->setPixmap(QPixmap(u":/minib"_s).scaled(200, 150, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             found = true;
 
         } else if (product == max2_22 || product == max2_25) {
-            frontPic->setPixmap(QPixmap(":/max2f").scaled(260, 155, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-            backPic->setPixmap(QPixmap(":/max2b").scaled(230, 155, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            frontPic->setPixmap(QPixmap(u":/max2f"_s).scaled(260, 155, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            backPic->setPixmap(QPixmap(u":/max2b"_s).scaled(230, 155, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             found = true;
 
         } else if (product == win5) {
-            frontPic->setPixmap(QPixmap(":/win5f"));
-            backPic->setPixmap(QPixmap(":/win5b"));
+            frontPic->setPixmap(QPixmap(u":/win5f"_s));
+            backPic->setPixmap(QPixmap(u":/win5b"_s));
             found = true;
 
         } else if (product == win3) {
-            frontPic->setPixmap(QPixmap(":/win3f").scaled(235, 110, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-            backPic->setPixmap(QPixmap(":/win3b").scaled(235, 110, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            frontPic->setPixmap(QPixmap(u":/win3f"_s).scaled(235, 110, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            backPic->setPixmap(QPixmap(u":/win3b"_s).scaled(235, 110, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             found = true;
         }
 
@@ -145,23 +147,23 @@ namespace OWC {
 
         switch (mode) {
             case EmulationMode::KeyboardMouse:
-                emuMode->setText("Keyboard&Mouse");
+                emuMode->setText(u"Keyboard&Mouse"_s);
                 break;
             case EmulationMode::Xinput:
-                emuMode->setText("Xinput");
+                emuMode->setText(u"Xinput"_s);
                 break;
             case EmulationMode::KeyboardSpecial:
-                emuMode->setText("Keyboard Special Mode");
+                emuMode->setText(u"Keyboard Special Mode"_s);
                 break;
             default:
-                emuMode->setText("Unknown");
+                emuMode->setText(u"Unknown"_s);
                 break;
         }
 
         font.setItalic(true);
         emuMode->setFont(font);
 
-        headLyt->insertWidget(0, new QLabel("Controller mode:"));
+        headLyt->insertWidget(0, new QLabel(u"Controller mode:"_s));
         headLyt->insertWidget(1, emuMode);
     }
 

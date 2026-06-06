@@ -21,6 +21,8 @@
 #include "BackButtonV1Widget.h"
 
 namespace OWC {
+    using namespace Qt::StringLiterals;
+
     BackButtonV1Widget::BackButtonV1Widget(const int buttonNum, const int maxKeySlots, const QString &icon) {
         QVBoxLayout *lyt = new QVBoxLayout();
         QHBoxLayout *macroTimeLyt = new QHBoxLayout();
@@ -35,10 +37,10 @@ namespace OWC {
         iconLbl->setAlignment(Qt::AlignCenter);
         iconLbl->setPixmap(QPixmap(QString(":/icons/%1").arg(icon)).scaled(70, 70, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 
-        macroTimeLyt->addWidget(new QLabel("Macro start time:"));
+        macroTimeLyt->addWidget(new QLabel(u"Macro start time:"_s));
         macroTimeLyt->addSpacing(10);
         macroTimeLyt->addWidget(macroStartTime);
-        macroTimeLyt->addWidget(new QLabel("ms"));
+        macroTimeLyt->addWidget(new QLabel(u"ms"_s));
 
         lyt->setAlignment(Qt::AlignCenter);
         lyt->addWidget(iconLbl);

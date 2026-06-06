@@ -27,6 +27,8 @@
 #include "YamlBrowserPage.h"
 
 namespace OWC {
+    using namespace Qt::StringLiterals;
+
     YamlBrowserPage::YamlBrowserPage(const QString &dataPath, const int type) {
         QVBoxLayout *lyt = new QVBoxLayout();
         QVBoxLayout *ymlContLyt = new QVBoxLayout();
@@ -34,8 +36,8 @@ namespace OWC {
         QVBoxLayout *viewLyt = new QVBoxLayout();
         QHBoxLayout *bottomLyt = new QHBoxLayout();
         QScrollArea *scrollArea = new QScrollArea();
-        QLabel *localTitle = new QLabel("Local");
-        QLabel *ghTitle = new QLabel("GitHub");
+        QLabel *localTitle = new QLabel(u"Local"_s);
+        QLabel *ghTitle = new QLabel(u"GitHub"_s);
         QFont titleFont = localTitle->font();
 
         appDataPath = dataPath;
@@ -43,14 +45,14 @@ namespace OWC {
         ymlsPath = QString("%1/profiles").arg(dataPath);
         localYmlContainer = new FlowLayout();
         ghYmlContainer = new FlowLayout();
-        backBtn = new QPushButton("Home");
-        refreshBtn = new QPushButton("Refresh");
-        importYmlBtn = new QPushButton("Import");
-        downloadYmlBtn = new QPushButton("Download");
+        backBtn = new QPushButton(u"Home"_s);
+        refreshBtn = new QPushButton(u"Refresh"_s);
+        importYmlBtn = new QPushButton(u"Import"_s);
+        downloadYmlBtn = new QPushButton(u"Download"_s);
         profileView = new QTextEdit();
 
         if (dataPath.isEmpty() || (!QDir().exists(ymlsPath) && !QDir().mkdir(ymlsPath))) {
-            emit logSent(QStringLiteral("failed to create profiles folder"));
+            emit logSent(u"failed to create profiles folder"_s);
             ymlsPath.clear();
             refreshBtn->setEnabled(false);
 
@@ -149,10 +151,10 @@ namespace OWC {
 
     void YamlBrowserPage::listLocalProfiles() {
         for (const QDirListing::DirEntry &entry: QDirListing(ymlsPath, QDirListing::IteratorFlag::FilesOnly)) {
-            if (entry.suffix() != "yaml")
+            if (entry.suffix() != u"yaml"_s)
                 continue;
 
-            YmlProfileBox *ymlBox = new YmlProfileBox(entry.baseName().remove(".yaml"), true);
+            YmlProfileBox *ymlBox = new YmlProfileBox(entry.baseName().remove(u".yaml"_s), true);
 
             localYmlContainer->addWidget(ymlBox);
             QObject::connect(ymlBox, &YmlProfileBox::viewProfile, this, &YamlBrowserPage::onViewLocalProfile);
@@ -200,7 +202,7 @@ namespace OWC {
     }
 
     void YamlBrowserPage::onDownloadFailed() {
-        emit logSent(QStringLiteral("Failed to download from repo"));
+        emit logSent(u"Failed to download from repo"_s);
         stopDownloadThread();
         profileView->clear();
         refreshBtn->setEnabled(true);
@@ -258,7 +260,7 @@ namespace OWC {
         refreshBtn->setEnabled(false);
         importYmlBtn->setEnabled(false);
         downloadYmlBtn->setEnabled(false);
-        profileView->setText("Downloading..");
+        profileView->setText(u"Downloading.."_s);
         startDownloadThread();
 
         QObject::connect(downloadWrk, &DownloadWorker::success, this, &YamlBrowserPage::onGHYmlDownloadSuccess);
@@ -285,14 +287,14 @@ namespace OWC {
 
         if (!yml.open(QFile::WriteOnly | QFile::Text)) {
             emit logSent(QString("failed to open destination file: %1").arg(yml.errorString()));
-            QMessageBox::critical(this, "Download", "Failed, see logs");
+            QMessageBox::critical(this, u"Download"_s, u"Failed, see logs"_s);
             downloadYmlBtn->setEnabled(true);
             return;
         }
 
         if (yml.write(profileView->toPlainText().toUtf8()) == -1) {
             emit logSent(QString("failed to write file: %1").arg(yml.errorString()));
-            QMessageBox::critical(this, "Download", "Failed, see logs");
+            QMessageBox::critical(this, u"Download"_s, u"Failed, see logs"_s);
             downloadYmlBtn->setEnabled(true);
         }
     }

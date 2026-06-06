@@ -22,13 +22,15 @@
 #include "../include/ControllerFeature.h"
 
 namespace OWC {
+    using namespace Qt::StringLiterals;
+
     SettingsPage::SettingsPage() {
         QHBoxLayout *buttonsLyt = new QHBoxLayout();
 
         lyt = new QVBoxLayout();
-        configResetBtn = new QPushButton("Configuration reset");
-        backBtn = new QPushButton("Home");
-        resetBtn = new QPushButton("Reset");
+        configResetBtn = new QPushButton(u"Configuration reset"_s);
+        backBtn = new QPushButton(u"Home"_s);
+        resetBtn = new QPushButton(u"Reset"_s);
 
         buttonsLyt->addWidget(configResetBtn);
         buttonsLyt->addStretch();
@@ -48,7 +50,7 @@ namespace OWC {
     QVBoxLayout *SettingsPage::makeRumbleV1Settings() {
         QVBoxLayout *rumbleLyt = new QVBoxLayout();
         QHBoxLayout *settLyt = new QHBoxLayout();
-        QLabel *title = new QLabel("Rumble");
+        QLabel *title = new QLabel(u"Rumble"_s);
         QFont titleFont = title->font();
 
         rumble = new QComboBox();
@@ -56,7 +58,7 @@ namespace OWC {
         titleFont.setBold(true);
         title->setAlignment(Qt::AlignCenter);
         title->setFont(titleFont);
-        rumble->addItems({"off", "low", "high"});
+        rumble->addItems({u"off"_s, u"low"_s, u"high"_s});
 
         settLyt->addWidget(new QLabel("Vibration intensity:"));
         settLyt->addSpacing(4);
@@ -74,22 +76,22 @@ namespace OWC {
     QVBoxLayout *SettingsPage::makeShoulderLedsV1Settings() {
         QVBoxLayout *ledCtlLyt = new QVBoxLayout();
         QHBoxLayout *ledLyt = new QHBoxLayout();
-        QLabel *title = new QLabel("Shoulder leds");
+        QLabel *title = new QLabel(u"Shoulder leds"_s);
         QFont titleFont = title->font();
 
         ledMode = new QComboBox();
         ledColorLbl = new QLabel();
-        ledColorChooserBtn = new QPushButton("Color picker");
+        ledColorChooserBtn = new QPushButton(u"Color picker"_s);
 
         titleFont.setBold(true);
         title->setAlignment(Qt::AlignCenter);
         title->setFont(titleFont);
-        ledMode->addItems({"off", "solid", "breathe", "rotate"});
+        ledMode->addItems({u"off"_s, u"solid"_s, u"breathe"_s, u"rotate"_s});
         ledColorLbl->setAutoFillBackground(true);
         ledColorLbl->setFixedWidth(80);
         ledColorLbl->setFrameShape(QFrame::Box);
 
-        ledLyt->addWidget(new QLabel("Mode:"));
+        ledLyt->addWidget(new QLabel(u"Mode:"_s));
         ledLyt->addSpacing(8);
         ledLyt->addWidget(ledMode);
         ledLyt->addSpacing(10);
@@ -124,7 +126,7 @@ namespace OWC {
         QHBoxLayout *rCenterLblLyt = new QHBoxLayout();
         QVBoxLayout *rBoundaryLyt = new QVBoxLayout();
         QHBoxLayout *rBoundaryLblLyt = new QHBoxLayout();
-        QLabel *title = new QLabel("Deadzone");
+        QLabel *title = new QLabel(u"Deadzone"_s);
         QFont titleFont = title->font();
         QLabel *lsIcon = new QLabel();
         QLabel *rsIcon = new QLabel();
@@ -146,15 +148,15 @@ namespace OWC {
         dzRightCenter->setRange(-10, 10);
         dzRightBoundary->setRange(-10, 10);
         lsIcon->setAlignment(Qt::AlignCenter);
-        lsIcon->setPixmap(QPixmap(":/icons/ls").scaled(45, 45, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        lsIcon->setPixmap(QPixmap(u":/icons/ls"_s).scaled(45, 45, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         rsIcon->setAlignment(Qt::AlignCenter);
-        rsIcon->setPixmap(QPixmap(":/icons/rs").scaled(45, 45, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        rsIcon->setPixmap(QPixmap(u":/icons/rs"_s).scaled(45, 45, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 
-        lCenterLblLyt->addWidget(new QLabel("center"));
+        lCenterLblLyt->addWidget(new QLabel(u"center"_s));
         lCenterLblLyt->addStretch();
         lCenterLblLyt->addWidget(dzLeftCenterLbl);
 
-        lBoundaryLblLyt->addWidget(new QLabel("boundary"));
+        lBoundaryLblLyt->addWidget(new QLabel(u"boundary"_s));
         lBoundaryLblLyt->addStretch();
         lBoundaryLblLyt->addWidget(dzLeftBoundaryLbl);
 
@@ -172,11 +174,11 @@ namespace OWC {
         leftLyt->addSpacing(8);
         leftLyt->addLayout(leftContLyt);
 
-        rCenterLblLyt->addWidget(new QLabel("center"));
+        rCenterLblLyt->addWidget(new QLabel(u"center"_s));
         rCenterLblLyt->addStretch();
         rCenterLblLyt->addWidget(dzRightCenterLbl);
 
-        rBoundaryLblLyt->addWidget(new QLabel("boundary"));
+        rBoundaryLblLyt->addWidget(new QLabel(u"boundary"_s));
         rBoundaryLblLyt->addStretch();
         rBoundaryLblLyt->addWidget(dzRightBoundaryLbl);
 
@@ -265,15 +267,12 @@ namespace OWC {
 
     void SettingsPage::onConfigResetBtnClicked() {
         QMessageBox *mbox = new QMessageBox(this);
-        const QPushButton *yesBtn = mbox->addButton("Yes", QMessageBox::YesRole);
-        QPushButton *noBtn = mbox->addButton("No", QMessageBox::NoRole);
+        const QPushButton *yesBtn = mbox->addButton(u"Yes"_s, QMessageBox::YesRole);
+        QPushButton *noBtn = mbox->addButton(u"No"_s, QMessageBox::NoRole);
 
-        mbox->setWindowTitle(QStringLiteral("Controller configuration reset"));
-        mbox->setText(QStringLiteral("Reset controller configuration data?"));
-        mbox->setDetailedText(QStringLiteral(
-            "This option tries to repair corrupted configuration data.\n"
-            "This is only needed in case another app, or manual intervention, has corrupted it."
-        ));
+        mbox->setWindowTitle(u"Controller configuration reset"_s);
+        mbox->setText(u"Reset controller configuration data?"_s);
+        mbox->setDetailedText(u"Try to repair corrupted controller memory. (Only needed if something, not official OpenWinControls, messed it)"_s);
         mbox->setDefaultButton(noBtn);
         mbox->exec();
 
@@ -292,7 +291,7 @@ namespace OWC {
     }
 
     void SettingsPage::onLedColorChooserBtnClicked() {
-        const QColor color = QColorDialog::getColor(Qt::white, this, "Select led color");
+        const QColor color = QColorDialog::getColor(Qt::white, this, u"Select led color"_s);
 
         if (!color.isValid())
             return;

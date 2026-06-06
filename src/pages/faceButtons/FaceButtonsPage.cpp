@@ -22,13 +22,15 @@
 #include "FaceButtonsPage.h"
 
 namespace OWC {
+    using namespace Qt::StringLiterals;
+
     FaceButtonsPage::FaceButtonsPage() {
         QVBoxLayout *lyt = new QVBoxLayout();
         QHBoxLayout *buttonsLyt = new QHBoxLayout();
         QScrollArea *scrollArea = new QScrollArea();
-        QPushButton *backBtn = new QPushButton("Home");
-        QPushButton *resetBtn = new QPushButton("Reset");
-        QPushButton *charMapBtn = new QPushButton("Char Map");
+        QPushButton *backBtn = new QPushButton(u"Home"_s);
+        QPushButton *resetBtn = new QPushButton(u"Reset"_s);
+        QPushButton *charMapBtn = new QPushButton(u"Char Map"_s);
 
         controlsLyt = new QVBoxLayout();
 
@@ -113,6 +115,6 @@ namespace OWC {
         pendingBtn = btn;
         oldPendingBtnText = pendingBtn->text();
 
-        pendingBtn->setText("...");
+        pendingBtn->setText(u"..."_s);
     }
 }

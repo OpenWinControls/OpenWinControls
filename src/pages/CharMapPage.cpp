@@ -26,6 +26,8 @@
 #include "../extern/libOpenWinControls/src/include/XinputUsageIDMap.h"
 
 namespace OWC {
+    using namespace Qt::StringLiterals;
+
     CharMapPage::CharMapPage(const bool hasGamepadKeys) {
         QVBoxLayout *lyt = new QVBoxLayout();
         QHBoxLayout *unsetLyt = new QHBoxLayout();
@@ -33,13 +35,13 @@ namespace OWC {
         QHBoxLayout *bottomLyt = new QHBoxLayout();
         QVBoxLayout *scrollWidgLyt = new QVBoxLayout();
         QScrollArea *scrollArea = new QScrollArea();
-        QPushButton *backBtn = new QPushButton("Back");
-        QLabel *alphLbl = new QLabel("Alphabet");
-        QLabel *numLbl = new QLabel("Number");
-        QLabel *fLbl = new QLabel("Function");
-        QLabel *mouseLbl = new QLabel("Mouse");
-        QLabel *kbLbl = new QLabel("Keyboard");
-        QLabel *specialLbl = new QLabel("Special");
+        QPushButton *backBtn = new QPushButton(u"Back"_s);
+        QLabel *alphLbl = new QLabel(u"Alphabet"_s);
+        QLabel *numLbl = new QLabel(u"Number"_s);
+        QLabel *fLbl = new QLabel(u"Function"_s);
+        QLabel *mouseLbl = new QLabel(u"Mouse"_s);
+        QLabel *kbLbl = new QLabel(u"Keyboard"_s);
+        QLabel *specialLbl = new QLabel(u"Special"_s);
         QFont font;
 
         kbMouseSection = new QWidget();
@@ -95,7 +97,7 @@ namespace OWC {
 
         if (hasGamepadKeys) {
             QVBoxLayout *gamepadSectionLyt = new QVBoxLayout();
-            QLabel *gamepadLbl = new QLabel("Gamepad");
+            QLabel *gamepadLbl = new QLabel(u"Gamepad"_s);
 
             gamepadSection = new QWidget();
 

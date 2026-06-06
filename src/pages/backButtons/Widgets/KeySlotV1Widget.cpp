@@ -21,6 +21,8 @@
 #include "KeySlotV1Widget.h"
 
 namespace OWC {
+    using namespace Qt::StringLiterals;
+
     KeySlotV1Widget::KeySlotV1Widget(const int slotNum) {
         QHBoxLayout *lyt = new QHBoxLayout();
 
@@ -35,7 +37,7 @@ namespace OWC {
         lyt->addWidget(keySlotBtn);
         lyt->addSpacing(6);
         lyt->addWidget(startTime);
-        lyt->addWidget(new QLabel("ms"));
+        lyt->addWidget(new QLabel(u"ms"_s));
 
         setLayout(lyt);
 

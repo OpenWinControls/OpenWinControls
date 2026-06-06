@@ -25,15 +25,17 @@
 #include "../../extern/libOpenWinControls/src/include/HIDUsageIDMap.h"
 
 namespace OWC {
+    using namespace Qt::StringLiterals;
+
     BackButtonsPage::BackButtonsPage(const QString &helpLbl) {
         QVBoxLayout *lyt = new QVBoxLayout();
         QHBoxLayout *buttonsLyt = new QHBoxLayout();
         QLabel *helpTx = new QLabel(helpLbl);
         QScrollArea *scrollArea = new QScrollArea();
         QFont helpFont = helpTx->font();
-        QPushButton *backBtn = new QPushButton("Home");
-        QPushButton *resetBtn = new QPushButton("Reset");
-        QPushButton *charMapBtn = new QPushButton("Char Map");
+        QPushButton *backBtn = new QPushButton(u"Home"_s);
+        QPushButton *resetBtn = new QPushButton(u"Reset"_s);
+        QPushButton *charMapBtn = new QPushButton(u"Char Map"_s);
 
         backBtnLyt = new QHBoxLayout();
 
@@ -116,6 +118,6 @@ namespace OWC {
         pendingBtn = btn;
         oldPendingBtnText = pendingBtn->text();
 
-        pendingBtn->setText("...");
+        pendingBtn->setText(u"..."_s);
     }
 }

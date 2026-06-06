@@ -21,6 +21,8 @@
 #include "Widgets/SingleButtonBlockWidget.h"
 
 namespace OWC {
+    using namespace Qt::StringLiterals;
+
     XinputButtonsPage::XinputButtonsPage() {
         QHBoxLayout *row1Lyt = new QHBoxLayout();
         QHBoxLayout *row2Lyt = new QHBoxLayout();
@@ -38,17 +40,17 @@ namespace OWC {
         SingleButtonBlockWidget *menu;
 
         buttonList = {
-            dpad = new DirectionalButtonBlockWidget(Button::X_DPAD_UP, Button::X_DPAD_LEFT, Button::X_DPAD_RIGHT, Button::X_DPAD_DOWN, "X_DPAD_UP", "X_DPAD_LEFT", "X_DPAD_RIGHT", "X_DPAD_DOWN", "dpad", 75),
-            shoulderL = new ShoulderButtonBlockWidget(Button::X_L2, Button::X_L1, "X_L2", "X_L1", "l2", "l1", 55, 55, 70, 30),
-            shoulderR = new ShoulderButtonBlockWidget(Button::X_R2, Button::X_R1, "X_R2", "X_R1", "r2", "r1", 55, 55, 70, 30),
-            actions = new DirectionalButtonBlockWidget(Button::X_Y, Button::X_X, Button::X_B, Button::X_A, "X_Y", "X_X", "X_B", "X_A", "face", 80),
-            ls = new DirectionalButtonBlockWidget(Button::X_LANALOG_UP, Button::X_LANALOG_LEFT, Button::X_LANALOG_RIGHT, Button::X_LANALOG_DOWN, "X_L_ANALOG_UP", "X_L_ANALOG_LEFT", "X_L_ANALOG_RIGHT", "X_L_ANALOG_DOWN", "ls", 62),
-            l3 = new SingleButtonBlockWidget(Button::X_L3, "X_L3", "l3", 55, 55),
-            r3 = new SingleButtonBlockWidget(Button::X_R3, "X_R3", "r3", 55, 55),
-            start = new SingleButtonBlockWidget(Button::X_START, "X_START", "start", 70, 30),
-            select = new SingleButtonBlockWidget(Button::X_SELECT, "X_SELECT", "select", 70, 30),
-            menu = new SingleButtonBlockWidget(Button::X_MENU, "X_MENU", "menu", 70, 30),
-            rs = new DirectionalButtonBlockWidget(Button::X_RANALOG_UP, Button::X_RANALOG_LEFT, Button::X_RANALOG_RIGHT, Button::X_RANALOG_DOWN, "X_R_ANALOG_UP", "X_R_ANALOG_LEFT", "X_R_ANALOG_RIGHT", "X_R_ANALOG_DOWN", "rs", 62),
+            dpad = new DirectionalButtonBlockWidget(Button::X_DPAD_UP, Button::X_DPAD_LEFT, Button::X_DPAD_RIGHT, Button::X_DPAD_DOWN, "X_DPAD_UP", "X_DPAD_LEFT", "X_DPAD_RIGHT", "X_DPAD_DOWN", u"dpad"_s, 75),
+            shoulderL = new ShoulderButtonBlockWidget(Button::X_L2, Button::X_L1, "X_L2", "X_L1", u"l2"_s, u"l1"_s, 55, 55, 70, 30),
+            shoulderR = new ShoulderButtonBlockWidget(Button::X_R2, Button::X_R1, "X_R2", "X_R1", u"r2"_s, u"r1"_s, 55, 55, 70, 30),
+            actions = new DirectionalButtonBlockWidget(Button::X_Y, Button::X_X, Button::X_B, Button::X_A, "X_Y", "X_X", "X_B", "X_A", u"face"_s, 80),
+            ls = new DirectionalButtonBlockWidget(Button::X_LANALOG_UP, Button::X_LANALOG_LEFT, Button::X_LANALOG_RIGHT, Button::X_LANALOG_DOWN, "X_L_ANALOG_UP", "X_L_ANALOG_LEFT", "X_L_ANALOG_RIGHT", "X_L_ANALOG_DOWN", u"ls"_s, 62),
+            l3 = new SingleButtonBlockWidget(Button::X_L3, "X_L3", u"l3"_s, 55, 55),
+            r3 = new SingleButtonBlockWidget(Button::X_R3, "X_R3", u"r3"_s, 55, 55),
+            start = new SingleButtonBlockWidget(Button::X_START, "X_START", u"start"_s, 70, 30),
+            select = new SingleButtonBlockWidget(Button::X_SELECT, "X_SELECT", u"select"_s, 70, 30),
+            menu = new SingleButtonBlockWidget(Button::X_MENU, "X_MENU", u"menu"_s, 70, 30),
+            rs = new DirectionalButtonBlockWidget(Button::X_RANALOG_UP, Button::X_RANALOG_LEFT, Button::X_RANALOG_RIGHT, Button::X_RANALOG_DOWN, "X_R_ANALOG_UP", "X_R_ANALOG_LEFT", "X_R_ANALOG_RIGHT", "X_R_ANALOG_DOWN", u"rs"_s, 62),
         };
 
         row1Lyt->addWidget(dpad);

@@ -20,9 +20,11 @@
 #include "BackButtonsV1Page.h"
 
 namespace OWC {
-    BackButtonsV1Page::BackButtonsV1Page(): BackButtonsPage(QStringLiteral("macro key slots and start times")) {
-        l4 = new BackButtonV1Widget(1, 3, "l4");
-        r4 = new BackButtonV1Widget(2, 3, "r4");
+    using namespace Qt::StringLiterals;
+
+    BackButtonsV1Page::BackButtonsV1Page(): BackButtonsPage(u"macro key slots and start times"_s) {
+        l4 = new BackButtonV1Widget(1, 3, u"l4"_s);
+        r4 = new BackButtonV1Widget(2, 3, u"r4"_s);
 
         backBtnLyt->addWidget(l4);
         backBtnLyt->addWidget(r4);

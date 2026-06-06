@@ -21,9 +21,11 @@
 #include "../../extern/libOpenWinControls/src/include/ControllerFeature.h"
 
 namespace OWC {
-    BackButtonsV2Page::BackButtonsV2Page(): BackButtonsPage(QStringLiteral("key slots, start times and hold times")) {
-        l4 = new BackButtonV2Widget(1, 32, "l4");
-        r4 = new BackButtonV2Widget(2, 32, "r4");
+    using namespace Qt::StringLiterals;
+
+    BackButtonsV2Page::BackButtonsV2Page(): BackButtonsPage(u"key slots, start times and hold times"_s) {
+        l4 = new BackButtonV2Widget(1, 32, u"l4"_s);
+        r4 = new BackButtonV2Widget(2, 32, u"r4"_s);
 
         backBtnLyt->addWidget(l4);
         backBtnLyt->addWidget(r4);
@@ -36,7 +38,7 @@ namespace OWC {
 
     void BackButtonsV2Page::initPage(const QSharedPointer<Controller> &gpd) {
         if (gpd->hasFeature(ControllerFeature::BackButton4)) {
-            r5 = new BackButtonV2Widget(4, 32, "r5");
+            r5 = new BackButtonV2Widget(4, 32, u"r5"_s);
 
             backBtnLyt->addWidget(r5);
             QObject::connect(r5, &BackButtonV2Widget::logSent, this, &BackButtonsV2Page::onBackButtonLogSent);
