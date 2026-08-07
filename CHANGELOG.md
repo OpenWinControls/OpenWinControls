@@ -1,7 +1,9 @@
-## Future
+## 2.9
 
-- Update SDL to 3.4.10
+- Update libOpenWinControls (flash controller support for protocol v2)
+- Update SDL to 3.4.14
 - Minor optimization
+- Update modules
 
 ## 2.8
 
