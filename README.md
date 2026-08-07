@@ -29,12 +29,6 @@ Controller V2 seems to have more issues when mouse codes are assigned to them, c
 
 - RT and LT ignore the keycode value in firmware config
 
-## Current controllerV2 limitations
-
-- To apply the changes permanently, switch the controller mode back and forth using the physical button on device
-
-Help is appreciated to solve this!
-
 ## Linux
 
 Root permissions are required.
