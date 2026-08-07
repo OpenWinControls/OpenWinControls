@@ -27,6 +27,7 @@ namespace OWC {
         QVBoxLayout *mapFaceBtnLyt = new QVBoxLayout();
         QVBoxLayout *mapBackBtnLyt = new QVBoxLayout();
         QHBoxLayout *bottomLyt = new QHBoxLayout();
+        QPushButton *showLogsBtn = new QPushButton(u"Logs"_s);
         QLabel *frontLbl = new QLabel(u"Face buttons"_s);
         QLabel *backLbl = new QLabel(u"Back buttons"_s);
         QFont lblFont = frontLbl->font();
@@ -35,7 +36,6 @@ namespace OWC {
         mappingMode = new QComboBox();
         faceButtonsMapBtn = new QPushButton(u"Customize"_s);
         backButtonsMapBtn = new QPushButton(u"Customize"_s);
-        showLogsBtn = new QPushButton(u"Logs"_s);
         ymlBrowserBtn = new QPushButton(u"Profiles"_s);
         settingsBtn = new QPushButton(u"Settings"_s);
         applyBtn = new QPushButton(u"Apply"_s);

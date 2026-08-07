@@ -30,9 +30,6 @@ namespace OWC {
 
     private:
         QVBoxLayout *lyt = nullptr;
-        QPushButton *configResetBtn = nullptr;
-        QPushButton *backBtn = nullptr;
-        QPushButton *resetBtn = nullptr;
         QComboBox *rumble = nullptr;
         QSlider *dzLeftCenter = nullptr;
         QLabel *dzLeftCenterLbl = nullptr;

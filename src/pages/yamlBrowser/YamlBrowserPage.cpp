@@ -36,6 +36,7 @@ namespace OWC {
         QVBoxLayout *viewLyt = new QVBoxLayout();
         QHBoxLayout *bottomLyt = new QHBoxLayout();
         QScrollArea *scrollArea = new QScrollArea();
+        QPushButton *backBtn = new QPushButton(u"Home"_s);
         QLabel *localTitle = new QLabel(u"Local"_s);
         QLabel *ghTitle = new QLabel(u"GitHub"_s);
         QFont titleFont = localTitle->font();
@@ -45,7 +46,6 @@ namespace OWC {
         ymlsPath = QString("%1/profiles").arg(dataPath);
         localYmlContainer = new FlowLayout();
         ghYmlContainer = new FlowLayout();
-        backBtn = new QPushButton(u"Home"_s);
         refreshBtn = new QPushButton(u"Refresh"_s);
         importYmlBtn = new QPushButton(u"Import"_s);
         downloadYmlBtn = new QPushButton(u"Download"_s);

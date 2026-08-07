@@ -25,7 +25,6 @@ namespace OWC {
         Q_OBJECT
 
     private:
-        QPushButton *viewBtn = nullptr;
         QPushButton *deleteBtn = nullptr;
         QString ymlName;
 

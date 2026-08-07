@@ -28,10 +28,10 @@ namespace OWC {
     LogsPage::LogsPage() {
         QVBoxLayout *lyt = new QVBoxLayout();
         QHBoxLayout *buttonLyt = new QHBoxLayout();
+        QPushButton *clearBtn = new QPushButton(u"Clear"_s);
+        QPushButton *saveBtn = new QPushButton(u"Save"_s);
+        QPushButton *backBtn = new QPushButton(u"Home"_s);
 
-        clearBtn = new QPushButton(u"Clear"_s);
-        saveBtn = new QPushButton(u"Save"_s);
-        backBtn = new QPushButton(u"Home"_s);
         logContainer = new QTextEdit();
 
         logContainer->setWordWrapMode(QTextOption::NoWrap);

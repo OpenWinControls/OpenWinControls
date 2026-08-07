@@ -25,9 +25,6 @@ namespace OWC {
         Q_OBJECT
 
     private:
-        QPushButton *clearBtn = nullptr;
-        QPushButton *saveBtn = nullptr;
-        QPushButton *backBtn = nullptr;
         QTextEdit *logContainer = nullptr;
 
     public:

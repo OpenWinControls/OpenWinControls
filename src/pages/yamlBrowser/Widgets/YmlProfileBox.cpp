@@ -25,9 +25,9 @@ namespace OWC {
 
     YmlProfileBox::YmlProfileBox(const QString &name, const bool isLocal) {
         QVBoxLayout *lyt = new QVBoxLayout();
+        QPushButton *viewBtn = new QPushButton(u"View"_s);
         QLabel *title = new QLabel(name.length() > 13 ? name.first(13).append(u".."_s) : name);
 
-        viewBtn = new QPushButton(u"View"_s);
         ymlName = name;
 
         title->setAlignment(Qt::AlignCenter);

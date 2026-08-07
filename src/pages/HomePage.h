@@ -33,7 +33,6 @@ namespace OWC {
         QComboBox *mappingMode = nullptr;
         QPushButton *faceButtonsMapBtn = nullptr;
         QPushButton *backButtonsMapBtn = nullptr;
-        QPushButton *showLogsBtn = nullptr;
         QPushButton *ymlBrowserBtn = nullptr;
         QPushButton *settingsBtn = nullptr;
         QPushButton *applyBtn = nullptr;

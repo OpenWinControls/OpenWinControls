@@ -26,11 +26,11 @@ namespace OWC {
 
     SettingsPage::SettingsPage() {
         QHBoxLayout *buttonsLyt = new QHBoxLayout();
+        QPushButton *backBtn = new QPushButton(u"Home"_s);
+        QPushButton *resetBtn = new QPushButton(u"Reset"_s);
+        QPushButton *configResetBtn = new QPushButton(u"Configuration reset"_s);
 
         lyt = new QVBoxLayout();
-        configResetBtn = new QPushButton(u"Configuration reset"_s);
-        backBtn = new QPushButton(u"Home"_s);
-        resetBtn = new QPushButton(u"Reset"_s);
 
         buttonsLyt->addWidget(configResetBtn);
         buttonsLyt->addStretch();

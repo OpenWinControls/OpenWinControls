@@ -34,7 +34,6 @@ namespace OWC {
         static constexpr char baseYmlUrl[] = "https://raw.githubusercontent.com/OpenWinControls/CommunityProfiles/refs/heads/main/";
         FlowLayout *localYmlContainer = nullptr;
         FlowLayout *ghYmlContainer = nullptr;
-        QPushButton *backBtn = nullptr;
         QPushButton *refreshBtn = nullptr;
         QPushButton *importYmlBtn = nullptr;
         QPushButton *downloadYmlBtn = nullptr;
