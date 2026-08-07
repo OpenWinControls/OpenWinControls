@@ -167,37 +167,27 @@ QSharedPointer<OWC::Controller> MainWindow::getDevice(const QString &product) co
 }
 
 bool MainWindow::isCompatible(const QString &product) const {
-    std::pair<int, int> version = {0, 0};
-    bool compCheck = false;
+    const auto [major, minor] = gpd->getKVersion();
+    bool isSupported = false;
 
-    /*if (product == OWC::win3) {
+    /*if (product == OWC::win3)
        return true;
+   else*/
+    if (product == OWC::win4)
+       isSupported = major >= 0x4 && minor >= 0x7;
+    else if (product == OWC::mini24)
+        isSupported = major >= 0x5 && minor >= 0x3;
+    else if (product == OWC::max2_22 || product == OWC::max2_25)
+        isSupported = major >= 1 && minor >= 0x23;
+    else if (product == OWC::win5)
+        isSupported = major >= 1 && minor >= 0x8;
+    else if (product == OWC::mini25 || product == OWC::mini25L)
+        isSupported = major >= 1 && minor >= 0x22;
 
-   } else*/ if (product == OWC::win4) {
-       version = qSharedPointerCast<OWC::ControllerV1>(gpd)->getKVersion();
-       compCheck = version.first >= 0x4 && version.second >= 0x7;
+    if (!isSupported)
+        logsPage->writeLog(QString("version %1.%2 is not supported").arg(major).arg(minor));
 
-    } else if (product == OWC::mini24) {
-        version = qSharedPointerCast<OWC::ControllerV1>(gpd)->getKVersion();
-        compCheck = version.first >= 0x5 && version.second >= 0x3;
-
-    } else if (product == OWC::max2_22 || product == OWC::max2_25) {
-        version = qSharedPointerCast<OWC::ControllerV1>(gpd)->getKVersion();
-        compCheck = version.first >= 1 && version.second >= 0x23;
-
-    } else if (product == OWC::win5) {
-        version = qSharedPointerCast<OWC::ControllerV2>(gpd)->getVersion();
-        compCheck = version.first >= 1 && version.second >= 0x8;
-
-    } else if (product == OWC::mini25 || product == OWC::mini25L) {
-        version = qSharedPointerCast<OWC::ControllerV2>(gpd)->getVersion();
-        compCheck = version.first >= 1 && version.second >= 0x22;
-    }
-
-    if (!compCheck)
-        logsPage->writeLog(QString("version %1.%2 is not supported").arg(version.first).arg(version.second));
-
-    return compCheck;
+    return isSupported;
 }
 
 void MainWindow::initApp() {
@@ -227,27 +217,19 @@ void MainWindow::initApp() {
         return;
     }
 
+    const auto [xmin, xmax] = gpd->getXVersion();
+    const auto [kmin, kmax] = gpd->getKVersion();
+
     if (gpd->getControllerType() == 1) {
-        const QSharedPointer<OWC::ControllerV1> gpdV1 = qSharedPointerCast<OWC::ControllerV1>(gpd);
-        const auto [xmin, xmax] = gpdV1->getXVersion();
-        const auto [kmin, kmax] = gpdV1->getKVersion();
-
         backButtonsPage = new OWC::BackButtonsV1Page();
-
-        controllerVersionLbl->setText(QString("X%1.%2, K%3.%4").arg(QString::number(xmin, 16))
-                                                                .arg(QString::number(xmax, 16))
-                                                                .arg(QString::number(kmin, 16))
-                                                                .arg(QString::number(kmax, 16)));
 
     } else if (gpd->getControllerType() == 2) {
         const QSharedPointer<OWC::ControllerV2> gpdV2 = qSharedPointerCast<OWC::ControllerV2>(gpd);
-        const auto [major, minor] = gpdV2->getVersion();
 
         backButtonsPage = new OWC::BackButtonsV2Page();
         xinputPage = new OWC::XinputButtonsPage();
 
         stackedWidget->addWidget(xinputPage);
-        controllerVersionLbl->setText(QString("%1.%2").arg(QString::number(major, 16)).arg(QString::number(minor, 16)));
         xinputPage->setMapping(gpd);
         homePage->setEmulationMode(gpdV2->getEmulationMode());
         initGamepadThread();
@@ -261,6 +243,11 @@ void MainWindow::initApp() {
     charMapPage = new OWC::CharMapPage(gpd->getControllerType() == 2);
     kbdMousePage = new OWC::KeyboardMouseButtonsPage();
     yamlBrowserPage = new OWC::YamlBrowserPage(appDataPath, gpd->getControllerType());
+
+    controllerVersionLbl->setText(QString("X%1.%2, K%3.%4").arg(QString::number(xmin, 16))
+                                                                .arg(QString::number(xmax, 16))
+                                                                .arg(QString::number(kmin, 16))
+                                                                .arg(QString::number(kmax, 16)));
 
     stackedWidget->addWidget(charMapPage);
     stackedWidget->addWidget(kbdMousePage);
@@ -365,6 +352,8 @@ void MainWindow::onHomeSettingsPageClicked() const {
 }
 
 void MainWindow::onHomeApplyChanges() {
+    bool writeFlash = true;
+
     homePage->enableButtons(false);
     kbdMousePage->writeMapping(gpd);
     backButtonsPage->writeMapping(gpd);
@@ -373,7 +362,24 @@ void MainWindow::onHomeApplyChanges() {
     if (xinputPage != nullptr)
         xinputPage->writeMapping(gpd);
 
-    if (!gpd->writeConfig())
+    if (gpd->getControllerType() == 2) {
+        QMessageBox mbox(this);
+
+        mbox.setWindowTitle(u"Write config"_s);
+        mbox.setText(u"Do you want to flash current config to controller?"_s);
+        mbox.setStandardButtons(QMessageBox::Yes);
+        mbox.addButton(QMessageBox::No);
+        mbox.setDefaultButton(QMessageBox::Yes);
+        mbox.setDetailedText(
+            u"Yes: write changes to controller flash memory to make them permanent.\n\n"
+            "No: write changes to controller temp memory, reverted after sleep/reboot/shutdown.\n\n"
+            "Saying No here, allows you to save some writes while doing experiments, or keep a base permanent config."_s
+        );
+
+        writeFlash = mbox.exec() == QMessageBox::Yes;
+    }
+
+    if (!(writeFlash ? gpd->writeConfig() : gpd->writeConfigMem()))
         QMessageBox::critical(this, u"Error"_s, u"Unable to write controller!"_s);
 
     homePage->enableButtons(true);
