@@ -25,9 +25,9 @@ You can switch back to gamepad after that, but be aware that they may still not 
 Controller V2 seems to have more issues when mouse codes are assigned to them, compared to V1.
 [**This is very very unlikely to be fixed!**]
 
-### Win5
+### V2 devices
 
-- RT and LT ignore the keycode value in firmware config
+- RT and LT ignore the keycode value in firmware config [_**still waiting for a fix.., notified gpd febrary 2026**_]
 
 ## Linux
 
