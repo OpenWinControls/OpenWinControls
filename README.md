@@ -50,15 +50,29 @@ sudo udevadm control --reload-rules && sudo udevadm trigger
 
 ## Usage
 
-Select a button you want to remap, either input the key from your keyboard,
-or use the built-in char map.
+Select a button you want to remap, either input the key from your keyboard, or use the built-in char map.
 
-**Controller V2 macros**
+## Controller V2 macro functions
 
-Chain multiple keys by assigning an incremental start time and a fixed hold time to each slot.
+Chain up to 32 keys to create macros or key shortcuts. (_**firmware is buggy and badly coded, play with timings**_)
 
-To simulate a single key press, set one key slot, start time to 0
-and hold time to something high like **300**.
+### Simulate single button click
+
+```
+Active slot count: 1
+
+Slot 01: [your key here], 0 ms, 200 ms
+```
+
+### Simulate key shortcut
+
+```
+Active slot count: [number of keys in your shortcut]
+
+Slot 01: [your key here], 100 ms, 100 ms  
+Slot 02: [your key here], 100 ms, 100 ms  
+[..more]
+```
 
 ## How to build
 
