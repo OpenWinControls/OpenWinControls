@@ -109,7 +109,7 @@ namespace OWC {
     void HomePage::setDevice(const QString &product) const {
         bool found = false;
 
-        if (product == win5 || product == mini25)
+        if (product == win5 || product == mini25 || product == max3)
             mappingMode->addItem(u"Xinput"_s);
 
         if (product == win4) {
@@ -135,6 +135,11 @@ namespace OWC {
         } else if (product == win3) {
             frontPic->setPixmap(QPixmap(u":/win3f"_s).scaled(235, 110, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             backPic->setPixmap(QPixmap(u":/win3b"_s).scaled(235, 110, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            found = true;
+
+        } else if (product == max3) {
+            frontPic->setPixmap(QPixmap(u":/max3f"_s).scaled(210, 190, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            backPic->setPixmap(QPixmap(u":/max3b"_s).scaled(235, 190, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             found = true;
         }
 

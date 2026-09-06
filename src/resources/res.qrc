@@ -27,6 +27,8 @@
         <file alias="win4f">img/win4-front.png</file>
         <file alias="win5b">img/win5-back.png</file>
         <file alias="win5f">img/win5-front.png</file>
+        <file alias="max3f">img/max3-front.png</file>
+        <file alias="max3b">img/max3-back.png</file>
         <file alias="unkd">img/unk.png</file>
     </qresource>
     <qresource prefix="/icons">

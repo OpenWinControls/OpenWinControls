@@ -156,7 +156,7 @@ QSharedPointer<OWC::Controller> MainWindow::getDevice(const QString &product) co
         device = QSharedPointer<OWC::ControllerV1>::create(OWC::ControllerFeature::DeadZoneControlV1 | OWC::ControllerFeature::RumbleV1);
     /*else if (product == OWC::win3)
         device = QSharedPointer<OWC::ControllerV1>::create();*/
-    else if (product == OWC::win5)
+    else if (product == OWC::win5 || product == OWC::max3)
         device = QSharedPointer<OWC::ControllerV2>::create(OWC::ControllerFeature::RumbleV1 | OWC::ControllerFeature::XinputMappingV1 | OWC::ControllerFeature::BackButton4);
     else if (product == OWC::mini25 || product == OWC::mini25L)
         device = QSharedPointer<OWC::ControllerV2>::create(OWC::ControllerFeature::DeadZoneControlV1 | OWC::ControllerFeature::RumbleV1 | OWC::ControllerFeature::XinputMappingV1);
@@ -183,6 +183,8 @@ bool MainWindow::isCompatible(const QString &product) const {
         isSupported = major >= 1 && minor >= 0x8;
     else if (product == OWC::mini25 || product == OWC::mini25L)
         isSupported = major >= 1 && minor >= 0x22;
+    else if (product == OWC::max3)
+        return true;
 
     if (!isSupported)
         logsPage->writeLog(QString("version %1.%2 is not supported").arg(major).arg(minor));
