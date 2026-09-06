@@ -1,3 +1,9 @@
+## 2.10
+
+- Win max 3 support
+- Update SDL to 3.4.16
+- Update yaml module
+
 ## 2.9
 
 - Update libOpenWinControls (flash controller support for protocol v2)
