@@ -11,6 +11,7 @@ find_package(Qt6 6.10 REQUIRED COMPONENTS Core Widgets Network)
 qt_standard_project_setup()
 
 set(BUILD_SHARED_LIBS OFF)
+set(YAML_MSVC_SHARED_RT ON)
 add_subdirectory(src/extern/libOpenWinControls)
 add_subdirectory(src/extern/yaml-cpp)
 
