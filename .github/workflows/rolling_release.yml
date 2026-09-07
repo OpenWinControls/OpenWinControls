@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: jurplel/install-qt-action@v4.3.1
         with:
-          version: '6.11.2'
+          version: '6.10.3'
           modules: qtimageformats qtmultimedia
 
       - uses: actions/checkout@main
