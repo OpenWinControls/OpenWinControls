@@ -165,7 +165,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GTK }}
           GH_REPO: ${{ github.repository }}
         run: >
-          gh release create $(date +"%m%d%Y")
+          gh release create $(date '+%Y%m%d%H%M%S')
           OpenWinControls-Windows.zip
           OpenWinControls-x86_64/OpenWinControls-x86_64.AppImage
           --draft=false
