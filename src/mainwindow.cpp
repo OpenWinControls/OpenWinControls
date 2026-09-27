@@ -32,7 +32,6 @@
 #include "extern/libOpenWinControls/src/include/ControllerFeature.h"
 #include "extern/libOpenWinControls/src/controller/ControllerV1.h"
 #include "extern/libOpenWinControls/src/controller/ControllerV2.h"
-#include "extern/SDL/include/SDL3/SDL_events.h"
 
 using namespace Qt::StringLiterals;
 
@@ -301,9 +300,7 @@ void MainWindow::initGamepadThread() {
 }
 
 void MainWindow::quitGamepadThread() {
-    SDL_Event sdlEvt {.type = SDL_EVENT_QUIT};
-
-    SDL_PushEvent(&sdlEvt);
+    gamepadThread->requestInterruption();
     gamepadThread->quit();
     gamepadThread->wait();
     delete gamepadThread;

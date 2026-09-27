@@ -21,6 +21,7 @@
 #include <QHash>
 
 #include "extern/SDL/include/SDL3/SDL_gamepad.h"
+#include "extern/SDL/include/SDL3/SDL_events.h"
 
 namespace OWC {
     class GamepadWorker final: public QObject {
@@ -28,18 +29,19 @@ namespace OWC {
 
     private:
         struct AxisState final {
-            int leftX = 0;
-            int leftY = 0;
-            int rightX = 0;
-            int rightY = 0;
+            short leftX = 0;
+            short leftY = 0;
+            short rightX = 0;
+            short rightY = 0;
         };
 
-        static constexpr int deadzone = 8000;
-        QHash<SDL_JoystickID, SDL_Gamepad *> sdlGamepadMap;
+        static constexpr int axisMax = (SDL_JOYSTICK_AXIS_MAX * 50) / 100;
+        QHash<SDL_JoystickID, SDL_Gamepad *> gamepadsMap;
+        bool eventsEnabled = false;
         AxisState axisState;
-        bool enabled = false;
 
-        [[nodiscard]] bool isDeadzone(int axis) const;
+        [[nodiscard]] short getAxisState(Sint16 axisValue);
+        void handleEvent(const SDL_Event &evt);
 
     public:
         ~GamepadWorker() override;

@@ -21,18 +21,175 @@
 #include "GamepadWorker.h"
 #include "extern/SDL/include/SDL3/SDL_init.h"
 #include "extern/SDL/include/SDL3/SDL_hints.h"
-#include "extern/SDL/include/SDL3/SDL_events.h"
 
 namespace OWC {
     GamepadWorker::~GamepadWorker() {
-        for (auto [jid, gpad]: sdlGamepadMap.asKeyValueRange())
+        for (auto [jid, gpad]: gamepadsMap.asKeyValueRange())
             SDL_CloseGamepad(gpad);
 
         SDL_Quit();
     }
 
-    bool GamepadWorker::isDeadzone(const int axis) const {
-        return axis >= -deadzone && axis <= deadzone;
+    short GamepadWorker::getAxisState(const Sint16 axisValue) {
+        if (axisValue >= -axisMax && axisValue <= axisMax) // deadzone
+            return 0;
+
+        return axisValue > 0 ? 1 : -1;
+    }
+
+    void GamepadWorker::handleEvent(const SDL_Event &evt) {
+        switch (evt.type) {
+            case SDL_EVENT_GAMEPAD_ADDED: {
+                if (gamepadsMap.contains(evt.gdevice.which)) [[unlikely]]
+                    break; // skip if duplicate
+
+                const SDL_JoystickID id = evt.gdevice.which;
+                SDL_Gamepad *pad = SDL_OpenGamepad(id);
+
+                if (pad == nullptr) {
+                    emit logSent(QString("Gamepad connection error: %1").arg(SDL_GetError()));
+                    SDL_ClearError();
+                    break;
+                }
+
+                gamepadsMap.insert(id, pad);
+            }
+                break;
+            case SDL_EVENT_GAMEPAD_REMOVED: {
+                if (gamepadsMap.contains(evt.gdevice.which)) [[likely]]
+                    SDL_CloseGamepad(gamepadsMap.take(evt.gdevice.which));
+            }
+                break;
+            case SDL_EVENT_GAMEPAD_BUTTON_UP: {
+                if (!eventsEnabled)
+                    break;
+
+                switch (evt.gbutton.button) {
+                    case SDL_GAMEPAD_BUTTON_SOUTH:
+                        emit gamepadButton("BTN_A");
+                        break;
+                    case SDL_GAMEPAD_BUTTON_EAST:
+                        emit gamepadButton("BTN_B");
+                        break;
+                    case SDL_GAMEPAD_BUTTON_WEST:
+                        emit gamepadButton("BTN_X");
+                        break;
+                    case SDL_GAMEPAD_BUTTON_NORTH:
+                        emit gamepadButton("BTN_Y");
+                        break;
+                    case SDL_GAMEPAD_BUTTON_START:
+                        emit gamepadButton("START");
+                        break;
+                    case SDL_GAMEPAD_BUTTON_BACK:
+                        emit gamepadButton("SELECT");
+                        break;
+                    case SDL_GAMEPAD_BUTTON_GUIDE:
+                        emit gamepadButton("MENU");
+                        break;
+                    case SDL_GAMEPAD_BUTTON_LEFT_STICK:
+                        emit gamepadButton("L3");
+                        break;
+                    case SDL_GAMEPAD_BUTTON_RIGHT_STICK:
+                        emit gamepadButton("R3");
+                        break;
+                    case SDL_GAMEPAD_BUTTON_DPAD_UP:
+                        emit gamepadButton("DPAD_UP");
+                        break;
+                    case SDL_GAMEPAD_BUTTON_DPAD_DOWN:
+                        emit gamepadButton("DPAD_DOWN");
+                        break;
+                    case SDL_GAMEPAD_BUTTON_DPAD_LEFT:
+                        emit gamepadButton("DPAD_LEFT");
+                        break;
+                    case SDL_GAMEPAD_BUTTON_DPAD_RIGHT:
+                        emit gamepadButton("DPAD_RIGHT");
+                        break;
+                    case SDL_GAMEPAD_BUTTON_LEFT_SHOULDER:
+                        emit gamepadButton("L1");
+                        break;
+                    case SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER:
+                        emit gamepadButton("R1");
+                        break;
+                    default:
+                        break;
+                }
+            }
+                break;
+            case SDL_EVENT_GAMEPAD_AXIS_MOTION: {
+                if (!eventsEnabled)
+                    break;
+
+                switch (evt.gaxis.axis) {
+                    case SDL_GAMEPAD_AXIS_LEFT_TRIGGER: {
+                        if (evt.gaxis.value >= axisMax)
+                            emit gamepadButton("L2");
+                    }
+                        break;
+                    case SDL_GAMEPAD_AXIS_RIGHT_TRIGGER: {
+                        if (evt.gaxis.value >= axisMax)
+                            emit gamepadButton("R2");
+                    }
+                        break;
+                    case SDL_GAMEPAD_AXIS_LEFTX: {
+                        const short old = axisState.leftX;
+
+                        axisState.leftX = getAxisState(evt.gaxis.value);
+
+                        if (old == axisState.leftX || axisState.leftX == 0)
+                            break;
+                        else if (axisState.leftX > 0)
+                            emit gamepadButton("LSTICK_RIGHT");
+                        else
+                            emit gamepadButton("LSTICK_LEFT");
+                    }
+                        break;
+                    case SDL_GAMEPAD_AXIS_LEFTY: {
+                        const short old = axisState.leftY;
+
+                        axisState.leftY = getAxisState(evt.gaxis.value);
+
+                        if (old == axisState.leftY || axisState.leftY == 0)
+                            break;
+                        else if (axisState.leftY > 0)
+                            emit gamepadButton("LSTICK_DOWN");
+                        else
+                            emit gamepadButton("LSTICK_UP");
+                    }
+                        break;
+                    case SDL_GAMEPAD_AXIS_RIGHTX: {
+                        const short old = axisState.rightX;
+
+                        axisState.rightX = getAxisState(evt.gaxis.value);
+
+                        if (old == axisState.rightX || axisState.rightX == 0)
+                            break;
+                        else if (axisState.rightX > 0)
+                            emit gamepadButton("RSTICK_RIGHT");
+                        else
+                            emit gamepadButton("RSTICK_LEFT");
+                    }
+                        break;
+                    case SDL_GAMEPAD_AXIS_RIGHTY: {
+                        const short old = axisState.rightY;
+
+                        axisState.rightY = getAxisState(evt.gaxis.value);
+
+                        if (old == axisState.rightY || axisState.rightY == 0)
+                            break;
+                        else if (axisState.rightY > 0)
+                            emit gamepadButton("RSTICK_DOWN");
+                        else
+                            emit gamepadButton("RSTICK_UP");
+                    }
+                        break;
+                    default:
+                        break;
+                }
+            }
+                break;
+            default:
+                break;
+        }
     }
 
     void GamepadWorker::startSDLEventsThread() {
@@ -44,185 +201,18 @@ namespace OWC {
             return;
         }
 
-        while (true) {
+        while (!QThread::currentThread()->isInterruptionRequested()) {
             SDL_Event evt;
-            const bool hasEvent = SDL_PollEvent(&evt);
 
-            if (hasEvent && evt.type == SDL_EVENT_QUIT) [[unlikely]]
-                break;
+            while (SDL_PollEvent(&evt))
+                handleEvent(evt);
 
             QCoreApplication::processEvents();
-
-            if (!hasEvent) [[likely]] {
-                QThread::msleep(15);
-                continue;
-            }
-
-            switch (evt.type) {
-                case SDL_EVENT_GAMEPAD_ADDED: {
-                    // sdl may send multiple events, skip if existing
-                    if (sdlGamepadMap.contains(evt.gdevice.which)) [[unlikely]]
-                        break;
-
-                    const SDL_JoystickID id = evt.gdevice.which;
-                    SDL_Gamepad *pad = SDL_OpenGamepad(id);
-
-                    if (pad == nullptr) {
-                        emit logSent(QString("Gamepad connection error: %1").arg(SDL_GetError()));
-                        SDL_ClearError();
-                        break;
-                    }
-
-                    sdlGamepadMap.insert(id, pad);
-                }
-                    break;
-                case SDL_EVENT_GAMEPAD_REMOVED: {
-                    if (sdlGamepadMap.contains(evt.gdevice.which)) [[likely]]
-                        SDL_CloseGamepad(sdlGamepadMap.take(evt.gdevice.which));
-                }
-                    break;
-                case SDL_EVENT_GAMEPAD_BUTTON_UP: {
-                    if (!enabled)
-                        break;
-
-                    switch (evt.gbutton.button) {
-                        case SDL_GAMEPAD_BUTTON_SOUTH:
-                            emit gamepadButton("BTN_A");
-                            break;
-                        case SDL_GAMEPAD_BUTTON_EAST:
-                            emit gamepadButton("BTN_B");
-                            break;
-                        case SDL_GAMEPAD_BUTTON_WEST:
-                            emit gamepadButton("BTN_X");
-                            break;
-                        case SDL_GAMEPAD_BUTTON_NORTH:
-                            emit gamepadButton("BTN_Y");
-                            break;
-                        case SDL_GAMEPAD_BUTTON_START:
-                            emit gamepadButton("START");
-                            break;
-                        case SDL_GAMEPAD_BUTTON_BACK:
-                            emit gamepadButton("SELECT");
-                            break;
-                        case SDL_GAMEPAD_BUTTON_GUIDE:
-                            emit gamepadButton("MENU");
-                            break;
-                        case SDL_GAMEPAD_BUTTON_LEFT_STICK:
-                            emit gamepadButton("L3");
-                            break;
-                        case SDL_GAMEPAD_BUTTON_RIGHT_STICK:
-                            emit gamepadButton("R3");
-                            break;
-                        case SDL_GAMEPAD_BUTTON_DPAD_UP:
-                            emit gamepadButton("DPAD_UP");
-                            break;
-                        case SDL_GAMEPAD_BUTTON_DPAD_DOWN:
-                            emit gamepadButton("DPAD_DOWN");
-                            break;
-                        case SDL_GAMEPAD_BUTTON_DPAD_LEFT:
-                            emit gamepadButton("DPAD_LEFT");
-                            break;
-                        case SDL_GAMEPAD_BUTTON_DPAD_RIGHT:
-                            emit gamepadButton("DPAD_RIGHT");
-                            break;
-                        case SDL_GAMEPAD_BUTTON_LEFT_SHOULDER:
-                            emit gamepadButton("L1");
-                            break;
-                        case SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER:
-                            emit gamepadButton("R1");
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                    break;
-                case SDL_EVENT_GAMEPAD_AXIS_MOTION: {
-                    if (!enabled)
-                        break;
-
-                    switch (evt.gaxis.axis) {
-                        case SDL_GAMEPAD_AXIS_LEFT_TRIGGER: {
-                            if (evt.gaxis.value == SDL_JOYSTICK_AXIS_MAX)
-                                emit gamepadButton("L2");
-                        }
-                            break;
-                        case SDL_GAMEPAD_AXIS_RIGHT_TRIGGER: {
-                            if (evt.gaxis.value == SDL_JOYSTICK_AXIS_MAX)
-                                emit gamepadButton("R2");
-                        }
-                            break;
-                        case SDL_GAMEPAD_AXIS_LEFTX: {
-                            const bool insideDeadzone = isDeadzone(evt.gaxis.value);
-                            const bool hasDrift = insideDeadzone && isDeadzone(axisState.leftX);
-
-                            axisState.leftX = std::abs(evt.gaxis.value);
-
-                            if (axisState.leftY > axisState.leftX || hasDrift)
-                                break;
-
-                            if (evt.gaxis.value > deadzone)
-                                emit gamepadButton("LSTICK_RIGHT");
-                            else if (evt.gaxis.value < -deadzone)
-                                emit gamepadButton("LSTICK_LEFT");
-                        }
-                            break;
-                        case SDL_GAMEPAD_AXIS_LEFTY: {
-                            const bool insideDeadzone = isDeadzone(evt.gaxis.value);
-                            const bool hasDrift = insideDeadzone && isDeadzone(axisState.leftY);
-
-                            axisState.leftY = std::abs(evt.gaxis.value);
-
-                            if (axisState.leftX > axisState.leftY || hasDrift)
-                                break;
-
-                            if (evt.gaxis.value > deadzone)
-                                emit gamepadButton("LSTICK_DOWN");
-                            else if (evt.gaxis.value < -deadzone)
-                                emit gamepadButton("LSTICK_UP");
-                        }
-                            break;
-                        case SDL_GAMEPAD_AXIS_RIGHTX: {
-                            const bool insideDeadzone = isDeadzone(evt.gaxis.value);
-                            const bool hasDrift = insideDeadzone && isDeadzone(axisState.rightX);
-
-                            axisState.rightX = std::abs(evt.gaxis.value);
-
-                            if (axisState.rightY > axisState.rightX || hasDrift)
-                                break;
-
-                            if (evt.gaxis.value > deadzone)
-                                emit gamepadButton("RSTICK_RIGHT");
-                            else if (evt.gaxis.value < -deadzone)
-                                emit gamepadButton("RSTICK_LEFT");
-                        }
-                            break;
-                        case SDL_GAMEPAD_AXIS_RIGHTY: {
-                            const bool insideDeadzone = isDeadzone(evt.gaxis.value);
-                            const bool hasDrift = insideDeadzone && isDeadzone(axisState.rightY);
-
-                            axisState.rightY = std::abs(evt.gaxis.value);
-
-                            if (axisState.rightX > axisState.rightY || hasDrift)
-                                break;
-
-                            if (evt.gaxis.value > deadzone)
-                                emit gamepadButton("RSTICK_DOWN");
-                            else if (evt.gaxis.value < -deadzone)
-                                emit gamepadButton("RSTICK_UP");
-                        }
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                    break;
-                default:
-                    break;
-            }
+            QThread::msleep(12);
         }
     }
 
     void GamepadWorker::enableEvents(const bool enable) {
-        enabled = enable;
+        eventsEnabled = enable;
     }
 }
