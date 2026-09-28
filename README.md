@@ -89,12 +89,12 @@ button icons - https://github.com/RobTheFiveNine/flat-gamepad-icons
 
 ---
 
-![](screens/home.png)
+![](resources/screens/home.png)
 
-![](screens/backbuttons.png)
+![](resources/screens/backbuttons.png)
 
-![](screens/keyboardmouse.png)
+![](resources/screens/keyboardmouse.png)
 
-![](screens/xinput.png)
+![](resources/screens/xinput.png)
 
-_win 5 screens_
+_from win 5_

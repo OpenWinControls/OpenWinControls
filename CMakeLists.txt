@@ -16,7 +16,7 @@ add_subdirectory(src/extern/libOpenWinControls)
 add_subdirectory(src/extern/yaml-cpp)
 
 qt_add_resources(QT_RESOURCE
-  src/resources/res.qrc
+  resources/res.qrc
 )
 
 set(PROJECT_SRC
@@ -104,14 +104,14 @@ add_subdirectory(src/extern/SDL EXCLUDE_FROM_ALL)
 set_property(TARGET SDL3-static PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 if (WIN32)
-  configure_file(src/resources/win.rc.in ${CMAKE_CURRENT_SOURCE_DIR}/win.rc)
+  configure_file(resources/windows/win.rc.in ${CMAKE_CURRENT_SOURCE_DIR}/win.rc)
 
   list(APPEND PROJECT_SRC
     win.rc
   )
 endif ()
 
-configure_file(src/resources/version.h.in ${CMAKE_CURRENT_SOURCE_DIR}/src/version.h)
+configure_file(resources/cmake/version.h.in ${CMAKE_CURRENT_SOURCE_DIR}/src/version.h)
 
 qt_add_executable(${PROJECT_NAME} WIN32 ${QT_RESOURCE} ${PROJECT_SRC})
 
