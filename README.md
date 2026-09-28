@@ -4,10 +4,14 @@ Multiplatform GPD WinControls replacement
 
 ## Features
 
-- Import and export mappings from/to yaml files
-- Remap all buttons (in all modes , keyboard/xinput, where supported)
+- Allows to remap **all** controller buttons
+- Allows to set all back button macro slots
+- Allows to remap controller buttons in xinput mode (xbox 360 controller) (_if supported_)
 - Deadzone, shoulder leds (win4) and vibration intensity settings
-- Built-in char map
+- Built-in char map with all supported keycodes
+- Import/Export mappings from/to yaml files
+- Import/Download mappings from the [community repo](https://github.com/OpenWinControls/CommunityProfiles)
+- Try to restore the controller to a known working state, if corrupted by other software (_Restore button in settings_)
 
 ## Requirements
 
@@ -20,7 +24,7 @@ and if not, download it from GPD site.
 ### All
 
 - Mouse codes (left/right/middle click, fast cursor), when assigned to **back buttons**,
-don't work until controller mode is switched once to mouse mode after boot.
+don't work until controller mode is switched once to mouse mode, after boot.
 You can switch back to gamepad after that, but be aware that they may still not work as expected.
 Controller V2 seems to have more issues when mouse codes are assigned to them, compared to V1.
 [**This is very very unlikely to be fixed!**]
