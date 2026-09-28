@@ -213,7 +213,7 @@ namespace OWC {
         return deadzoneLyt;
     }
 
-    void SettingsPage::initPage(const QSharedPointer<Controller> &gpd) {
+    void SettingsPage::initPage(const std::shared_ptr<Controller> &gpd) {
         if (gpd->hasFeature(ControllerFeature::ShoulderLedsV1))
             lyt->insertLayout(0, makeShoulderLedsV1Settings());
 
@@ -224,7 +224,7 @@ namespace OWC {
             lyt->insertLayout(0, makeDeadzoneV1Settings());
     }
 
-    void SettingsPage::setData(const QSharedPointer<Controller> &gpd) const {
+    void SettingsPage::setData(const std::shared_ptr<Controller> &gpd) const {
         if (gpd->hasFeature(ControllerFeature::ShoulderLedsV1)) {
             const std::tuple<int, int, int> lcolor = gpd->getLedColor();
             const QColor color = QColor(std::get<0>(lcolor), std::get<1>(lcolor), std::get<2>(lcolor));
@@ -246,7 +246,7 @@ namespace OWC {
         }
     }
 
-    void SettingsPage::writeSettings(const QSharedPointer<Controller> &gpd) const {
+    void SettingsPage::writeSettings(const std::shared_ptr<Controller> &gpd) const {
         if (gpd->hasFeature(ControllerFeature::RumbleV1))
             gpd->setRumble(static_cast<RumbleMode>(rumble->currentIndex()));
 

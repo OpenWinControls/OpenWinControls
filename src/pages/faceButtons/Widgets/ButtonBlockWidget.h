@@ -30,8 +30,8 @@ namespace OWC {
         static constexpr int buttonWidth = 122;
 
     public:
-        virtual void setMapping(const QSharedPointer<Controller> &gpd) const = 0;
-        virtual void writeMapping(const QSharedPointer<Controller> &gpd) = 0;
+        virtual void setMapping(const std::shared_ptr<Controller> &gpd) const = 0;
+        virtual void writeMapping(const std::shared_ptr<Controller> &gpd) = 0;
         [[nodiscard]] virtual QString exportMappingToYaml() const = 0;
         virtual void importMappingFromYaml(const YAML::Node &yaml) const = 0;
 

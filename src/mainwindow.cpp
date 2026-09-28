@@ -146,23 +146,21 @@ QString MainWindow::getProduct() const {
 #endif
 }
 
-QSharedPointer<OWC::Controller> MainWindow::getDevice(const QString &product) const {
-    QSharedPointer<OWC::Controller> device;
-
+std::shared_ptr<OWC::Controller> MainWindow::getDevice(const QString &product) const {
     if (product == OWC::win4)
-        device = QSharedPointer<OWC::ControllerV1>::create(OWC::ControllerFeature::DeadZoneControlV1 | OWC::ControllerFeature::ShoulderLedsV1 | OWC::ControllerFeature::RumbleV1);
+        return std::make_shared<OWC::ControllerV1>(OWC::ControllerFeature::DeadZoneControlV1 | OWC::ControllerFeature::ShoulderLedsV1 | OWC::ControllerFeature::RumbleV1);
     else if (product == OWC::mini24 || product == OWC::max2_22 || product == OWC::max2_25)
-        device = QSharedPointer<OWC::ControllerV1>::create(OWC::ControllerFeature::DeadZoneControlV1 | OWC::ControllerFeature::RumbleV1);
+        return std::make_shared<OWC::ControllerV1>(OWC::ControllerFeature::DeadZoneControlV1 | OWC::ControllerFeature::RumbleV1);
     /*else if (product == OWC::win3)
-        device = QSharedPointer<OWC::ControllerV1>::create();*/
+        return std::make_shared<OWC::ControllerV1>();*/
     else if (product == OWC::win5 || product == OWC::max3)
-        device = QSharedPointer<OWC::ControllerV2>::create(OWC::ControllerFeature::RumbleV1 | OWC::ControllerFeature::XinputMappingV1 | OWC::ControllerFeature::BackButton4);
+        return std::make_shared<OWC::ControllerV2>(OWC::ControllerFeature::RumbleV1 | OWC::ControllerFeature::XinputMappingV1 | OWC::ControllerFeature::BackButton4);
     else if (product == OWC::mini25 || product == OWC::mini25L)
-        device = QSharedPointer<OWC::ControllerV2>::create(OWC::ControllerFeature::DeadZoneControlV1 | OWC::ControllerFeature::RumbleV1 | OWC::ControllerFeature::XinputMappingV1);
+        return std::make_shared<OWC::ControllerV2>(OWC::ControllerFeature::DeadZoneControlV1 | OWC::ControllerFeature::RumbleV1 | OWC::ControllerFeature::XinputMappingV1);
     else
         logsPage->writeLog(QString("unknown device: %1").arg(product));
 
-    return device;
+    return {};
 }
 
 bool MainWindow::isCompatible(const QString &product) const {
@@ -196,7 +194,7 @@ void MainWindow::initApp() {
     const QString prod = getProduct();
 
     gpd = getDevice(prod);
-    if (gpd.isNull())
+    if (!gpd)
         return;
 
     gpd->enableLogging(logCB);
@@ -225,7 +223,7 @@ void MainWindow::initApp() {
         backButtonsPage = new OWC::BackButtonsV1Page();
 
     } else if (gpd->getControllerType() == 2) {
-        const QSharedPointer<OWC::ControllerV2> gpdV2 = qSharedPointerCast<OWC::ControllerV2>(gpd);
+        const std::shared_ptr<OWC::ControllerV2> gpdV2 = std::static_pointer_cast<OWC::ControllerV2>(gpd);
 
         backButtonsPage = new OWC::BackButtonsV2Page();
         xinputPage = new OWC::XinputButtonsPage();

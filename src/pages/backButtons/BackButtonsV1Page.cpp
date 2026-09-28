@@ -35,12 +35,12 @@ namespace OWC {
         QObject::connect(r4, &BackButtonV1Widget::pendingEditBtn, this, &BackButtonsV1Page::onkeyButtonPressed);
     }
 
-    void BackButtonsV1Page::setMapping(const QSharedPointer<Controller> &gpd) const {
+    void BackButtonsV1Page::setMapping(const std::shared_ptr<Controller> &gpd) const {
         l4->setMapping(gpd);
         r4->setMapping(gpd);
     }
 
-    void BackButtonsV1Page::writeMapping(const QSharedPointer<Controller> &gpd) {
+    void BackButtonsV1Page::writeMapping(const std::shared_ptr<Controller> &gpd) {
         l4->writeMapping(gpd);
         r4->writeMapping(gpd);
     }

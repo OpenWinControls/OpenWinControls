@@ -31,8 +31,8 @@ namespace OWC {
     public:
         SingleButtonBlockWidget(Button owcBtn, std::string_view yamlKey, const QString &icon, int iconScaleW, int iconScaleH);
 
-        void setMapping(const QSharedPointer<Controller> &gpd) const override;
-        void writeMapping(const QSharedPointer<Controller> &gpd) override;
+        void setMapping(const std::shared_ptr<Controller> &gpd) const override;
+        void writeMapping(const std::shared_ptr<Controller> &gpd) override;
         [[nodiscard]] QString exportMappingToYaml() const override;
         void importMappingFromYaml(const YAML::Node &yaml) const override;
     };

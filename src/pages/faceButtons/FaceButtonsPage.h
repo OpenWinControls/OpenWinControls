@@ -38,8 +38,8 @@ namespace OWC {
     public:
         FaceButtonsPage();
 
-        void setMapping(const QSharedPointer<Controller> &gpd) const;
-        void writeMapping(const QSharedPointer<Controller> &gpd);
+        void setMapping(const std::shared_ptr<Controller> &gpd) const;
+        void writeMapping(const std::shared_ptr<Controller> &gpd);
         [[nodiscard]] QString exportMappingToYaml() const;
         void importMappingFromYaml(const YAML::Node &yaml) const;
         void setPendingButton(const QString &key) const;

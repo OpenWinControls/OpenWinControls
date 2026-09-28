@@ -36,8 +36,8 @@ namespace OWC {
     public:
         BackButtonV2Widget(int buttonNum, int maxKeySlots, const QString &icon);
 
-        void setMapping(const QSharedPointer<ControllerV2> &gpd) const;
-        void writeMapping(const QSharedPointer<ControllerV2> &gpd);
+        void setMapping(const std::shared_ptr<ControllerV2> &gpd) const;
+        void writeMapping(const std::shared_ptr<ControllerV2> &gpd);
         [[nodiscard]] QString exportToYaml() const;
         void importFromYaml(const YAML::Node &yaml) const;
 

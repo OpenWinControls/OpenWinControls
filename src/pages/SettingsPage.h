@@ -50,9 +50,9 @@ namespace OWC {
     public:
         SettingsPage();
 
-        void initPage(const QSharedPointer<Controller> &gpd);
-        void setData(const QSharedPointer<Controller> &gpd) const;
-        void writeSettings(const QSharedPointer<Controller> &gpd) const;
+        void initPage(const std::shared_ptr<Controller> &gpd);
+        void setData(const std::shared_ptr<Controller> &gpd) const;
+        void writeSettings(const std::shared_ptr<Controller> &gpd) const;
 
     private slots:
         void onConfigResetBtnClicked();

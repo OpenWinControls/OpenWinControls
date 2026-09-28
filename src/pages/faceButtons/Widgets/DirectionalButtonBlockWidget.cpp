@@ -74,14 +74,14 @@ namespace OWC {
         QObject::connect(bottomBtn, &QPushButton::clicked, this, &DirectionalButtonBlockWidget::onKeyBtnPressed);
     }
 
-    void DirectionalButtonBlockWidget::setMapping(const QSharedPointer<Controller> &gpd) const {
+    void DirectionalButtonBlockWidget::setMapping(const std::shared_ptr<Controller> &gpd) const {
         topBtn->setText(QString::fromStdString(gpd->getButton(topOwcButton)));
         leftBtn->setText(QString::fromStdString(gpd->getButton(leftOwcButton)));
         rightBtn->setText(QString::fromStdString(gpd->getButton(rightOwcButton)));
         bottomBtn->setText(QString::fromStdString(gpd->getButton(bottomOwcButton)));
     }
 
-    void DirectionalButtonBlockWidget::writeMapping(const QSharedPointer<Controller> &gpd) {
+    void DirectionalButtonBlockWidget::writeMapping(const std::shared_ptr<Controller> &gpd) {
         if (!gpd->setButton(topOwcButton, topBtn->text().toStdString()))
             emit logSent(QString("failed to set %1").arg(topYmlKey.data()));
 

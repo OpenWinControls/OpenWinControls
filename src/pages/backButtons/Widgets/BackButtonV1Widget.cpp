@@ -61,7 +61,7 @@ namespace OWC {
         setLayout(lyt);
     }
 
-    void BackButtonV1Widget::setMapping(const QSharedPointer<Controller> &gpd) const {
+    void BackButtonV1Widget::setMapping(const std::shared_ptr<Controller> &gpd) const {
         for (int i=0,l=keySlots.length(); i<l; ++i) {
             const int kslot = i + 1;
 
@@ -72,7 +72,7 @@ namespace OWC {
         macroStartTime->setValue(gpd->getBackButtonStartTime(num, 4));
     }
 
-    void BackButtonV1Widget::writeMapping(const QSharedPointer<Controller> &gpd) {
+    void BackButtonV1Widget::writeMapping(const std::shared_ptr<Controller> &gpd) {
         for (int i=0,l=keySlots.length(); i<l; ++i) {
             const int kslot = i + 1;
 

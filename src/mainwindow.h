@@ -55,11 +55,11 @@ private:
     OWC::GamepadWorker *gamepadWorker = nullptr;
     QThread *gamepadThread = nullptr;
     QWidget *previousPage = nullptr;
-    QSharedPointer<OWC::Controller> gpd;
+    std::shared_ptr<OWC::Controller> gpd;
     QString appDataPath;
 
     [[nodiscard]] QString getProduct() const;
-    [[nodiscard]] QSharedPointer<OWC::Controller> getDevice(const QString &product) const;
+    [[nodiscard]] std::shared_ptr<OWC::Controller> getDevice(const QString &product) const;
     [[nodiscard]] bool isCompatible(const QString &product) const;
     void initApp();
     void initGamepadThread();

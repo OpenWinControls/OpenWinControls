@@ -63,7 +63,7 @@ namespace OWC {
         QObject::connect(activeSlots, &QSpinBox::valueChanged, this, &BackButtonV2Widget::onActiveSlotsChanged);
     }
 
-    void BackButtonV2Widget::setMapping(const QSharedPointer<ControllerV2> &gpd) const {
+    void BackButtonV2Widget::setMapping(const std::shared_ptr<ControllerV2> &gpd) const {
         for (int i=0,l=keySlots.length(); i<l; ++i) {
             const int kslot = i + 1;
 
@@ -75,7 +75,7 @@ namespace OWC {
         activeSlots->setValue(gpd->getBackButtonActiveSlots(num));
     }
 
-    void BackButtonV2Widget::writeMapping(const QSharedPointer<ControllerV2> &gpd) {
+    void BackButtonV2Widget::writeMapping(const std::shared_ptr<ControllerV2> &gpd) {
         for (int i=0,l=keySlots.length(); i<l; ++i) {
             const int kslot = i + 1;
 

@@ -42,11 +42,11 @@ namespace OWC {
         QObject::connect(keyBtn, &QPushButton::clicked, this, &SingleButtonBlockWidget::onKeyBtnPressed);
     }
 
-    void SingleButtonBlockWidget::setMapping(const QSharedPointer<Controller> &gpd) const {
+    void SingleButtonBlockWidget::setMapping(const std::shared_ptr<Controller> &gpd) const {
         keyBtn->setText(QString::fromStdString(gpd->getButton(owcButton)));
     }
 
-    void SingleButtonBlockWidget::writeMapping(const QSharedPointer<Controller> &gpd) {
+    void SingleButtonBlockWidget::writeMapping(const std::shared_ptr<Controller> &gpd) {
         if (!gpd->setButton(owcButton, keyBtn->text().toStdString()))
             emit logSent(QString("failed to set %1").arg(ymlKey.data()));
     }

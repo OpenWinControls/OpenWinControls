@@ -40,11 +40,11 @@ namespace OWC {
     public:
         explicit BackButtonsPage(const QString &helpLbl);
 
-        virtual void initPage(const QSharedPointer<Controller> &gpd) {}
+        virtual void initPage(const std::shared_ptr<Controller> &gpd) {}
 
         void setPendingButton(const QString &key) const;
-        virtual void setMapping(const QSharedPointer<Controller> &gpd) const = 0;
-        virtual void writeMapping(const QSharedPointer<Controller> &gpd) = 0;
+        virtual void setMapping(const std::shared_ptr<Controller> &gpd) const = 0;
+        virtual void writeMapping(const std::shared_ptr<Controller> &gpd) = 0;
         [[nodiscard]] virtual QString exportMappingToYaml() const = 0;
         virtual void importMappingFromYaml(const YAML::Node &yaml) const = 0;
 

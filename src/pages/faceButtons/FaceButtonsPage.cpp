@@ -57,12 +57,12 @@ namespace OWC {
         QObject::connect(charMapBtn, &QPushButton::clicked, this, &FaceButtonsPage::onCharMapBtnClicked);
     }
 
-    void FaceButtonsPage::setMapping(const QSharedPointer<Controller> &gpd) const {
+    void FaceButtonsPage::setMapping(const std::shared_ptr<Controller> &gpd) const {
         for (const ButtonBlockWidget *btn: buttonList)
             btn->setMapping(gpd);
     }
 
-    void FaceButtonsPage::writeMapping(const QSharedPointer<Controller> &gpd) {
+    void FaceButtonsPage::writeMapping(const std::shared_ptr<Controller> &gpd) {
         for (ButtonBlockWidget *btn: buttonList)
             btn->writeMapping(gpd);
     }

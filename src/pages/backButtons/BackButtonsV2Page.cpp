@@ -36,7 +36,7 @@ namespace OWC {
         QObject::connect(r4, &BackButtonV2Widget::pendingEditBtn, this, &BackButtonsV2Page::onkeyButtonPressed);
     }
 
-    void BackButtonsV2Page::initPage(const QSharedPointer<Controller> &gpd) {
+    void BackButtonsV2Page::initPage(const std::shared_ptr<Controller> &gpd) {
         if (gpd->hasFeature(ControllerFeature::BackButton4)) {
             r5 = new BackButtonV2Widget(4, 32, u"r5"_s);
 
@@ -46,8 +46,8 @@ namespace OWC {
         }
     }
 
-    void BackButtonsV2Page::setMapping(const QSharedPointer<Controller> &gpd) const {
-        const QSharedPointer<ControllerV2> gpdV2 = qSharedPointerCast<OWC::ControllerV2>(gpd);
+    void BackButtonsV2Page::setMapping(const std::shared_ptr<Controller> &gpd) const {
+        const std::shared_ptr<ControllerV2> gpdV2 = std::static_pointer_cast<OWC::ControllerV2>(gpd);
 
         l4->setMapping(gpdV2);
         r4->setMapping(gpdV2);
@@ -56,8 +56,8 @@ namespace OWC {
             r5->setMapping(gpdV2);
     }
 
-    void BackButtonsV2Page::writeMapping(const QSharedPointer<Controller> &gpd) {
-        const QSharedPointer<ControllerV2> gpdV2 = qSharedPointerCast<OWC::ControllerV2>(gpd);
+    void BackButtonsV2Page::writeMapping(const std::shared_ptr<Controller> &gpd) {
+        const std::shared_ptr<ControllerV2> gpdV2 = std::static_pointer_cast<OWC::ControllerV2>(gpd);
 
         l4->writeMapping(gpdV2);
         r4->writeMapping(gpdV2);
