@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <QVBoxLayout>
 #include <QColorDialog>
 #include <QMessageBox>
 
@@ -24,31 +25,41 @@
 namespace OWC {
     using namespace Qt::StringLiterals;
 
-    SettingsPage::SettingsPage() {
+    SettingsPage::SettingsPage(const std::shared_ptr<Controller> &gpd) {
+        QVBoxLayout *lyt = new QVBoxLayout();
         QHBoxLayout *buttonsLyt = new QHBoxLayout();
         QPushButton *backBtn = new QPushButton(u"Home"_s);
         QPushButton *resetBtn = new QPushButton(u"Reset"_s);
-        QPushButton *configResetBtn = new QPushButton(u"Configuration reset"_s);
+        QPushButton *restoreBtn = new QPushButton(u"Restore"_s);
 
-        lyt = new QVBoxLayout();
+        controller = gpd;
 
-        buttonsLyt->addWidget(configResetBtn);
+        buttonsLyt->addWidget(restoreBtn);
+        buttonsLyt->addWidget(resetBtn);
         buttonsLyt->addStretch();
         buttonsLyt->addWidget(backBtn);
-        buttonsLyt->addWidget(resetBtn);
+
+        if (gpd->hasFeature(ControllerFeature::ShoulderLedsV1))
+            lyt->addLayout(makeShoulderLedsV1());
+
+        if (gpd->hasFeature(ControllerFeature::RumbleV1))
+            lyt->addLayout(makeRumbleV1());
+
+        if (gpd->hasFeature(ControllerFeature::DeadZoneControlV1))
+            lyt->addLayout(makeDeadzoneV1());
 
         lyt->addStretch();
         lyt->addLayout(buttonsLyt);
 
         setLayout(lyt);
 
-        QObject::connect(configResetBtn, &QPushButton::clicked, this, &SettingsPage::onConfigResetBtnClicked);
+        QObject::connect(restoreBtn, &QPushButton::clicked, this, &SettingsPage::onRestoreBtnClicked);
+        QObject::connect(resetBtn, &QPushButton::clicked, this, &SettingsPage::refresh);
         QObject::connect(backBtn, &QPushButton::clicked, this, &SettingsPage::onBackBtnClicked);
-        QObject::connect(resetBtn, &QPushButton::clicked, this, &SettingsPage::onResetBtnClicked);
     }
 
-    QVBoxLayout *SettingsPage::makeRumbleV1Settings() {
-        QVBoxLayout *rumbleLyt = new QVBoxLayout();
+    QVBoxLayout *SettingsPage::makeRumbleV1() {
+        QVBoxLayout *lyt = new QVBoxLayout();
         QHBoxLayout *settLyt = new QHBoxLayout();
         QLabel *title = new QLabel(u"Rumble"_s);
         QFont titleFont = title->font();
@@ -60,28 +71,28 @@ namespace OWC {
         title->setFont(titleFont);
         rumble->addItems({u"off"_s, u"low"_s, u"high"_s});
 
-        settLyt->addWidget(new QLabel("Vibration intensity:"));
+        settLyt->addWidget(new QLabel(u"Vibration intensity:"_s));
         settLyt->addSpacing(4);
         settLyt->addWidget(rumble);
         settLyt->addStretch();
 
-        rumbleLyt->addWidget(title);
-        rumbleLyt->addSpacing(6);
-        rumbleLyt->addLayout(settLyt);
-        rumbleLyt->addSpacing(20);
+        lyt->addWidget(title);
+        lyt->addSpacing(6);
+        lyt->addLayout(settLyt);
+        lyt->addSpacing(20);
 
-        return rumbleLyt;
+        return lyt;
     }
 
-    QVBoxLayout *SettingsPage::makeShoulderLedsV1Settings() {
-        QVBoxLayout *ledCtlLyt = new QVBoxLayout();
+    QVBoxLayout *SettingsPage::makeShoulderLedsV1() {
+        QVBoxLayout *lyt = new QVBoxLayout();
         QHBoxLayout *ledLyt = new QHBoxLayout();
         QLabel *title = new QLabel(u"Shoulder leds"_s);
         QFont titleFont = title->font();
 
         ledMode = new QComboBox();
         ledColorLbl = new QLabel();
-        ledColorChooserBtn = new QPushButton(u"Color picker"_s);
+        ledColorPickBtn = new QPushButton(u"Color picker"_s);
 
         titleFont.setBold(true);
         title->setAlignment(Qt::AlignCenter);
@@ -97,22 +108,22 @@ namespace OWC {
         ledLyt->addSpacing(10);
         ledLyt->addWidget(ledColorLbl);
         ledLyt->addSpacing(10);
-        ledLyt->addWidget(ledColorChooserBtn);
+        ledLyt->addWidget(ledColorPickBtn);
         ledLyt->addStretch();
 
-        ledCtlLyt->addWidget(title);
-        ledCtlLyt->addSpacing(6);
-        ledCtlLyt->addLayout(ledLyt);
-        ledCtlLyt->addSpacing(20);
+        lyt->addWidget(title);
+        lyt->addSpacing(6);
+        lyt->addLayout(ledLyt);
+        lyt->addSpacing(20);
 
         QObject::connect(ledMode, &QComboBox::currentIndexChanged, this, &SettingsPage::onLedModeChanged);
-        QObject::connect(ledColorChooserBtn, &QPushButton::clicked, this, &SettingsPage::onLedColorChooserBtnClicked);
+        QObject::connect(ledColorPickBtn, &QPushButton::clicked, this, &SettingsPage::onLedColorPickBtnClicked);
 
-        return ledCtlLyt;
+        return lyt;
     }
 
-    QVBoxLayout *SettingsPage::makeDeadzoneV1Settings() {
-        QVBoxLayout *deadzoneLyt = new QVBoxLayout();
+    QVBoxLayout *SettingsPage::makeDeadzoneV1() {
+        QVBoxLayout *lyt = new QVBoxLayout();
         QHBoxLayout *settLyt = new QHBoxLayout();
         QVBoxLayout *leftLyt = new QVBoxLayout();
         QHBoxLayout *leftContLyt = new QHBoxLayout();
@@ -127,18 +138,18 @@ namespace OWC {
         QVBoxLayout *rBoundaryLyt = new QVBoxLayout();
         QHBoxLayout *rBoundaryLblLyt = new QHBoxLayout();
         QLabel *title = new QLabel(u"Deadzone"_s);
+        QLabel *leftCenterLbl = new QLabel(u"0"_s);
+        QLabel *leftBoundaryLbl = new QLabel(u"0"_s);
+        QLabel *rightCenterLbl = new QLabel(u"0"_s);
+        QLabel *rightBoundaryLbl = new QLabel(u"0"_s);
         QFont titleFont = title->font();
         QLabel *lsIcon = new QLabel();
         QLabel *rsIcon = new QLabel();
 
         dzLeftCenter = new QSlider(Qt::Horizontal);
-        dzLeftCenterLbl = new QLabel();
         dzLeftBoundary = new QSlider(Qt::Horizontal);
-        dzLeftBoundaryLbl = new QLabel();
         dzRightCenter = new QSlider(Qt::Horizontal);
-        dzRightCenterLbl = new QLabel();
         dzRightBoundary = new QSlider(Qt::Horizontal);
-        dzRightBoundaryLbl = new QLabel();
 
         titleFont.setBold(true);
         title->setAlignment(Qt::AlignCenter);
@@ -154,11 +165,11 @@ namespace OWC {
 
         lCenterLblLyt->addWidget(new QLabel(u"center"_s));
         lCenterLblLyt->addStretch();
-        lCenterLblLyt->addWidget(dzLeftCenterLbl);
+        lCenterLblLyt->addWidget(leftCenterLbl);
 
         lBoundaryLblLyt->addWidget(new QLabel(u"boundary"_s));
         lBoundaryLblLyt->addStretch();
-        lBoundaryLblLyt->addWidget(dzLeftBoundaryLbl);
+        lBoundaryLblLyt->addWidget(leftBoundaryLbl);
 
         lCenterLyt->addWidget(dzLeftCenter);
         lCenterLyt->addLayout(lCenterLblLyt);
@@ -176,11 +187,11 @@ namespace OWC {
 
         rCenterLblLyt->addWidget(new QLabel(u"center"_s));
         rCenterLblLyt->addStretch();
-        rCenterLblLyt->addWidget(dzRightCenterLbl);
+        rCenterLblLyt->addWidget(rightCenterLbl);
 
         rBoundaryLblLyt->addWidget(new QLabel(u"boundary"_s));
         rBoundaryLblLyt->addStretch();
-        rBoundaryLblLyt->addWidget(dzRightBoundaryLbl);
+        rBoundaryLblLyt->addWidget(rightBoundaryLbl);
 
         rCenterLyt->addWidget(dzRightCenter);
         rCenterLyt->addLayout(rCenterLblLyt);
@@ -200,72 +211,61 @@ namespace OWC {
         settLyt->addSpacing(20);
         settLyt->addLayout(rightLyt);
 
-        deadzoneLyt->addWidget(title);
-        deadzoneLyt->addSpacing(8);
-        deadzoneLyt->addLayout(settLyt);
-        deadzoneLyt->addSpacing(20);
+        lyt->addWidget(title);
+        lyt->addSpacing(8);
+        lyt->addLayout(settLyt);
+        lyt->addSpacing(20);
 
-        QObject::connect(dzLeftCenter, &QSlider::valueChanged, this, &SettingsPage::onDzLeftCenterChanged);
-        QObject::connect(dzLeftBoundary, &QSlider::valueChanged, this, &SettingsPage::onDzLeftBoundaryChanged);
-        QObject::connect(dzRightCenter, &QSlider::valueChanged, this, &SettingsPage::onDzRightCenterChanged);
-        QObject::connect(dzRightBoundary, &QSlider::valueChanged, this, &SettingsPage::onDzRightBoundaryChanged);
+        QObject::connect(dzLeftCenter, &QSlider::valueChanged, leftCenterLbl, qOverload<int>(&QLabel::setNum));
+        QObject::connect(dzLeftBoundary, &QSlider::valueChanged, leftBoundaryLbl, qOverload<int>(&QLabel::setNum));
+        QObject::connect(dzRightCenter, &QSlider::valueChanged, rightCenterLbl, qOverload<int>(&QLabel::setNum));
+        QObject::connect(dzRightBoundary, &QSlider::valueChanged, rightBoundaryLbl, qOverload<int>(&QLabel::setNum));
 
-        return deadzoneLyt;
+        return lyt;
     }
 
-    void SettingsPage::initPage(const std::shared_ptr<Controller> &gpd) {
-        if (gpd->hasFeature(ControllerFeature::ShoulderLedsV1))
-            lyt->insertLayout(0, makeShoulderLedsV1Settings());
-
-        if (gpd->hasFeature(ControllerFeature::RumbleV1))
-            lyt->insertLayout(0, makeRumbleV1Settings());
-
-        if (gpd->hasFeature(ControllerFeature::DeadZoneControlV1))
-            lyt->insertLayout(0, makeDeadzoneV1Settings());
-    }
-
-    void SettingsPage::setData(const std::shared_ptr<Controller> &gpd) const {
-        if (gpd->hasFeature(ControllerFeature::ShoulderLedsV1)) {
-            const std::tuple<int, int, int> lcolor = gpd->getLedColor();
+    void SettingsPage::refresh() const {
+        if (controller->hasFeature(ControllerFeature::ShoulderLedsV1)) {
+            const std::tuple<int, int, int> lcolor = controller->getLedColor();
             const QColor color = QColor(std::get<0>(lcolor), std::get<1>(lcolor), std::get<2>(lcolor));
-            QPalette ledColorLblPal = ledColorLbl->palette();
+            QPalette pal = ledColorLbl->palette();
 
-            ledColorLblPal.setColor(QPalette::Window, color);
-            ledColorLbl->setPalette(ledColorLblPal);
-            ledMode->setCurrentIndex(static_cast<int>(gpd->getLedMode()));
+            pal.setColor(QPalette::Window, color);
+            ledColorLbl->setPalette(pal);
+            ledMode->setCurrentIndex(static_cast<int>(controller->getLedMode()));
         }
 
-        if (gpd->hasFeature(ControllerFeature::RumbleV1))
-            rumble->setCurrentIndex(static_cast<int>(gpd->getRumbleMode()));
+        if (controller->hasFeature(ControllerFeature::RumbleV1))
+            rumble->setCurrentIndex(static_cast<int>(controller->getRumbleMode()));
 
-        if (gpd->hasFeature(ControllerFeature::DeadZoneControlV1)) {
-            dzLeftCenter->setValue(gpd->getAnalogCenter(true));
-            dzLeftBoundary->setValue(gpd->getAnalogBoundary(true));
-            dzRightCenter->setValue(gpd->getAnalogCenter(false));
-            dzRightBoundary->setValue(gpd->getAnalogBoundary(false));
+        if (controller->hasFeature(ControllerFeature::DeadZoneControlV1)) {
+            dzLeftCenter->setValue(controller->getAnalogCenter(true));
+            dzLeftBoundary->setValue(controller->getAnalogBoundary(true));
+            dzRightCenter->setValue(controller->getAnalogCenter(false));
+            dzRightBoundary->setValue(controller->getAnalogBoundary(false));
         }
     }
 
-    void SettingsPage::writeSettings(const std::shared_ptr<Controller> &gpd) const {
-        if (gpd->hasFeature(ControllerFeature::RumbleV1))
-            gpd->setRumble(static_cast<RumbleMode>(rumble->currentIndex()));
+    void SettingsPage::writeSettings() const {
+        if (controller->hasFeature(ControllerFeature::RumbleV1))
+            controller->setRumble(static_cast<RumbleMode>(rumble->currentIndex()));
 
-        if (gpd->hasFeature(ControllerFeature::DeadZoneControlV1)) {
-            gpd->setAnalogCenter(dzLeftCenter->value(), true);
-            gpd->setAnalogBoundary(dzLeftBoundary->value(), true);
-            gpd->setAnalogCenter(dzRightCenter->value(), false);
-            gpd->setAnalogBoundary(dzRightBoundary->value(), false);
+        if (controller->hasFeature(ControllerFeature::DeadZoneControlV1)) {
+            controller->setAnalogCenter(dzLeftCenter->value(), true);
+            controller->setAnalogBoundary(dzLeftBoundary->value(), true);
+            controller->setAnalogCenter(dzRightCenter->value(), false);
+            controller->setAnalogBoundary(dzRightBoundary->value(), false);
         }
 
-        if (gpd->hasFeature(ControllerFeature::ShoulderLedsV1)) {
+        if (controller->hasFeature(ControllerFeature::ShoulderLedsV1)) {
             const QColor color = ledColorLbl->palette().color(QPalette::Window);
 
-            gpd->setLedMode(static_cast<LedMode>(ledMode->currentIndex()));
-            gpd->setLedColor(color.red(), color.green(), color.blue());
+            controller->setLedMode(static_cast<LedMode>(ledMode->currentIndex()));
+            controller->setLedColor(color.red(), color.green(), color.blue());
         }
     }
 
-    void SettingsPage::onConfigResetBtnClicked() {
+    void SettingsPage::onRestoreBtnClicked() {
         QMessageBox *mbox = new QMessageBox(this);
         const QPushButton *yesBtn = mbox->addButton(u"Yes"_s, QMessageBox::YesRole);
         QPushButton *noBtn = mbox->addButton(u"No"_s, QMessageBox::NoRole);
@@ -276,8 +276,15 @@ namespace OWC {
         mbox->setDefaultButton(noBtn);
         mbox->exec();
 
-        if (mbox->clickedButton() == yesBtn)
-            emit configReset();
+        if (mbox->clickedButton() == yesBtn) {
+            if (!controller->resetConfig()) {
+                QMessageBox::critical(this, u"Configuration reset"_s, u"Failed"_s);
+
+            } else {
+                QMessageBox::information(this, u"Configuration reset"_s, u"Success"_s);
+                emit configRestore();
+            }
+        }
 
         mbox->deleteLater();
     }
@@ -286,11 +293,7 @@ namespace OWC {
         emit backToHome();
     }
 
-    void SettingsPage::onResetBtnClicked() {
-        emit resetSettings();
-    }
-
-    void SettingsPage::onLedColorChooserBtnClicked() {
+    void SettingsPage::onLedColorPickBtnClicked() {
         const QColor color = QColorDialog::getColor(Qt::white, this, u"Select led color"_s);
 
         if (!color.isValid())
@@ -306,22 +309,6 @@ namespace OWC {
         const bool hasColor = idx == 1 || idx == 2;
 
         ledColorLbl->setVisible(hasColor);
-        ledColorChooserBtn->setVisible(hasColor);
-    }
-
-    void SettingsPage::onDzLeftCenterChanged(const int v) const {
-        dzLeftCenterLbl->setNum(v);
-    }
-
-    void SettingsPage::onDzLeftBoundaryChanged(const int v) const {
-        dzLeftBoundaryLbl->setNum(v);
-    }
-
-    void SettingsPage::onDzRightCenterChanged(const int v) const {
-        dzRightCenterLbl->setNum(v);
-    }
-
-    void SettingsPage::onDzRightBoundaryChanged(const int v) const {
-        dzRightBoundaryLbl->setNum(v);
+        ledColorPickBtn->setVisible(hasColor);
     }
 }

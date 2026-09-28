@@ -46,7 +46,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     stackedWidget = new QStackedWidget();
     homePage = new OWC::HomePage();
     logsPage = new OWC::LogsPage();
-    settingsPage = new OWC::SettingsPage();
     controllerVersionLbl = new QLabel(u"0.0"_s);
 
     appFont.setPointSize(12);
@@ -57,7 +56,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     repoLinkLbl->setAlignment(Qt::AlignCenter);
     stackedWidget->addWidget(homePage);
     stackedWidget->addWidget(logsPage);
-    stackedWidget->addWidget(settingsPage);
     stackedWidget->setCurrentIndex(0);
 
     if (!QDir().exists(appDataPath) && !QDir().mkdir(appDataPath)) {
@@ -80,9 +78,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     QObject::connect(homePage, &OWC::HomePage::showLogs, this, &MainWindow::onHomeShowLogsClicked);
     QObject::connect(logsPage, &OWC::LogsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
-    QObject::connect(settingsPage, &OWC::SettingsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
-    QObject::connect(settingsPage, &OWC::SettingsPage::resetSettings, this, &MainWindow::onResetSettings);
-    QObject::connect(settingsPage, &OWC::SettingsPage::configReset, this, &MainWindow::onSettingsConfigResetClicked);
 
     initApp();
 }
@@ -236,6 +231,7 @@ void MainWindow::initApp() {
         QObject::connect(xinputPage, &OWC::FaceButtonsPage::logSent, this, &MainWindow::onLogSent);
     }
 
+    settingsPage = new OWC::SettingsPage(gpd);
     charMapPage = new OWC::CharMapPage(gpd->getControllerType() == 2);
     kbdMousePage = new OWC::KeyboardMouseButtonsPage();
     yamlBrowserPage = new OWC::YamlBrowserPage(appDataPath, gpd->getControllerType());
@@ -245,15 +241,15 @@ void MainWindow::initApp() {
                                                                 .arg(QString::number(kmin, 16))
                                                                 .arg(QString::number(kmax, 16)));
 
+    stackedWidget->addWidget(settingsPage);
     stackedWidget->addWidget(charMapPage);
     stackedWidget->addWidget(kbdMousePage);
     stackedWidget->addWidget(backButtonsPage);
     stackedWidget->addWidget(yamlBrowserPage);
     backButtonsPage->initPage(gpd);
-    settingsPage->initPage(gpd);
     kbdMousePage->setMapping(gpd);
     backButtonsPage->setMapping(gpd);
-    settingsPage->setData(gpd);
+    settingsPage->refresh();
     homePage->setDevice(prod);
 
     QObject::connect(homePage, &OWC::HomePage::keyboardMouseMap, this, &MainWindow::onHomeKeyboardMouseMapClicked);
@@ -264,6 +260,8 @@ void MainWindow::initApp() {
     QObject::connect(homePage, &OWC::HomePage::importYaml, this, &MainWindow::onHomeImportYamlClicked);
     QObject::connect(homePage, &OWC::HomePage::settingsPage, this, &MainWindow::onHomeSettingsPageClicked);
     QObject::connect(homePage, &OWC::HomePage::applyChanges, this, &MainWindow::onHomeApplyChanges);
+    QObject::connect(settingsPage, &OWC::SettingsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
+    QObject::connect(settingsPage, &OWC::SettingsPage::configRestore, this, &MainWindow::onSettingsConfigRestore);
     QObject::connect(charMapPage, &OWC::CharMapPage::hideCharMap, this, &MainWindow::onHideCharMapClicked);
     QObject::connect(charMapPage, &OWC::CharMapPage::keyPressed, this, &MainWindow::onCharMapKeyPressed);
     QObject::connect(kbdMousePage, &OWC::FaceButtonsPage::showCharMap, this, &MainWindow::onKeyboardMouseCharMapClicked);
@@ -342,7 +340,7 @@ void MainWindow::onHomeYamlBrowserClicked() const {
 }
 
 void MainWindow::onHomeSettingsPageClicked() const {
-    stackedWidget->setCurrentIndex(2);
+    stackedWidget->setCurrentWidget(settingsPage);
 }
 
 void MainWindow::onHomeApplyChanges() {
@@ -351,7 +349,7 @@ void MainWindow::onHomeApplyChanges() {
     homePage->enableButtons(false);
     kbdMousePage->writeMapping(gpd);
     backButtonsPage->writeMapping(gpd);
-    settingsPage->writeSettings(gpd);
+    settingsPage->writeSettings();
 
     if (xinputPage != nullptr)
         xinputPage->writeMapping(gpd);
@@ -493,13 +491,6 @@ void MainWindow::onCharMapKeyPressed(const QString &key) const {
         backButtonsPage->setPendingButton(key);
 }
 
-void MainWindow::onSettingsConfigResetClicked() {
-    if (!gpd->resetConfig())
-        QMessageBox::critical(this, u"Configuration reset"_s, u"Failed"_s);
-    else
-        QMessageBox::information(this, u"Configuration reset"_s, u"Success"_s);
-}
-
 void MainWindow::onYamlBrowserImportProfile(const QString &yml) const {
     try {
         const YAML::Node yaml = YAML::Load(yml.toStdString());
@@ -531,8 +522,9 @@ void MainWindow::onResetBackButtons() const {
     backButtonsPage->setMapping(gpd);
 }
 
-void MainWindow::onResetSettings() const {
-    settingsPage->setData(gpd);
+void MainWindow::onSettingsConfigRestore() const {
+    settingsPage->refresh();
+    //todo others
 }
 
 void MainWindow::onGamepadButton(const QString &key) const {

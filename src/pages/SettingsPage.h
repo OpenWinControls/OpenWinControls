@@ -16,8 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #pragma once
-
-#include <QVBoxLayout>
 #include <QComboBox>
 #include <QPushButton>
 #include <QLabel>
@@ -29,45 +27,36 @@ namespace OWC {
         Q_OBJECT
 
     private:
-        QVBoxLayout *lyt = nullptr;
+        std::shared_ptr<Controller> controller;
         QComboBox *rumble = nullptr;
         QSlider *dzLeftCenter = nullptr;
-        QLabel *dzLeftCenterLbl = nullptr;
         QSlider *dzLeftBoundary = nullptr;
-        QLabel *dzLeftBoundaryLbl = nullptr;
         QSlider *dzRightCenter = nullptr;
-        QLabel *dzRightCenterLbl = nullptr;
         QSlider *dzRightBoundary = nullptr;
-        QLabel *dzRightBoundaryLbl = nullptr;
         QComboBox *ledMode = nullptr;
         QLabel *ledColorLbl = nullptr;
-        QPushButton *ledColorChooserBtn = nullptr;
+        QPushButton *ledColorPickBtn = nullptr;
 
-        [[nodiscard]] QVBoxLayout *makeRumbleV1Settings();
-        [[nodiscard]] QVBoxLayout *makeShoulderLedsV1Settings();
-        [[nodiscard]] QVBoxLayout *makeDeadzoneV1Settings();
+        [[nodiscard]] QVBoxLayout *makeRumbleV1();
+        [[nodiscard]] QVBoxLayout *makeShoulderLedsV1();
+        [[nodiscard]] QVBoxLayout *makeDeadzoneV1();
 
     public:
-        SettingsPage();
+        explicit SettingsPage(const std::shared_ptr<Controller> &gpd);
 
-        void initPage(const std::shared_ptr<Controller> &gpd);
-        void setData(const std::shared_ptr<Controller> &gpd) const;
-        void writeSettings(const std::shared_ptr<Controller> &gpd) const;
+        void writeSettings() const;
 
     private slots:
-        void onConfigResetBtnClicked();
+        void onRestoreBtnClicked();
         void onBackBtnClicked();
-        void onResetBtnClicked();
-        void onLedColorChooserBtnClicked();
+        void onLedColorPickBtnClicked();
         void onLedModeChanged(int idx) const;
-        void onDzLeftCenterChanged(int v) const;
-        void onDzLeftBoundaryChanged(int v) const;
-        void onDzRightCenterChanged(int v) const;
-        void onDzRightBoundaryChanged(int v) const;
+
+    public slots:
+        void refresh() const;
 
     signals:
         void backToHome();
-        void resetSettings();
-        void configReset();
+        void configRestore();
     };
 }
