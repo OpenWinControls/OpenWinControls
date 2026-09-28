@@ -27,7 +27,6 @@
 #include "ui_mainwindow.h"
 #include "pages/backButtons/BackButtonsV1Page.h"
 #include "pages/backButtons/BackButtonsV2Page.h"
-#include "version.h"
 #include "include/GPDProducts.h"
 #include "extern/libOpenWinControls/src/include/ControllerFeature.h"
 #include "extern/libOpenWinControls/src/controller/ControllerV1.h"
@@ -37,8 +36,6 @@ using namespace Qt::StringLiterals;
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
-    setWindowTitle(QString("%1 %2.%3").arg(APP_NAME).arg(APP_VER_MAJOR).arg(APP_VER_MINOR));
-    setWindowIcon(QIcon(u":/app/icon"_s));
 
     QVBoxLayout *lyt = new QVBoxLayout();
     QHBoxLayout *bottomLyt = new QHBoxLayout();

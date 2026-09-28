@@ -21,6 +21,7 @@
 #include "include/win.h"
 #endif
 #include "mainwindow.h"
+#include "version.h"
 
 int main(int argc, char *argv[]) {
 #ifdef _WIN32
@@ -34,6 +35,8 @@ int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
     MainWindow w;
 
+    w.setWindowTitle(QString("OpenWinControls %1.%2").arg(APP_VER_MAJOR).arg(APP_VER_MINOR));
+    w.setWindowIcon(QIcon(":/app/icon"));
     w.showMaximized();
     return a.exec();
 }

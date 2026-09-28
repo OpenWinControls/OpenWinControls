@@ -17,6 +17,5 @@
  */
 #pragma once
 
-#define APP_NAME "@PROJECT_NAME@"
 #define APP_VER_MAJOR @PROJECT_VERSION_MAJOR@
 #define APP_VER_MINOR @PROJECT_VERSION_MINOR@
