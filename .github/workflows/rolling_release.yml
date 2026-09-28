@@ -15,7 +15,7 @@ jobs:
       win_release_pkg_id: ${{steps.win_release_zip.outputs.artifact-id}}
 
     steps:
-      - uses: jurplel/install-qt-action@master
+      - uses: jurplel/install-qt-action@v4
         with:
           version: '6.11.2'
           aqtsource: git+https://github.com/miurahr/aqtinstall.git@076e1659807d0b362a3ed684d54c2e9c775eb9c7
@@ -59,7 +59,7 @@ jobs:
       linux_owc_appimg_id: ${{steps.linux_appimg.outputs.artifact-id}}
 
     steps:
-      - uses: jurplel/install-qt-action@master
+      - uses: jurplel/install-qt-action@v4
         with:
           version: '6.11.2'
           aqtsource: git+https://github.com/miurahr/aqtinstall.git@076e1659807d0b362a3ed684d54c2e9c775eb9c7
