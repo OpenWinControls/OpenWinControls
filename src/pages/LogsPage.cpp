@@ -18,6 +18,7 @@
 #include <QVBoxLayout>
 #include <QScroller>
 #include <QFileDialog>
+#include <QPushButton>
 #include <QFile>
 
 #include "LogsPage.h"

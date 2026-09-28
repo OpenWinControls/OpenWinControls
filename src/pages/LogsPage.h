@@ -17,7 +17,6 @@
  */
 #pragma once
 
-#include <QPushButton>
 #include <QTextEdit>
 
 namespace OWC {
