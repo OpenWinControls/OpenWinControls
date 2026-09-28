@@ -28,7 +28,7 @@ namespace OWC {
 
     LogsPage::LogsPage() {
         QVBoxLayout *lyt = new QVBoxLayout();
-        QHBoxLayout *buttonLyt = new QHBoxLayout();
+        QHBoxLayout *buttonsLyt = new QHBoxLayout();
         QPushButton *clearBtn = new QPushButton(u"Clear"_s);
         QPushButton *saveBtn = new QPushButton(u"Save"_s);
         QPushButton *backBtn = new QPushButton(u"Home"_s);
@@ -40,12 +40,13 @@ namespace OWC {
         logContainer->setTextInteractionFlags(Qt::TextSelectableByMouse|Qt::TextSelectableByKeyboard);
         QScroller::grabGesture(logContainer->viewport(), QScroller::LeftMouseButtonGesture);
 
-        buttonLyt->addWidget(backBtn);
-        buttonLyt->addStretch();
-        buttonLyt->addWidget(clearBtn);
-        buttonLyt->addWidget(saveBtn);
+        buttonsLyt->addWidget(clearBtn);
+        buttonsLyt->addWidget(saveBtn);
+        buttonsLyt->addStretch();
+        buttonsLyt->addWidget(backBtn);
+
         lyt->addWidget(logContainer);
-        lyt->addLayout(buttonLyt);
+        lyt->addLayout(buttonsLyt);
 
         setLayout(lyt);
 
@@ -54,7 +55,7 @@ namespace OWC {
         QObject::connect(backBtn, &QPushButton::clicked, this, &LogsPage::onBackBtnClicked);
     }
 
-    void LogsPage::writeLog(const QString &msg) const {
+    void LogsPage::write(const QString &msg) const {
         logContainer->append(msg);
     }
 

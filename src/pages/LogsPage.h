@@ -29,7 +29,7 @@ namespace OWC {
     public:
         LogsPage();
 
-        void writeLog(const QString &msg) const;
+        void write(const QString &msg) const;
 
     private slots:
         void onClearBtnClicked() const;

@@ -64,11 +64,11 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     stackedWidget->setCurrentIndex(0);
 
     if (!QDir().exists(appDataPath) && !QDir().mkdir(appDataPath)) {
-        logsPage->writeLog(QString("failed to create data folder: %1").arg(appDataPath));
+        logsPage->write(QString("failed to create data folder: %1").arg(appDataPath));
         appDataPath.clear();
 
     } else {
-        logsPage->writeLog(QString("data path: %1").arg(appDataPath));
+        logsPage->write(QString("data path: %1").arg(appDataPath));
     }
 
     bottomLyt->addWidget(new QLabel(u"Controller version:"_s));
@@ -102,7 +102,7 @@ QString MainWindow::getProduct() const {
     QFile prodF(u"/sys/class/dmi/id/board_name"_s);
 
     if (!prodF.open(QFile::ReadOnly | QFile::Text)) {
-        logsPage->writeLog(QString("failed to read product name: %1").arg(prodF.errorString()));
+        logsPage->write(QString("failed to read product name: %1").arg(prodF.errorString()));
         return "";
     }
 
@@ -118,13 +118,13 @@ QString MainWindow::getProduct() const {
 
     ret = RegOpenKeyExW(HKEY_LOCAL_MACHINE, LR"(HARDWARE\DESCRIPTION\System\BIOS)", 0, KEY_READ, &rkey);
     if (ret != ERROR_SUCCESS) {
-        logsPage->writeLog(QString("failed to open bios subkey, code: %1").arg(ret));
+        logsPage->write(QString("failed to open bios subkey, code: %1").arg(ret));
         return "";
     }
 
     ret = RegGetValueW(rkey, nullptr, L"BaseBoardProduct", RRF_RT_REG_SZ, nullptr, nullptr, &bufSz);
     if (ret != ERROR_SUCCESS) {
-        logsPage->writeLog(QString("failed to read size for reg value, code %1").arg(ret));
+        logsPage->write(QString("failed to read size for reg value, code %1").arg(ret));
         RegCloseKey(rkey);
         return "";
     }
@@ -134,7 +134,7 @@ QString MainWindow::getProduct() const {
 
     ret = RegGetValueW(rkey, nullptr, L"BaseBoardProduct", RRF_RT_REG_SZ, nullptr, buf.get(), &bufSz);
     if (ret != ERROR_SUCCESS) {
-        logsPage->writeLog(QString("failed to read reg value, code %1").arg(ret));
+        logsPage->write(QString("failed to read reg value, code %1").arg(ret));
         RegCloseKey(rkey);
         return "";
     }
@@ -158,7 +158,7 @@ std::shared_ptr<OWC::Controller> MainWindow::getDevice(const QString &product) c
     else if (product == OWC::mini25 || product == OWC::mini25L)
         return std::make_shared<OWC::ControllerV2>(OWC::ControllerFeature::DeadZoneControlV1 | OWC::ControllerFeature::RumbleV1 | OWC::ControllerFeature::XinputMappingV1);
     else
-        logsPage->writeLog(QString("unknown device: %1").arg(product));
+        logsPage->write(QString("unknown device: %1").arg(product));
 
     return {};
 }
@@ -184,13 +184,13 @@ bool MainWindow::isCompatible(const QString &product) const {
         return true;
 
     if (!isSupported)
-        logsPage->writeLog(QString("version %1.%2 is not supported").arg(major).arg(minor));
+        logsPage->write(QString("version %1.%2 is not supported").arg(major).arg(minor));
 
     return isSupported;
 }
 
 void MainWindow::initApp() {
-    const std::function<void(const std::wstring &)> logCB = [&](const std::wstring &msg) { logsPage->writeLog(QString::fromStdWString(msg)); };
+    const std::function<void(const std::wstring &)> logCB = [&](const std::wstring &msg) { logsPage->write(QString::fromStdWString(msg)); };
     const QString prod = getProduct();
 
     gpd = getDevice(prod);
@@ -200,19 +200,19 @@ void MainWindow::initApp() {
     gpd->enableLogging(logCB);
 
     if (!gpd->init()) {
-        logsPage->writeLog(u"device initialization failed"_s);
+        logsPage->write(u"device initialization failed"_s);
         return;
 
     } else if (!gpd->readVersion()) {
-        logsPage->writeLog(u"failed to read firmware version"_s);
+        logsPage->write(u"failed to read firmware version"_s);
         return;
 
     } else if (!isCompatible(prod)) {
-        logsPage->writeLog(u"no compatible controller found"_s);
+        logsPage->write(u"no compatible controller found"_s);
         return;
 
     } else if (!gpd->readConfig()) {
-        logsPage->writeLog(u"failed to read firmware config"_s);
+        logsPage->write(u"failed to read firmware config"_s);
         return;
     }
 
@@ -317,7 +317,7 @@ void MainWindow::importYamlMapping(const YAML::Node &yaml) const {
 }
 
 void MainWindow::onLogSent(const QString& msg) const {
-    logsPage->writeLog(msg);
+    logsPage->write(msg);
 }
 
 void MainWindow::onHomeKeyboardMouseMapClicked() const {
@@ -337,7 +337,7 @@ void MainWindow::onHomeBackButtonsMapClicked() {
 }
 
 void MainWindow::onHomeShowLogsClicked() const {
-    stackedWidget->setCurrentIndex(1);
+    stackedWidget->setCurrentWidget(logsPage);
 }
 
 void MainWindow::onHomeYamlBrowserClicked() const {
@@ -392,7 +392,7 @@ void MainWindow::onHomeExportYamlClicked() {
     QTextStream ts(&outF);
 
     if (!outF.open(QFile::WriteOnly | QFile::Text)) {
-        logsPage->writeLog(QString("failed to export mapping: %1").arg(outF.errorString()));
+        logsPage->write(QString("failed to export mapping: %1").arg(outF.errorString()));
         return;
     }
 
@@ -405,7 +405,7 @@ void MainWindow::onHomeExportYamlClicked() {
 
     ts.flush();
     outF.close();
-    logsPage->writeLog(QString("exported mapping to file: %1").arg(out));
+    logsPage->write(QString("exported mapping to file: %1").arg(out));
 }
 
 void MainWindow::onHomeImportYamlClicked() {
@@ -417,7 +417,7 @@ void MainWindow::onHomeImportYamlClicked() {
     QFile mappF(map);
 
     if (!mappF.open(QFile::ReadOnly | QFile::Text)) {
-        logsPage->writeLog(QString("failed to import mapping: %1").arg(mappF.errorString()));
+        logsPage->write(QString("failed to import mapping: %1").arg(mappF.errorString()));
         return;
     }
 
@@ -426,14 +426,14 @@ void MainWindow::onHomeImportYamlClicked() {
         const YAML::Node yaml = YAML::Load(content.toStdString());
 
         if (!yaml.IsMap()) {
-            logsPage->writeLog(u"Imported file does not contain a valid yaml map"_s);
+            logsPage->write(u"Imported file does not contain a valid yaml map"_s);
             return;
         }
 
         const int type = yaml["MAPPING_TYPE"].as<int>();
 
         if (gpd->getControllerType() != type) {
-            logsPage->writeLog(QString("incompatible mapping type, cannot import %1").arg(type));
+            logsPage->write(QString("incompatible mapping type, cannot import %1").arg(type));
             return;
         }
 
@@ -441,12 +441,12 @@ void MainWindow::onHomeImportYamlClicked() {
         importYamlMapping(yaml);
 
     } catch (const YAML::Exception &e) {
-        logsPage->writeLog(e.what());
+        logsPage->write(e.what());
         mappF.close();
         return;
     }
 
-    logsPage->writeLog(QString("imported mapping from file: %1").arg(map));
+    logsPage->write(QString("imported mapping from file: %1").arg(map));
 }
 
 void MainWindow::onKeyboardMouseCharMapClicked() {
@@ -510,11 +510,11 @@ void MainWindow::onYamlBrowserImportProfile(const QString &yml) const {
         importYamlMapping(yaml);
 
     } catch (const YAML::Exception &e) {
-        logsPage->writeLog(e.what());
+        logsPage->write(e.what());
         return;
     }
 
-    logsPage->writeLog(u"imported mapping from profile"_s);
+    logsPage->write(u"imported mapping from profile"_s);
 }
 
 void MainWindow::onBackToHomeClicked() {
