@@ -44,14 +44,14 @@ namespace OWC {
     public:
         HomePage();
 
-        void setDevice(const QString &product) const;
+        void init(const QString &product) const;
         void setEmulationMode(EmulationMode mode) const;
         void enableButtons(bool enable) const;
 
     private slots:
         void onFaceButtonsMapClicked();
         void onBackButtonsMapClicked();
-        void onShowLogsBtnClicked();
+        void onLogsBtnClicked();
         void onYamlBrowserClicked();
         void onSettingsClicked();
         void onApplyBtnClicked();

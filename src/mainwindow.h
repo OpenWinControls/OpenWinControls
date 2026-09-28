@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #pragma once
-
 #include <QMainWindow>
 #include <QStackedWidget>
 #include <QThread>
@@ -42,6 +41,8 @@ class MainWindow final: public QMainWindow {
 
 private:
     Ui::MainWindow *ui;
+    std::shared_ptr<OWC::Controller> gpd;
+    QString appDataPath;
     QStackedWidget *stackedWidget = nullptr;
     OWC::HomePage *homePage = nullptr;
     OWC::CharMapPage *charMapPage = nullptr;
@@ -51,17 +52,16 @@ private:
     OWC::LogsPage *logsPage = nullptr;
     OWC::SettingsPage *settingsPage = nullptr;
     OWC::YamlBrowserPage *yamlBrowserPage = nullptr;
-    QLabel *controllerVersionLbl = nullptr;
     OWC::GamepadWorker *gamepadWorker = nullptr;
     QThread *gamepadThread = nullptr;
     QWidget *previousPage = nullptr;
-    std::shared_ptr<OWC::Controller> gpd;
-    QString appDataPath;
 
+    [[nodiscard]] QString getDataPath() const;
     [[nodiscard]] QString getProduct() const;
     [[nodiscard]] std::shared_ptr<OWC::Controller> getDevice(const QString &product) const;
     [[nodiscard]] bool isCompatible(const QString &product) const;
-    void initApp();
+    [[nodiscard]] bool initController(const QString &product);
+    void initPages(const QString &product, QLabel *versionLbl);
     void initGamepadThread();
     void quitGamepadThread();
     void importYamlMapping(const YAML::Node &yaml) const;

@@ -39,47 +39,42 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     QVBoxLayout *lyt = new QVBoxLayout();
     QHBoxLayout *bottomLyt = new QHBoxLayout();
-    QLabel *repoLinkLbl = new QLabel(u"([sources](https://github.com/OpenWinControls/OpenWinControls))"_s);
-    QFont appFont = font();
+    QLabel *repoLbl = new QLabel(u"([sources](https://github.com/OpenWinControls/OpenWinControls))"_s);
+    QLabel *fwVersionLbl = new QLabel(u"0.0"_s);
+    const QString product = getProduct();
 
-    appDataPath = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
+    appDataPath = getDataPath();
     stackedWidget = new QStackedWidget();
     homePage = new OWC::HomePage();
     logsPage = new OWC::LogsPage();
-    controllerVersionLbl = new QLabel(u"0.0"_s);
 
-    appFont.setPointSize(12);
-    setFont(appFont);
-    repoLinkLbl->setTextFormat(Qt::MarkdownText);
-    repoLinkLbl->setTextInteractionFlags(Qt::TextBrowserInteraction);
-    repoLinkLbl->setOpenExternalLinks(true);
-    repoLinkLbl->setAlignment(Qt::AlignCenter);
+    if (appDataPath.isEmpty())
+        logsPage->write(QString("failed to create data folder: %1").arg(appDataPath));
+    else
+        logsPage->write(QString("data path: %1").arg(appDataPath));
+
+    repoLbl->setTextFormat(Qt::MarkdownText);
+    repoLbl->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    repoLbl->setOpenExternalLinks(true);
+    repoLbl->setAlignment(Qt::AlignCenter);
     stackedWidget->addWidget(homePage);
     stackedWidget->addWidget(logsPage);
-    stackedWidget->setCurrentIndex(0);
+    stackedWidget->setCurrentWidget(homePage);
 
-    if (!QDir().exists(appDataPath) && !QDir().mkdir(appDataPath)) {
-        logsPage->write(QString("failed to create data folder: %1").arg(appDataPath));
-        appDataPath.clear();
-
-    } else {
-        logsPage->write(QString("data path: %1").arg(appDataPath));
-    }
+    if (initController(product))
+        initPages(product, fwVersionLbl);
 
     bottomLyt->addWidget(new QLabel(u"Controller version:"_s));
-    bottomLyt->addWidget(controllerVersionLbl);
+    bottomLyt->addWidget(fwVersionLbl);
     bottomLyt->addStretch();
     bottomLyt->addWidget(new QLabel(u"kylon - GPLv3"_s));
-    bottomLyt->addWidget(repoLinkLbl);
+    bottomLyt->addWidget(repoLbl);
     lyt->addWidget(stackedWidget);
     lyt->addLayout(bottomLyt);
-
     ui->centralwidget->setLayout(lyt);
 
     QObject::connect(homePage, &OWC::HomePage::showLogs, this, &MainWindow::onHomeShowLogsClicked);
     QObject::connect(logsPage, &OWC::LogsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
-
-    initApp();
 }
 
 MainWindow::~MainWindow() {
@@ -87,6 +82,13 @@ MainWindow::~MainWindow() {
         quitGamepadThread();
 
     delete ui;
+}
+
+QString MainWindow::getDataPath() const {
+    QString path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
+    QDir qdir;
+
+    return !qdir.exists(path) && !qdir.mkdir(path) ? "" : path;
 }
 
 QString MainWindow::getProduct() const {
@@ -181,33 +183,34 @@ bool MainWindow::isCompatible(const QString &product) const {
     return isSupported;
 }
 
-void MainWindow::initApp() {
-    const std::function<void(const std::wstring &)> logCB = [&](const std::wstring &msg) { logsPage->write(QString::fromStdWString(msg)); };
-    const QString prod = getProduct();
-
-    gpd = getDevice(prod);
+bool MainWindow::initController(const QString &product) {
+    gpd = getDevice(product);
     if (!gpd)
-        return;
+        return false;
 
-    gpd->enableLogging(logCB);
+    gpd->enableLogging([&](const std::wstring &msg) { logsPage->write(QString::fromStdWString(msg)); });
 
     if (!gpd->init()) {
         logsPage->write(u"device initialization failed"_s);
-        return;
+        return false;
 
     } else if (!gpd->readVersion()) {
         logsPage->write(u"failed to read firmware version"_s);
-        return;
+        return false;
 
-    } else if (!isCompatible(prod)) {
+    } else if (!isCompatible(product)) {
         logsPage->write(u"no compatible controller found"_s);
-        return;
+        return false;
 
     } else if (!gpd->readConfig()) {
         logsPage->write(u"failed to read firmware config"_s);
-        return;
+        return false;
     }
 
+    return true;
+}
+
+void MainWindow::initPages(const QString &product, QLabel *versionLbl) {
     const auto [xmin, xmax] = gpd->getXVersion();
     const auto [kmin, kmax] = gpd->getKVersion();
 
@@ -220,9 +223,9 @@ void MainWindow::initApp() {
         backButtonsPage = new OWC::BackButtonsV2Page();
         xinputPage = new OWC::XinputButtonsPage();
 
-        stackedWidget->addWidget(xinputPage);
-        xinputPage->setMapping(gpd);
         homePage->setEmulationMode(gpdV2->getEmulationMode());
+        xinputPage->setMapping(gpd);
+        stackedWidget->addWidget(xinputPage);
         initGamepadThread();
 
         QObject::connect(xinputPage, &OWC::FaceButtonsPage::showCharMap, this, &MainWindow::onXinputCharMapClicked);
@@ -236,21 +239,22 @@ void MainWindow::initApp() {
     kbdMousePage = new OWC::KeyboardMouseButtonsPage();
     yamlBrowserPage = new OWC::YamlBrowserPage(appDataPath, gpd->getControllerType());
 
-    controllerVersionLbl->setText(QString("X%1.%2, K%3.%4").arg(QString::number(xmin, 16))
-                                                                .arg(QString::number(xmax, 16))
-                                                                .arg(QString::number(kmin, 16))
-                                                                .arg(QString::number(kmax, 16)));
+    versionLbl->setText(QString("X%1.%2, K%3.%4").arg(QString::number(xmin, 16))
+                                                            .arg(QString::number(xmax, 16))
+                                                            .arg(QString::number(kmin, 16))
+                                                            .arg(QString::number(kmax, 16)));
 
+    homePage->init(product);
+    homePage->enableButtons(true);
+    backButtonsPage->initPage(gpd);
+    backButtonsPage->setMapping(gpd);
+    kbdMousePage->setMapping(gpd);
+    settingsPage->refresh();
     stackedWidget->addWidget(settingsPage);
     stackedWidget->addWidget(charMapPage);
     stackedWidget->addWidget(kbdMousePage);
     stackedWidget->addWidget(backButtonsPage);
     stackedWidget->addWidget(yamlBrowserPage);
-    backButtonsPage->initPage(gpd);
-    kbdMousePage->setMapping(gpd);
-    backButtonsPage->setMapping(gpd);
-    settingsPage->refresh();
-    homePage->setDevice(prod);
 
     QObject::connect(homePage, &OWC::HomePage::keyboardMouseMap, this, &MainWindow::onHomeKeyboardMouseMapClicked);
     QObject::connect(homePage, &OWC::HomePage::xinputMap, this, &MainWindow::onHomeXinputMapClicked);
@@ -454,9 +458,7 @@ void MainWindow::onKeyboardMouseCharMapClicked() {
 void MainWindow::onXinputCharMapClicked() {
     previousPage = xinputPage;
 
-    if (gamepadThread != nullptr)
-        emit enableSDLEvents(false);
-
+    emit enableSDLEvents(false);
     charMapPage->setMode(OWC::CharMapMode::Xinput);
     stackedWidget->setCurrentWidget(charMapPage);
 }
@@ -507,7 +509,7 @@ void MainWindow::onYamlBrowserImportProfile(const QString &yml) const {
 
 void MainWindow::onBackToHomeClicked() {
     emit enableSDLEvents(false);
-    stackedWidget->setCurrentIndex(0);
+    stackedWidget->setCurrentWidget(homePage);
 }
 
 void MainWindow::onResetKeyboardMouseButtons() const {

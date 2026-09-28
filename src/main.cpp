@@ -34,9 +34,12 @@ int main(int argc, char *argv[]) {
     QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
     QApplication a(argc, argv);
     MainWindow w;
+    QFont wfont = w.font();
 
+    wfont.setPointSize(12);
     w.setWindowTitle(QString("OpenWinControls %1.%2").arg(APP_VER_MAJOR).arg(APP_VER_MINOR));
     w.setWindowIcon(QIcon(":/app/icon"));
+    w.setFont(wfont);
     w.showMaximized();
     return a.exec();
 }

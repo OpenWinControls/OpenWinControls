@@ -27,7 +27,7 @@ namespace OWC {
         QVBoxLayout *mapFaceBtnLyt = new QVBoxLayout();
         QVBoxLayout *mapBackBtnLyt = new QVBoxLayout();
         QHBoxLayout *bottomLyt = new QHBoxLayout();
-        QPushButton *showLogsBtn = new QPushButton(u"Logs"_s);
+        QPushButton *logsBtn = new QPushButton(u"Logs"_s);
         QLabel *frontLbl = new QLabel(u"Face buttons"_s);
         QLabel *backLbl = new QLabel(u"Back buttons"_s);
         QFont lblFont = frontLbl->font();
@@ -77,10 +77,10 @@ namespace OWC {
         headLyt->addStretch();
         headLyt->addWidget(mappingMode);
 
-        bottomLyt->addWidget(showLogsBtn);
+        bottomLyt->addWidget(logsBtn);
         bottomLyt->addWidget(ymlBrowserBtn);
-        bottomLyt->addStretch();
         bottomLyt->addWidget(settingsBtn);
+        bottomLyt->addStretch();
         bottomLyt->addWidget(applyBtn);
         bottomLyt->addWidget(exportYamlBtn);
         bottomLyt->addWidget(importYamlBtn);
@@ -98,7 +98,7 @@ namespace OWC {
 
         QObject::connect(faceButtonsMapBtn, &QPushButton::clicked, this, &HomePage::onFaceButtonsMapClicked);
         QObject::connect(backButtonsMapBtn, &QPushButton::clicked, this, &HomePage::onBackButtonsMapClicked);
-        QObject::connect(showLogsBtn, &QPushButton::clicked, this, &HomePage::onShowLogsBtnClicked);
+        QObject::connect(logsBtn, &QPushButton::clicked, this, &HomePage::onLogsBtnClicked);
         QObject::connect(ymlBrowserBtn, &QPushButton::clicked, this, &HomePage::onYamlBrowserClicked);
         QObject::connect(settingsBtn, &QPushButton::clicked, this, &HomePage::onSettingsClicked);
         QObject::connect(applyBtn, &QPushButton::clicked, this, &HomePage::onApplyBtnClicked);
@@ -106,44 +106,34 @@ namespace OWC {
         QObject::connect(importYamlBtn, &QPushButton::clicked, this, &HomePage::onImportYamlBtnClicked);
     }
 
-    void HomePage::setDevice(const QString &product) const {
-        bool found = false;
-
+    void HomePage::init(const QString &product) const {
         if (product == win5 || product == mini25 || product == max3)
             mappingMode->addItem(u"Xinput"_s);
 
         if (product == win4) {
             frontPic->setPixmap(QPixmap(u":/win4f"_s).scaled(254, 107, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             backPic->setPixmap(QPixmap(u":/win4b"_s).scaled(254, 107, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-            found = true;
 
         } else if (product == mini24 || product == mini25 || product == mini25L) {
             frontPic->setPixmap(QPixmap(u":/minif"_s).scaled(160, 155, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             backPic->setPixmap(QPixmap(u":/minib"_s).scaled(200, 150, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-            found = true;
 
         } else if (product == max2_22 || product == max2_25) {
             frontPic->setPixmap(QPixmap(u":/max2f"_s).scaled(260, 155, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             backPic->setPixmap(QPixmap(u":/max2b"_s).scaled(230, 155, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-            found = true;
 
         } else if (product == win5) {
             frontPic->setPixmap(QPixmap(u":/win5f"_s));
             backPic->setPixmap(QPixmap(u":/win5b"_s));
-            found = true;
 
         } else if (product == win3) {
             frontPic->setPixmap(QPixmap(u":/win3f"_s).scaled(235, 110, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             backPic->setPixmap(QPixmap(u":/win3b"_s).scaled(235, 110, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-            found = true;
 
         } else if (product == max3) {
             frontPic->setPixmap(QPixmap(u":/max3f"_s).scaled(210, 190, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             backPic->setPixmap(QPixmap(u":/max3b"_s).scaled(235, 190, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-            found = true;
         }
-
-        enableButtons(found);
     }
 
     void HomePage::setEmulationMode(const EmulationMode mode) const {
@@ -192,7 +182,7 @@ namespace OWC {
         emit backButtonsMap();
     }
 
-    void HomePage::onShowLogsBtnClicked() {
+    void HomePage::onLogsBtnClicked() {
         emit showLogs();
     }
 
