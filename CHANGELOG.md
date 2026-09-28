@@ -1,3 +1,8 @@
+## next
+
+- Update windows Qt to 6.11.2 (left behind due to action/aqt bug)
+- Code clean up and optimization
+
 ## 2.10
 
 - Win max 3 support
