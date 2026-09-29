@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #pragma once
-
 #include <QVBoxLayout>
 
 #include "Widgets/ButtonBlockWidget.h"
@@ -28,6 +27,7 @@ namespace OWC {
         Q_OBJECT
 
     private:
+        std::shared_ptr<Controller> controller;
         mutable QString oldPendingBtnText; // text backup to restore on cancel
 
     protected:
@@ -36,12 +36,11 @@ namespace OWC {
         QList<ButtonBlockWidget *> buttonList;
 
     public:
-        FaceButtonsPage();
+        explicit FaceButtonsPage(const std::shared_ptr<Controller> &gpd);
 
-        void setMapping(const std::shared_ptr<Controller> &gpd) const;
-        void writeMapping(const std::shared_ptr<Controller> &gpd);
-        [[nodiscard]] QString exportMappingToYaml() const;
-        void importMappingFromYaml(const YAML::Node &yaml) const;
+        void writeMapping();
+        [[nodiscard]] QString exportToYaml() const;
+        void importFromYaml(const YAML::Node &yaml) const;
         void setPendingButton(const QString &key) const;
 
     private slots:
@@ -49,9 +48,11 @@ namespace OWC {
         void onCharMapBtnClicked();
 
     protected slots:
-        virtual void onResetBtnClicked() = 0;
         void onLogSent(const QString &msg);
         void onkeyButtonPressed(QPushButton *btn) const;
+
+    public slots:
+        void refresh() const;
 
     signals:
         void backToHome();

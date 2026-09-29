@@ -23,7 +23,7 @@
 namespace OWC {
     using namespace Qt::StringLiterals;
 
-    XinputButtonsPage::XinputButtonsPage() {
+    XinputButtonsPage::XinputButtonsPage(const std::shared_ptr<Controller> &gpd): FaceButtonsPage(gpd) {
         QHBoxLayout *row1Lyt = new QHBoxLayout();
         QHBoxLayout *row2Lyt = new QHBoxLayout();
         QHBoxLayout *row3Lyt = new QHBoxLayout();
@@ -101,9 +101,5 @@ namespace OWC {
         QObject::connect(menu, &SingleButtonBlockWidget::pendingEditBtn, this, &XinputButtonsPage::onkeyButtonPressed);
         QObject::connect(rs, &DirectionalButtonBlockWidget::logSent, this, &XinputButtonsPage::onLogSent);
         QObject::connect(rs, &DirectionalButtonBlockWidget::pendingEditBtn, this, &XinputButtonsPage::onkeyButtonPressed);
-    }
-
-    void XinputButtonsPage::onResetBtnClicked() {
-        emit resetXinputButtons();
     }
 }

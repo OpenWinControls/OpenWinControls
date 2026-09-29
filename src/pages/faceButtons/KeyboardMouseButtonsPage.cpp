@@ -25,7 +25,7 @@
 namespace OWC {
     using namespace Qt::StringLiterals;
 
-    KeyboardMouseButtonsPage::KeyboardMouseButtonsPage() {
+    KeyboardMouseButtonsPage::KeyboardMouseButtonsPage(const std::shared_ptr<Controller> &gpd): FaceButtonsPage(gpd) {
         QHBoxLayout *row1Lyt = new QHBoxLayout();
         QHBoxLayout *row2Lyt = new QHBoxLayout();
         DirectionalButtonBlockWidget *dpad;
@@ -113,9 +113,5 @@ namespace OWC {
 
         pendingBtn->setText(QString::fromStdString(HIDUsageIDMap.at(ASCIIHIDMap[kc])));
         pendingBtn = nullptr;
-    }
-
-    void KeyboardMouseButtonsPage::onResetBtnClicked() {
-        emit resetKeyboardMouseButtons();
     }
 }

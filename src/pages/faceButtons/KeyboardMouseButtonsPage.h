@@ -29,12 +29,6 @@ namespace OWC {
         void keyPressEvent(QKeyEvent *event) override;
 
     public:
-        KeyboardMouseButtonsPage();
-
-    protected slots:
-        void onResetBtnClicked() override;
-
-    signals:
-        void resetKeyboardMouseButtons();
+        explicit KeyboardMouseButtonsPage(const std::shared_ptr<Controller> &gpd);
     };
 }

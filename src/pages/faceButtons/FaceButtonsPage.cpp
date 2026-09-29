@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <QScrollBar>
 #include <QScrollArea>
 #include <QScroller>
 
@@ -24,7 +23,7 @@
 namespace OWC {
     using namespace Qt::StringLiterals;
 
-    FaceButtonsPage::FaceButtonsPage() {
+    FaceButtonsPage::FaceButtonsPage(const std::shared_ptr<Controller> &gpd) {
         QVBoxLayout *lyt = new QVBoxLayout();
         QHBoxLayout *buttonsLyt = new QHBoxLayout();
         QScrollArea *scrollArea = new QScrollArea();
@@ -32,6 +31,7 @@ namespace OWC {
         QPushButton *resetBtn = new QPushButton(u"Reset"_s);
         QPushButton *charMapBtn = new QPushButton(u"Char Map"_s);
 
+        controller = gpd;
         controlsLyt = new QVBoxLayout();
 
         scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -39,10 +39,10 @@ namespace OWC {
         scrollArea->setWidget(new QWidget);
         QScroller::grabGesture(scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
 
-        buttonsLyt->addStretch();
-        buttonsLyt->addWidget(charMapBtn);
-        buttonsLyt->addWidget(backBtn);
         buttonsLyt->addWidget(resetBtn);
+        buttonsLyt->addWidget(charMapBtn);
+        buttonsLyt->addStretch();
+        buttonsLyt->addWidget(backBtn);
 
         lyt->setContentsMargins(0, 0, 0, 0);
         lyt->addSpacing(12);
@@ -53,21 +53,21 @@ namespace OWC {
         setLayout(lyt);
 
         QObject::connect(backBtn, &QPushButton::clicked, this, &FaceButtonsPage::onBackBtnClicked);
-        QObject::connect(resetBtn, &QPushButton::clicked, this, &FaceButtonsPage::onResetBtnClicked);
+        QObject::connect(resetBtn, &QPushButton::clicked, this, &FaceButtonsPage::refresh);
         QObject::connect(charMapBtn, &QPushButton::clicked, this, &FaceButtonsPage::onCharMapBtnClicked);
     }
 
-    void FaceButtonsPage::setMapping(const std::shared_ptr<Controller> &gpd) const {
+    void FaceButtonsPage::refresh() const {
         for (const ButtonBlockWidget *btn: buttonList)
-            btn->setMapping(gpd);
+            btn->setMapping(controller);
     }
 
-    void FaceButtonsPage::writeMapping(const std::shared_ptr<Controller> &gpd) {
+    void FaceButtonsPage::writeMapping() {
         for (ButtonBlockWidget *btn: buttonList)
-            btn->writeMapping(gpd);
+            btn->writeMapping(controller);
     }
 
-    QString FaceButtonsPage::exportMappingToYaml() const {
+    QString FaceButtonsPage::exportToYaml() const {
         QString yaml;
         QTextStream ts (&yaml);
 
@@ -77,7 +77,7 @@ namespace OWC {
         return yaml;
     }
 
-    void FaceButtonsPage::importMappingFromYaml(const YAML::Node &yaml) const {
+    void FaceButtonsPage::importFromYaml(const YAML::Node &yaml) const {
         for (const ButtonBlockWidget *btn: buttonList)
             btn->importMappingFromYaml(yaml);
     }

@@ -88,8 +88,6 @@ private slots:
     void onCharMapKeyPressed(const QString &key) const;
     void onYamlBrowserImportProfile(const QString &yml) const;
     void onBackToHomeClicked();
-    void onResetKeyboardMouseButtons() const;
-    void onResetXinputButtons() const;
     void onSettingsConfigRestore() const;
     void onGamepadInitFail();
     void onGamepadButton(const QString &key) const;

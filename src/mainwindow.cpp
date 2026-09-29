@@ -221,22 +221,21 @@ void MainWindow::initPages(const QString &product, QLabel *versionLbl) {
         const std::shared_ptr<OWC::ControllerV2> gpdV2 = std::static_pointer_cast<OWC::ControllerV2>(gpd);
 
         backButtonsPage = new OWC::BackButtonsV2Page(gpd);
-        xinputPage = new OWC::XinputButtonsPage();
+        xinputPage = new OWC::XinputButtonsPage(gpd);
 
         homePage->setEmulationMode(gpdV2->getEmulationMode());
-        xinputPage->setMapping(gpd);
+        xinputPage->refresh();
         stackedWidget->addWidget(xinputPage);
         initGamepadThread();
 
         QObject::connect(xinputPage, &OWC::FaceButtonsPage::showCharMap, this, &MainWindow::onXinputCharMapClicked);
         QObject::connect(xinputPage, &OWC::FaceButtonsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
-        QObject::connect(xinputPage, &OWC::XinputButtonsPage::resetXinputButtons, this, &MainWindow::onResetXinputButtons);
         QObject::connect(xinputPage, &OWC::FaceButtonsPage::logSent, this, &MainWindow::onLogSent);
     }
 
     settingsPage = new OWC::SettingsPage(gpd);
     charMapPage = new OWC::CharMapPage(gpd->getControllerType() == 2);
-    kbdMousePage = new OWC::KeyboardMouseButtonsPage();
+    kbdMousePage = new OWC::KeyboardMouseButtonsPage(gpd);
     yamlBrowserPage = new OWC::YamlBrowserPage(appDataPath, gpd->getControllerType());
 
     versionLbl->setText(u"X%1.%2, K%3.%4"_s.arg(QString::number(xmin, 16))
@@ -247,7 +246,7 @@ void MainWindow::initPages(const QString &product, QLabel *versionLbl) {
     homePage->init(product);
     homePage->enableButtons(true);
     backButtonsPage->refresh();
-    kbdMousePage->setMapping(gpd);
+    kbdMousePage->refresh();
     settingsPage->refresh();
     stackedWidget->addWidget(settingsPage);
     stackedWidget->addWidget(charMapPage);
@@ -269,7 +268,6 @@ void MainWindow::initPages(const QString &product, QLabel *versionLbl) {
     QObject::connect(charMapPage, &OWC::CharMapPage::keyPressed, this, &MainWindow::onCharMapKeyPressed);
     QObject::connect(kbdMousePage, &OWC::FaceButtonsPage::showCharMap, this, &MainWindow::onKeyboardMouseCharMapClicked);
     QObject::connect(kbdMousePage, &OWC::FaceButtonsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
-    QObject::connect(kbdMousePage, &OWC::KeyboardMouseButtonsPage::resetKeyboardMouseButtons, this, &MainWindow::onResetKeyboardMouseButtons);
     QObject::connect(kbdMousePage, &OWC::FaceButtonsPage::logSent, this, &MainWindow::onLogSent);
     QObject::connect(backButtonsPage, &OWC::BackButtonsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
     QObject::connect(backButtonsPage, &OWC::BackButtonsPage::showCharMap, this, &MainWindow::onBackButtonsCharMapClicked);
@@ -306,11 +304,11 @@ void MainWindow::quitGamepadThread() {
 }
 
 void MainWindow::importYamlMapping(const YAML::Node &yaml) const {
-    kbdMousePage->importMappingFromYaml(yaml);
+    kbdMousePage->importFromYaml(yaml);
     backButtonsPage->importFromYaml(yaml);
 
     if (xinputPage != nullptr)
-        xinputPage->importMappingFromYaml(yaml);
+        xinputPage->importFromYaml(yaml);
 }
 
 void MainWindow::onLogSent(const QString& msg) const {
@@ -349,12 +347,12 @@ void MainWindow::onHomeApplyChanges() {
     bool writeFlash = true;
 
     homePage->enableButtons(false);
-    kbdMousePage->writeMapping(gpd);
+    kbdMousePage->writeMapping();
     backButtonsPage->writeMapping();
     settingsPage->writeSettings();
 
     if (xinputPage != nullptr)
-        xinputPage->writeMapping(gpd);
+        xinputPage->writeMapping();
 
     if (gpd->getControllerType() == 2) {
         QMessageBox mbox(this);
@@ -394,11 +392,11 @@ void MainWindow::onHomeExportYamlClicked() {
     }
 
     ts << "MAPPING_TYPE: " << gpd->getControllerType() << "\n" <<
-        kbdMousePage->exportMappingToYaml() <<
+        kbdMousePage->exportToYaml() <<
         backButtonsPage->exportToYaml();
 
     if (xinputPage != nullptr)
-        ts << xinputPage->exportMappingToYaml();
+        ts << xinputPage->exportToYaml();
 
     ts.flush();
     outF.close();
@@ -510,18 +508,13 @@ void MainWindow::onBackToHomeClicked() {
     stackedWidget->setCurrentWidget(homePage);
 }
 
-void MainWindow::onResetKeyboardMouseButtons() const {
-    kbdMousePage->setMapping(gpd);
-}
-
-void MainWindow::onResetXinputButtons() const {
-    xinputPage->setMapping(gpd);
-}
-
 void MainWindow::onSettingsConfigRestore() const {
     settingsPage->refresh();
     backButtonsPage->refresh();
-    //todo others
+    kbdMousePage->refresh();
+
+    if (xinputPage != nullptr)
+        xinputPage->refresh();
 }
 
 void MainWindow::onGamepadButton(const QString &key) const {

@@ -24,12 +24,6 @@ namespace OWC {
         Q_OBJECT
 
     public:
-        XinputButtonsPage();
-
-    protected slots:
-        void onResetBtnClicked() override;
-
-    signals:
-        void resetXinputButtons();
+        explicit XinputButtonsPage(const std::shared_ptr<Controller> &gpd);
     };
 }
