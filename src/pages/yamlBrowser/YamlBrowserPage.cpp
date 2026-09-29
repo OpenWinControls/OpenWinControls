@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <QScrollBar>
 #include <QScrollArea>
 #include <QScroller>
 #include <QLabel>
@@ -90,9 +89,9 @@ namespace OWC {
         viewLyt->addWidget(downloadYmlBtn);
         contLyt->addWidget(scrollArea);
         contLyt->addLayout(viewLyt);
+        bottomLyt->addWidget(refreshBtn);
         bottomLyt->addStretch();
         bottomLyt->addWidget(backBtn);
-        bottomLyt->addWidget(refreshBtn);
 
         lyt->setContentsMargins(0, 0, 0, 0);
         lyt->addLayout(contLyt);
