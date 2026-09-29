@@ -1,6 +1,7 @@
 ## next
 
 - Update windows Qt to 6.11.2 (left behind due to action/aqt bug)
+- Fix config restore not reloading values in UI
 - Code clean up and optimization
 
 ## 2.10
