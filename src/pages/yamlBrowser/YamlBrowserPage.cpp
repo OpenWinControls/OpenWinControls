@@ -42,8 +42,8 @@ namespace OWC {
         QFont titleFont = localTitle->font();
 
         appDataPath = dataPath;
-        controllerType = QString("v%1").arg(type);
-        ymlsPath = QString("%1/profiles").arg(dataPath);
+        controllerType = u"v%1"_s.arg(type);
+        ymlsPath = u"%1/profiles"_s.arg(dataPath);
         localYmlContainer = new FlowLayout();
         ghYmlContainer = new FlowLayout();
         refreshBtn = new QPushButton(u"Refresh"_s);
@@ -225,12 +225,12 @@ namespace OWC {
     }
 
     void YamlBrowserPage::onViewLocalProfile(const QString &name) {
-        QFile yml(QString("%1/%2.yaml").arg(ymlsPath, name));
+        QFile yml(u"%1/%2.yaml"_s.arg(ymlsPath, name));
 
         if (!yml.open(QFile::Text | QFile::ReadOnly)) {
             importYmlBtn->setEnabled(false);
             profileView->clear();
-            emit logSent(QString("failed to read local yaml file: %1").arg(yml.errorString()));
+            emit logSent(u"failed to read local yaml file: %1"_s.arg(yml.errorString()));
             return;
         }
 
@@ -241,10 +241,10 @@ namespace OWC {
 
     void YamlBrowserPage::onDeleteLocalProfile(const QString &name, const YmlProfileBox *wdg) {
         const QSignalBlocker sblock {fsWatcher};
-        QFile yml(QString("%1/%2.yaml").arg(ymlsPath, name));
+        QFile yml(u"%1/%2.yaml"_s.arg(ymlsPath, name));
 
         if (!yml.remove()) {
-            emit logSent(QString("failed to delete profile: %1").arg(yml.errorString()));
+            emit logSent(u"failed to delete profile: %1"_s.arg(yml.errorString()));
             return;
         }
 
@@ -265,7 +265,7 @@ namespace OWC {
 
         QObject::connect(downloadWrk, &DownloadWorker::success, this, &YamlBrowserPage::onGHYmlDownloadSuccess);
 
-        emit startDownload(QString("%1/%2/%3.yaml").arg(baseYmlUrl, controllerType, name));
+        emit startDownload(u"%1/%2/%3.yaml"_s.arg(baseYmlUrl, controllerType, name));
     }
 
     void YamlBrowserPage::onGHYmlDownloadSuccess(const QByteArray &yml) {
@@ -283,17 +283,17 @@ namespace OWC {
     void YamlBrowserPage::onYmlDownloadClicked() {
         downloadYmlBtn->setEnabled(false);
 
-        QFile yml(QString("%1/%2.yaml").arg(ymlsPath, curViewGHProfileName));
+        QFile yml(u"%1/%2.yaml"_s.arg(ymlsPath, curViewGHProfileName));
 
         if (!yml.open(QFile::WriteOnly | QFile::Text)) {
-            emit logSent(QString("failed to open destination file: %1").arg(yml.errorString()));
+            emit logSent(u"failed to open destination file: %1"_s.arg(yml.errorString()));
             QMessageBox::critical(this, u"Download"_s, u"Failed, see logs"_s);
             downloadYmlBtn->setEnabled(true);
             return;
         }
 
         if (yml.write(profileView->toPlainText().toUtf8()) == -1) {
-            emit logSent(QString("failed to write file: %1").arg(yml.errorString()));
+            emit logSent(u"failed to write file: %1"_s.arg(yml.errorString()));
             QMessageBox::critical(this, u"Download"_s, u"Failed, see logs"_s);
             downloadYmlBtn->setEnabled(true);
         }

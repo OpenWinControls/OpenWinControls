@@ -21,6 +21,8 @@
 #include "DirectionalButtonBlockWidget.h"
 
 namespace OWC {
+    using namespace Qt::StringLiterals;
+
     DirectionalButtonBlockWidget::DirectionalButtonBlockWidget(const Button topOwcBtn, const Button leftOwcBtn,
                                                 const Button rightOwcBtn, const Button bottomOwcBtn,
                                                 const std::string_view topYamlKey, const std::string_view leftYamlKey,
@@ -49,7 +51,7 @@ namespace OWC {
         leftBtn->setFixedWidth(buttonWidth);
         rightBtn->setFixedWidth(buttonWidth);
         bottomBtn->setFixedWidth(buttonWidth);
-        controlIcon->setPixmap(QPixmap(QString(":/icons/%1").arg(icon)).scaled(iconScale, iconScale, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        controlIcon->setPixmap(QPixmap(u":/icons/%1"_s.arg(icon)).scaled(iconScale, iconScale, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 
         topLyt->setAlignment(Qt::AlignCenter);
         topLyt->addWidget(topBtn);
@@ -83,16 +85,16 @@ namespace OWC {
 
     void DirectionalButtonBlockWidget::writeMapping(const std::shared_ptr<Controller> &gpd) {
         if (!gpd->setButton(topOwcButton, topBtn->text().toStdString()))
-            emit logSent(QString("failed to set %1").arg(topYmlKey.data()));
+            emit logSent(u"failed to set %1"_s.arg(topYmlKey.data()));
 
         if (!gpd->setButton(leftOwcButton, leftBtn->text().toStdString()))
-            emit logSent(QString("failed to set %1").arg(leftYmlKey.data()));
+            emit logSent(u"failed to set %1"_s.arg(leftYmlKey.data()));
 
         if (!gpd->setButton(rightOwcButton, rightBtn->text().toStdString()))
-            emit logSent(QString("failed to set %1").arg(rightYmlKey.data()));
+            emit logSent(u"failed to set %1"_s.arg(rightYmlKey.data()));
 
         if (!gpd->setButton(bottomOwcButton, bottomBtn->text().toStdString()))
-            emit logSent(QString("failed to set %1").arg(bottomYmlKey.data()));
+            emit logSent(u"failed to set %1"_s.arg(bottomYmlKey.data()));
     }
 
     QString DirectionalButtonBlockWidget::exportMappingToYaml() const {

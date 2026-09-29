@@ -23,6 +23,8 @@
 #include "extern/SDL/include/SDL3/SDL_hints.h"
 
 namespace OWC {
+    using namespace Qt::StringLiterals;
+
     GamepadWorker::~GamepadWorker() {
         for (auto [jid, gpad]: gamepadsMap.asKeyValueRange())
             SDL_CloseGamepad(gpad);
@@ -47,7 +49,7 @@ namespace OWC {
                 SDL_Gamepad *pad = SDL_OpenGamepad(id);
 
                 if (pad == nullptr) {
-                    emit logSent(QString("Gamepad connection error: %1").arg(SDL_GetError()));
+                    emit logSent(u"Gamepad connection error: %1"_s.arg(SDL_GetError()));
                     SDL_ClearError();
                     break;
                 }

@@ -125,7 +125,7 @@ namespace OWC {
 
         kbtn->setFlat(true);
         kbtn->setMinimumHeight(60);
-        kbtn->setToolTip(QString("Usage ID: 0x%1").arg(QString::number(code, 16)));
+        kbtn->setToolTip(u"Usage ID: 0x%1"_s.arg(QString::number(code, 16)));
 
         QObject::connect(kbtn, &QPushButton::clicked, this, &CharMapPage::onKeyClicked);
         return kbtn;

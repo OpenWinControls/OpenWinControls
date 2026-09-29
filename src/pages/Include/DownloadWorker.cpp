@@ -42,7 +42,7 @@ namespace OWC {
     }
 
     void DownloadWorker::onReplyError(const QNetworkReply::NetworkError code) {
-        emit logSent(QString("download failed, code: %1").arg(code));
+        emit logSent(u"download failed, code: %1"_s.arg(code));
         emit failed();
     }
 }

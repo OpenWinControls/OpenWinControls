@@ -72,7 +72,7 @@ namespace OWC {
         QFile outF(out);
 
         if (!outF.open(QFile::WriteOnly | QFile::Text)) {
-            logContainer->append(QString("failed to save logs: %1").arg(outF.errorString()));
+            logContainer->append(u"failed to save logs: %1"_s.arg(outF.errorString()));
             return;
         }
 

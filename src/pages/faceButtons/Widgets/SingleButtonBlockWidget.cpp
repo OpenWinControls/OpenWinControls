@@ -21,6 +21,8 @@
 #include "SingleButtonBlockWidget.h"
 
 namespace OWC {
+    using namespace Qt::StringLiterals;
+
     SingleButtonBlockWidget::SingleButtonBlockWidget(const Button owcBtn, const std::string_view yamlKey, const QString &icon, const int iconScaleW, const int iconScaleH) {
         QVBoxLayout *lyt = new QVBoxLayout();
         QLabel *startIcon = new QLabel();
@@ -30,7 +32,7 @@ namespace OWC {
         keyBtn = new QPushButton();
 
         keyBtn->setFixedWidth(buttonWidth);
-        startIcon->setPixmap(QPixmap(QString(":/icons/%1").arg(icon)).scaled(iconScaleW, iconScaleH, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        startIcon->setPixmap(QPixmap(u":/icons/%1"_s.arg(icon)).scaled(iconScaleW, iconScaleH, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         startIcon->setAlignment(Qt::AlignCenter);
 
         lyt->setAlignment(Qt::AlignCenter);
@@ -48,7 +50,7 @@ namespace OWC {
 
     void SingleButtonBlockWidget::writeMapping(const std::shared_ptr<Controller> &gpd) {
         if (!gpd->setButton(owcButton, keyBtn->text().toStdString()))
-            emit logSent(QString("failed to set %1").arg(ymlKey.data()));
+            emit logSent(u"failed to set %1"_s.arg(ymlKey.data()));
     }
 
     QString SingleButtonBlockWidget::exportMappingToYaml() const {

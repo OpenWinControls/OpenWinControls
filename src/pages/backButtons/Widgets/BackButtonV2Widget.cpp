@@ -36,7 +36,7 @@ namespace OWC {
         activeSlots->setValue(0);
 
         iconLbl->setAlignment(Qt::AlignCenter);
-        iconLbl->setPixmap(QPixmap(QString(":/icons/%1").arg(icon)).scaled(70, 70, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        iconLbl->setPixmap(QPixmap(u":/icons/%1"_s.arg(icon)).scaled(70, 70, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 
         activeSlotsLyt->setAlignment(Qt::AlignCenter);
         activeSlotsLyt->addWidget(new QLabel(u"Active: "_s));
@@ -80,7 +80,7 @@ namespace OWC {
             const int kslot = i + 1;
 
             if (!gpd->setBackButton(num, kslot, keySlots[i]->getKey().toStdString()))
-                emit logSent(QString("failed to set %1 key slot %2").arg(name, kslot));
+                emit logSent(u"failed to set %1 key slot %2"_s.arg(name, kslot));
 
             gpd->setBackButtonStartTime(num, kslot, keySlots[i]->getStartTime());
             gpd->setBackButtonHoldTime(num, kslot, keySlots[i]->getHoldTime());

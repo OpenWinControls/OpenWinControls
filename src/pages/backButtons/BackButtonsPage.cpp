@@ -72,12 +72,12 @@ namespace OWC {
         const Qt::Key kc = static_cast<Qt::Key>(event->key());
 
         if (!ASCIIHIDMap.contains(kc)) {
-            emit logSent(QString("unknown scan code: %1").arg(kc));
+            emit logSent(u"unknown scan code: %1"_s.arg(kc));
             return;
         }
 
         if (!HIDUsageIDMap.contains(ASCIIHIDMap[kc])) {
-            emit logSent(QString("unknown hid code: %1").arg(kc));
+            emit logSent(u"unknown hid code: %1"_s.arg(kc));
             return;
         }
 

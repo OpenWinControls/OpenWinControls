@@ -21,6 +21,8 @@
 #include "ShoulderButtonBlockWidget.h"
 
 namespace OWC {
+    using namespace Qt::StringLiterals;
+
     ShoulderButtonBlockWidget::ShoulderButtonBlockWidget(const Button topOwcBtn, const Button bottomOwcBtn,
                                             const std::string_view topYamlKey, const std::string_view bottomYamlKey,
                                             const QString &topIcon, const QString &bottomIcon,
@@ -41,9 +43,9 @@ namespace OWC {
 
         topBtn->setFixedWidth(buttonWidth);
         bottomBtn->setFixedWidth(buttonWidth);
-        topIcn->setPixmap(QPixmap(QString(":/icons/%1").arg(topIcon)).scaled(topIconScaleW, topIconScaleH, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        topIcn->setPixmap(QPixmap(u":/icons/%1"_s.arg(topIcon)).scaled(topIconScaleW, topIconScaleH, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         topIcn->setAlignment(Qt::AlignCenter);
-        bottomIcn->setPixmap(QPixmap(QString(":/icons/%1").arg(bottomIcon)).scaled(bottomIconScaleW, bottomIconScaleH, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        bottomIcn->setPixmap(QPixmap(u":/icons/%1"_s.arg(bottomIcon)).scaled(bottomIconScaleW, bottomIconScaleH, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         bottomIcn->setAlignment(Qt::AlignCenter);
 
         topLyt->addWidget(topBtn);
@@ -69,10 +71,10 @@ namespace OWC {
 
     void ShoulderButtonBlockWidget::writeMapping(const std::shared_ptr<Controller> &gpd) {
         if (!gpd->setButton(topOwcButton, topBtn->text().toStdString()))
-            emit logSent(QString("failed to set %1").arg(topYmlKey.data()));
+            emit logSent(u"failed to set %1"_s.arg(topYmlKey.data()));
 
         if (!gpd->setButton(bottomOwcButton, bottomBtn->text().toStdString()))
-            emit logSent(QString("failed to set %1").arg(bottomYmlKey.data()));
+            emit logSent(u"failed to set %1"_s.arg(bottomYmlKey.data()));
     }
 
     QString ShoulderButtonBlockWidget::exportMappingToYaml() const {

@@ -49,9 +49,9 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     logsPage = new OWC::LogsPage();
 
     if (appDataPath.isEmpty())
-        logsPage->write(QString("failed to create data folder: %1").arg(appDataPath));
+        logsPage->write(u"failed to create data folder: %1"_s.arg(appDataPath));
     else
-        logsPage->write(QString("data path: %1").arg(appDataPath));
+        logsPage->write(u"data path: %1"_s.arg(appDataPath));
 
     repoLbl->setTextFormat(Qt::MarkdownText);
     repoLbl->setTextInteractionFlags(Qt::TextBrowserInteraction);
@@ -96,7 +96,7 @@ QString MainWindow::getProduct() const {
     QFile prodF(u"/sys/class/dmi/id/board_name"_s);
 
     if (!prodF.open(QFile::ReadOnly | QFile::Text)) {
-        logsPage->write(QString("failed to read product name: %1").arg(prodF.errorString()));
+        logsPage->write(u"failed to read product name: %1"_s.arg(prodF.errorString()));
         return "";
     }
 
@@ -112,13 +112,13 @@ QString MainWindow::getProduct() const {
 
     ret = RegOpenKeyExW(HKEY_LOCAL_MACHINE, LR"(HARDWARE\DESCRIPTION\System\BIOS)", 0, KEY_READ, &rkey);
     if (ret != ERROR_SUCCESS) {
-        logsPage->write(QString("failed to open bios subkey, code: %1").arg(ret));
+        logsPage->write(u"failed to open bios subkey, code: %1"_s.arg(ret));
         return "";
     }
 
     ret = RegGetValueW(rkey, nullptr, L"BaseBoardProduct", RRF_RT_REG_SZ, nullptr, nullptr, &bufSz);
     if (ret != ERROR_SUCCESS) {
-        logsPage->write(QString("failed to read size for reg value, code %1").arg(ret));
+        logsPage->write(u"failed to read size for reg value, code %1"_s.arg(ret));
         RegCloseKey(rkey);
         return "";
     }
@@ -128,7 +128,7 @@ QString MainWindow::getProduct() const {
 
     ret = RegGetValueW(rkey, nullptr, L"BaseBoardProduct", RRF_RT_REG_SZ, nullptr, buf.get(), &bufSz);
     if (ret != ERROR_SUCCESS) {
-        logsPage->write(QString("failed to read reg value, code %1").arg(ret));
+        logsPage->write(u"failed to read reg value, code %1"_s.arg(ret));
         RegCloseKey(rkey);
         return "";
     }
@@ -152,7 +152,7 @@ std::shared_ptr<OWC::Controller> MainWindow::getDevice(const QString &product) c
     else if (product == OWC::mini25 || product == OWC::mini25L)
         return std::make_shared<OWC::ControllerV2>(OWC::ControllerFeature::DeadZoneControlV1 | OWC::ControllerFeature::RumbleV1 | OWC::ControllerFeature::XinputMappingV1);
     else
-        logsPage->write(QString("unknown device: %1").arg(product));
+        logsPage->write(u"unknown device: %1"_s.arg(product));
 
     return {};
 }
@@ -178,7 +178,7 @@ bool MainWindow::isCompatible(const QString &product) const {
         return true;
 
     if (!isSupported)
-        logsPage->write(QString("version %1.%2 is not supported").arg(major).arg(minor));
+        logsPage->write(u"version %1.%2 is not supported"_s.arg(major).arg(minor));
 
     return isSupported;
 }
@@ -239,7 +239,7 @@ void MainWindow::initPages(const QString &product, QLabel *versionLbl) {
     kbdMousePage = new OWC::KeyboardMouseButtonsPage();
     yamlBrowserPage = new OWC::YamlBrowserPage(appDataPath, gpd->getControllerType());
 
-    versionLbl->setText(QString("X%1.%2, K%3.%4").arg(QString::number(xmin, 16))
+    versionLbl->setText(u"X%1.%2, K%3.%4"_s.arg(QString::number(xmin, 16))
                                                             .arg(QString::number(xmax, 16))
                                                             .arg(QString::number(kmin, 16))
                                                             .arg(QString::number(kmax, 16)));
@@ -389,7 +389,7 @@ void MainWindow::onHomeExportYamlClicked() {
     QTextStream ts(&outF);
 
     if (!outF.open(QFile::WriteOnly | QFile::Text)) {
-        logsPage->write(QString("failed to export mapping: %1").arg(outF.errorString()));
+        logsPage->write(u"failed to export mapping: %1"_s.arg(outF.errorString()));
         return;
     }
 
@@ -402,7 +402,7 @@ void MainWindow::onHomeExportYamlClicked() {
 
     ts.flush();
     outF.close();
-    logsPage->write(QString("exported mapping to file: %1").arg(out));
+    logsPage->write(u"exported mapping to file: %1"_s.arg(out));
 }
 
 void MainWindow::onHomeImportYamlClicked() {
@@ -414,7 +414,7 @@ void MainWindow::onHomeImportYamlClicked() {
     QFile mappF(map);
 
     if (!mappF.open(QFile::ReadOnly | QFile::Text)) {
-        logsPage->write(QString("failed to import mapping: %1").arg(mappF.errorString()));
+        logsPage->write(u"failed to import mapping: %1"_s.arg(mappF.errorString()));
         return;
     }
 
@@ -430,7 +430,7 @@ void MainWindow::onHomeImportYamlClicked() {
         const int type = yaml["MAPPING_TYPE"].as<int>();
 
         if (gpd->getControllerType() != type) {
-            logsPage->write(QString("incompatible mapping type, cannot import %1").arg(type));
+            logsPage->write(u"incompatible mapping type, cannot import %1"_s.arg(type));
             return;
         }
 
@@ -443,7 +443,7 @@ void MainWindow::onHomeImportYamlClicked() {
         return;
     }
 
-    logsPage->write(QString("imported mapping from file: %1").arg(map));
+    logsPage->write(u"imported mapping from file: %1"_s.arg(map));
 }
 
 void MainWindow::onKeyboardMouseCharMapClicked() {

@@ -23,6 +23,8 @@
 #include "mainwindow.h"
 #include "version.h"
 
+using namespace Qt::StringLiterals;
+
 int main(int argc, char *argv[]) {
 #ifdef _WIN32
     DWORD langCount = 2;
@@ -37,7 +39,7 @@ int main(int argc, char *argv[]) {
     QFont wfont = w.font();
 
     wfont.setPointSize(12);
-    w.setWindowTitle(QString("OpenWinControls %1.%2").arg(APP_VER_MAJOR).arg(APP_VER_MINOR));
+    w.setWindowTitle(u"OpenWinControls %1.%2"_s.arg(APP_VER_MAJOR).arg(APP_VER_MINOR));
     w.setWindowIcon(QIcon(":/app/icon"));
     w.setFont(wfont);
     w.showMaximized();
