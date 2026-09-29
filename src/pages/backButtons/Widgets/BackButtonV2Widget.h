@@ -16,9 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #pragma once
-
-#include <QList>
-
 #include "KeySlotV2Widget.h"
 #include "../../../extern/libOpenWinControls/src/controller/ControllerV2.h"
 #include "../../../extern/yaml-cpp/include/yaml-cpp/yaml.h"

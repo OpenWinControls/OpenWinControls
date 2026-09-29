@@ -15,37 +15,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <QLabel>
-
 #include "BackButtonsV1Page.h"
 
 namespace OWC {
     using namespace Qt::StringLiterals;
 
-    BackButtonsV1Page::BackButtonsV1Page(): BackButtonsPage(u"macro key slots and start times"_s) {
+    BackButtonsV1Page::BackButtonsV1Page(const std::shared_ptr<Controller> &gpd): BackButtonsPage(u"macro key slots and start times"_s) {
+        controller = gpd;
         l4 = new BackButtonV1Widget(1, 3, u"l4"_s);
         r4 = new BackButtonV1Widget(2, 3, u"r4"_s);
 
         backBtnLyt->addWidget(l4);
         backBtnLyt->addWidget(r4);
 
-        QObject::connect(l4, &BackButtonV1Widget::logSent, this, &BackButtonsV1Page::onBackButtonLogSent);
+        QObject::connect(l4, &BackButtonV1Widget::logSent, this, &BackButtonsV1Page::onLogSent);
         QObject::connect(l4, &BackButtonV1Widget::pendingEditBtn, this, &BackButtonsV1Page::onkeyButtonPressed);
-        QObject::connect(r4, &BackButtonV1Widget::logSent, this, &BackButtonsV1Page::onBackButtonLogSent);
+        QObject::connect(r4, &BackButtonV1Widget::logSent, this, &BackButtonsV1Page::onLogSent);
         QObject::connect(r4, &BackButtonV1Widget::pendingEditBtn, this, &BackButtonsV1Page::onkeyButtonPressed);
     }
 
-    void BackButtonsV1Page::setMapping(const std::shared_ptr<Controller> &gpd) const {
-        l4->setMapping(gpd);
-        r4->setMapping(gpd);
+    void BackButtonsV1Page::refresh() const {
+        l4->setMapping(controller);
+        r4->setMapping(controller);
     }
 
-    void BackButtonsV1Page::writeMapping(const std::shared_ptr<Controller> &gpd) {
-        l4->writeMapping(gpd);
-        r4->writeMapping(gpd);
+    void BackButtonsV1Page::writeMapping() {
+        l4->writeMapping(controller);
+        r4->writeMapping(controller);
     }
 
-    QString BackButtonsV1Page::exportMappingToYaml() const {
+    QString BackButtonsV1Page::exportToYaml() const {
         QString yaml;
         QTextStream ts(&yaml);
 
@@ -55,12 +54,12 @@ namespace OWC {
         return yaml;
     }
 
-    void BackButtonsV1Page::importMappingFromYaml(const YAML::Node &yaml) const {
+    void BackButtonsV1Page::importFromYaml(const YAML::Node &yaml) const {
         l4->importFromYaml(yaml);
         r4->importFromYaml(yaml);
     }
 
-    void BackButtonsV1Page::onBackButtonLogSent(const QString &msg) {
+    void BackButtonsV1Page::onLogSent(const QString &msg) {
         emit logSent(msg);
     }
 }

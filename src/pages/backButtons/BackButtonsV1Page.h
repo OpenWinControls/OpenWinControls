@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #pragma once
-
 #include "BackButtonsPage.h"
 #include "Widgets/BackButtonV1Widget.h"
 
@@ -25,18 +24,21 @@ namespace OWC {
         Q_OBJECT
 
     private:
+        std::shared_ptr<Controller> controller;
         BackButtonV1Widget *l4 = nullptr;
         BackButtonV1Widget *r4 = nullptr;
 
     public:
-        BackButtonsV1Page();
+        explicit BackButtonsV1Page(const std::shared_ptr<Controller> &gpd);
 
-        void setMapping(const std::shared_ptr<Controller> &gpd) const override;
-        void writeMapping(const std::shared_ptr<Controller> &gpd) override;
-        [[nodiscard]] QString exportMappingToYaml() const override;
-        void importMappingFromYaml(const YAML::Node &yaml) const override;
+        void writeMapping() override;
+        [[nodiscard]] QString exportToYaml() const override;
+        void importFromYaml(const YAML::Node &yaml) const override;
 
     private slots:
-        void onBackButtonLogSent(const QString &msg);
+        void onLogSent(const QString &msg);
+
+    public slots:
+        void refresh() const override;
     };
 }

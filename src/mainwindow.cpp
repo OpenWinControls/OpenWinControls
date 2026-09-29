@@ -215,12 +215,12 @@ void MainWindow::initPages(const QString &product, QLabel *versionLbl) {
     const auto [kmin, kmax] = gpd->getKVersion();
 
     if (gpd->getControllerType() == 1) {
-        backButtonsPage = new OWC::BackButtonsV1Page();
+        backButtonsPage = new OWC::BackButtonsV1Page(gpd);
 
     } else if (gpd->getControllerType() == 2) {
         const std::shared_ptr<OWC::ControllerV2> gpdV2 = std::static_pointer_cast<OWC::ControllerV2>(gpd);
 
-        backButtonsPage = new OWC::BackButtonsV2Page();
+        backButtonsPage = new OWC::BackButtonsV2Page(gpd);
         xinputPage = new OWC::XinputButtonsPage();
 
         homePage->setEmulationMode(gpdV2->getEmulationMode());
@@ -246,8 +246,7 @@ void MainWindow::initPages(const QString &product, QLabel *versionLbl) {
 
     homePage->init(product);
     homePage->enableButtons(true);
-    backButtonsPage->initPage(gpd);
-    backButtonsPage->setMapping(gpd);
+    backButtonsPage->refresh();
     kbdMousePage->setMapping(gpd);
     settingsPage->refresh();
     stackedWidget->addWidget(settingsPage);
@@ -274,7 +273,6 @@ void MainWindow::initPages(const QString &product, QLabel *versionLbl) {
     QObject::connect(kbdMousePage, &OWC::FaceButtonsPage::logSent, this, &MainWindow::onLogSent);
     QObject::connect(backButtonsPage, &OWC::BackButtonsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
     QObject::connect(backButtonsPage, &OWC::BackButtonsPage::showCharMap, this, &MainWindow::onBackButtonsCharMapClicked);
-    QObject::connect(backButtonsPage, &OWC::BackButtonsPage::resetBackButtons, this, &MainWindow::onResetBackButtons);
     QObject::connect(backButtonsPage, &OWC::BackButtonsPage::logSent, this, &MainWindow::onLogSent);
     QObject::connect(yamlBrowserPage, &OWC::YamlBrowserPage::backToHome, this, &MainWindow::onBackToHomeClicked);
     QObject::connect(yamlBrowserPage, &OWC::YamlBrowserPage::logSent, this, &MainWindow::onLogSent);
@@ -309,7 +307,7 @@ void MainWindow::quitGamepadThread() {
 
 void MainWindow::importYamlMapping(const YAML::Node &yaml) const {
     kbdMousePage->importMappingFromYaml(yaml);
-    backButtonsPage->importMappingFromYaml(yaml);
+    backButtonsPage->importFromYaml(yaml);
 
     if (xinputPage != nullptr)
         xinputPage->importMappingFromYaml(yaml);
@@ -352,7 +350,7 @@ void MainWindow::onHomeApplyChanges() {
 
     homePage->enableButtons(false);
     kbdMousePage->writeMapping(gpd);
-    backButtonsPage->writeMapping(gpd);
+    backButtonsPage->writeMapping();
     settingsPage->writeSettings();
 
     if (xinputPage != nullptr)
@@ -397,7 +395,7 @@ void MainWindow::onHomeExportYamlClicked() {
 
     ts << "MAPPING_TYPE: " << gpd->getControllerType() << "\n" <<
         kbdMousePage->exportMappingToYaml() <<
-        backButtonsPage->exportMappingToYaml();
+        backButtonsPage->exportToYaml();
 
     if (xinputPage != nullptr)
         ts << xinputPage->exportMappingToYaml();
@@ -520,12 +518,9 @@ void MainWindow::onResetXinputButtons() const {
     xinputPage->setMapping(gpd);
 }
 
-void MainWindow::onResetBackButtons() const {
-    backButtonsPage->setMapping(gpd);
-}
-
 void MainWindow::onSettingsConfigRestore() const {
     settingsPage->refresh();
+    backButtonsPage->refresh();
     //todo others
 }
 

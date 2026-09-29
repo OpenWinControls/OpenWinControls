@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #pragma once
-
 #include <QVBoxLayout>
 #include <QKeyEvent>
 #include <QPushButton>
@@ -40,26 +39,24 @@ namespace OWC {
     public:
         explicit BackButtonsPage(const QString &helpLbl);
 
-        virtual void initPage(const std::shared_ptr<Controller> &gpd) {}
-
         void setPendingButton(const QString &key) const;
-        virtual void setMapping(const std::shared_ptr<Controller> &gpd) const = 0;
-        virtual void writeMapping(const std::shared_ptr<Controller> &gpd) = 0;
-        [[nodiscard]] virtual QString exportMappingToYaml() const = 0;
-        virtual void importMappingFromYaml(const YAML::Node &yaml) const = 0;
+        virtual void writeMapping() = 0;
+        [[nodiscard]] virtual QString exportToYaml() const = 0;
+        virtual void importFromYaml(const YAML::Node &yaml) const = 0;
 
     private slots:
         void onBackBtnClicked();
-        void onResetBtnClicked();
         void onCharMapBtnClicked();
 
     protected slots:
         void onkeyButtonPressed(QPushButton *btn) const;
 
+    public slots:
+        virtual void refresh() const = 0;
+
     signals:
         void backToHome();
         void showCharMap();
-        void resetBackButtons();
         void logSent(const QString &msg);
     };
 }

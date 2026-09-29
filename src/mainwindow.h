@@ -90,7 +90,6 @@ private slots:
     void onBackToHomeClicked();
     void onResetKeyboardMouseButtons() const;
     void onResetXinputButtons() const;
-    void onResetBackButtons() const;
     void onSettingsConfigRestore() const;
     void onGamepadInitFail();
     void onGamepadButton(const QString &key) const;

@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <QLabel>
-#include <QScrollBar>
 #include <QScrollArea>
 #include <QScroller>
 
@@ -47,11 +46,12 @@ namespace OWC {
 
         scrollArea->widget()->setLayout(backBtnLyt);
 
+        buttonsLyt->addWidget(resetBtn);
+        buttonsLyt->addWidget(charMapBtn);
+        buttonsLyt->addStretch();
         buttonsLyt->addWidget(helpTx);
         buttonsLyt->addStretch();
-        buttonsLyt->addWidget(charMapBtn);
         buttonsLyt->addWidget(backBtn);
-        buttonsLyt->addWidget(resetBtn);
 
         lyt->setContentsMargins(0, 0, 0, 0);
         lyt->addSpacing(12);
@@ -61,7 +61,7 @@ namespace OWC {
         setLayout(lyt);
 
         QObject::connect(backBtn, &QPushButton::clicked, this, &BackButtonsPage::onBackBtnClicked);
-        QObject::connect(resetBtn, &QPushButton::clicked, this, &BackButtonsPage::onResetBtnClicked);
+        QObject::connect(resetBtn, &QPushButton::clicked, this, &BackButtonsPage::refresh);
         QObject::connect(charMapBtn, &QPushButton::clicked, this, &BackButtonsPage::onCharMapBtnClicked);
     }
 
@@ -95,10 +95,6 @@ namespace OWC {
 
     void BackButtonsPage::onBackBtnClicked() {
         emit backToHome();
-    }
-
-    void BackButtonsPage::onResetBtnClicked() {
-        emit resetBackButtons();
     }
 
     void BackButtonsPage::onCharMapBtnClicked() {

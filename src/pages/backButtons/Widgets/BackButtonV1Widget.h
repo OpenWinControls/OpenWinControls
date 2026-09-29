@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #pragma once
-
 #include "KeySlotV1Widget.h"
 #include "../../../extern/libOpenWinControls/src/controller/Controller.h"
 #include "../../../extern/yaml-cpp/include/yaml-cpp/yaml.h"
