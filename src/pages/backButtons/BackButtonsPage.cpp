@@ -65,7 +65,7 @@ namespace OWC {
         QObject::connect(charMapBtn, &QPushButton::clicked, this, &BackButtonsPage::onCharMapBtnClicked);
     }
 
-    void BackButtonsPage::keyPressEvent(QKeyEvent *event) {
+    void BackButtonsPage::keyReleaseEvent(QKeyEvent *event) {
         if (pendingBtn == nullptr)
             return;
 

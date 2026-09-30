@@ -95,7 +95,7 @@ namespace OWC {
         QObject::connect(menu, &SingleButtonBlockWidget::pendingEditBtn, this, &KeyboardMouseButtonsPage::onkeyButtonPressed);
     }
 
-    void KeyboardMouseButtonsPage::keyPressEvent(QKeyEvent *event) {
+    void KeyboardMouseButtonsPage::keyReleaseEvent(QKeyEvent *event) {
         if (pendingBtn == nullptr)
             return;
 

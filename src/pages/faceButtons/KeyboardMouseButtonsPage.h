@@ -26,7 +26,7 @@ namespace OWC {
         Q_OBJECT
 
     protected:
-        void keyPressEvent(QKeyEvent *event) override;
+        void keyReleaseEvent(QKeyEvent *event) override;
 
     public:
         explicit KeyboardMouseButtonsPage(const std::shared_ptr<Controller> &gpd);

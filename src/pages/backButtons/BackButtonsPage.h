@@ -34,7 +34,7 @@ namespace OWC {
     protected:
         QHBoxLayout *backBtnLyt = nullptr;
 
-        void keyPressEvent(QKeyEvent *event) override;
+        void keyReleaseEvent(QKeyEvent *event) override;
 
     public:
         explicit BackButtonsPage(const QString &helpLbl);
