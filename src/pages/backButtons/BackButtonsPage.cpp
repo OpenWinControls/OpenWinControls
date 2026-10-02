@@ -65,6 +65,28 @@ namespace OWC {
         QObject::connect(charMapBtn, &QPushButton::clicked, this, &BackButtonsPage::onCharMapBtnClicked);
     }
 
+    void BackButtonsPage::showEvent(QShowEvent *event) {
+        // V1/V2 mapping buttons are created after the base constructor.
+        for (QPushButton *btn: findChildren<QPushButton *>())
+            btn->installEventFilter(this);
+
+        QWidget::showEvent(event);
+    }
+
+    bool BackButtonsPage::eventFilter(QObject *watched, QEvent *event) {
+        // Block keyboard navigation and activation.
+        if (event->type() == QEvent::KeyPress)
+            return true;
+
+        // Capture the released key for the pending mapping button.
+        if (watched == pendingBtn && event->type() == QEvent::KeyRelease) {
+            keyReleaseEvent(static_cast<QKeyEvent *>(event));
+            return true;
+        }
+
+        return QWidget::eventFilter(watched, event);
+    }
+
     void BackButtonsPage::keyReleaseEvent(QKeyEvent *event) {
         if (pendingBtn == nullptr)
             return;

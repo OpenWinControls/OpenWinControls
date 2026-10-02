@@ -18,7 +18,6 @@
 #ifdef _WIN32
 #include "include/win.h"
 #endif
-#include <QApplication>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QFile>
@@ -76,19 +75,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     QObject::connect(homePage, &OWC::HomePage::showLogs, this, &MainWindow::onHomeShowLogsClicked);
     QObject::connect(logsPage, &OWC::LogsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
-
-    qApp->installEventFilter(this);
-}
-
-bool MainWindow::eventFilter(QObject *watched, QEvent *event) {
-    const QWidget *widget = qobject_cast<QWidget *>(watched);
-    const bool inMainWindow = widget != nullptr && widget->window() == this;
-
-    // Stop all keyboard press events in main window, let everything else pass
-    if (inMainWindow && event->type() == QEvent::KeyPress)
-        return true;
-
-    return QMainWindow::eventFilter(watched, event);
 }
 
 MainWindow::~MainWindow() {

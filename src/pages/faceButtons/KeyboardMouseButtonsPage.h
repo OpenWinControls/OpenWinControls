@@ -26,6 +26,7 @@ namespace OWC {
         Q_OBJECT
 
     protected:
+        bool eventFilter(QObject *watched, QEvent *event) override;
         void keyReleaseEvent(QKeyEvent *event) override;
 
     public:

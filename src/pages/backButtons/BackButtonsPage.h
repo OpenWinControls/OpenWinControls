@@ -34,6 +34,8 @@ namespace OWC {
     protected:
         QHBoxLayout *backBtnLyt = nullptr;
 
+        void showEvent(QShowEvent *event) override;
+        bool eventFilter(QObject *watched, QEvent *event) override;
         void keyReleaseEvent(QKeyEvent *event) override;
 
     public:

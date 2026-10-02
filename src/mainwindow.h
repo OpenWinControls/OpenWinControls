@@ -66,9 +66,6 @@ private:
     void quitGamepadThread();
     void importYamlMapping(const YAML::Node &yaml) const;
 
-protected:
-    bool eventFilter(QObject *watched, QEvent *event) override;
-
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;

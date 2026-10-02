@@ -93,6 +93,23 @@ namespace OWC {
         QObject::connect(select, &SingleButtonBlockWidget::pendingEditBtn, this, &KeyboardMouseButtonsPage::onkeyButtonPressed);
         QObject::connect(menu, &SingleButtonBlockWidget::logSent, this, &KeyboardMouseButtonsPage::onLogSent);
         QObject::connect(menu, &SingleButtonBlockWidget::pendingEditBtn, this, &KeyboardMouseButtonsPage::onkeyButtonPressed);
+
+        for (QPushButton *btn: findChildren<QPushButton *>())
+            btn->installEventFilter(this);
+    }
+
+    bool KeyboardMouseButtonsPage::eventFilter(QObject *watched, QEvent *event) {
+        // Block keyboard navigation and activation.
+        if (event->type() == QEvent::KeyPress)
+            return true;
+
+        // Capture the released key for the pending mapping button.
+        if (watched == pendingBtn && event->type() == QEvent::KeyRelease) {
+            keyReleaseEvent(static_cast<QKeyEvent *>(event));
+            return true;
+        }
+
+        return FaceButtonsPage::eventFilter(watched, event);
     }
 
     void KeyboardMouseButtonsPage::keyReleaseEvent(QKeyEvent *event) {
