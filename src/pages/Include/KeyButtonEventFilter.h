@@ -16,19 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #pragma once
-
-#include <QKeyEvent>
-
-#include "FaceButtonsPage.h"
+#include <QEvent>
+#include <QObject>
 
 namespace OWC {
-    class KeyboardMouseButtonsPage final: public FaceButtonsPage {
-        Q_OBJECT
-
-    protected:
-        void keyReleaseEvent(QKeyEvent *event) override;
-
+    class KeyButtonEventFilter final: public QObject {
     public:
-        explicit KeyboardMouseButtonsPage(const std::shared_ptr<Controller> &gpd);
+        explicit KeyButtonEventFilter(QObject *parent): QObject(parent) {}
+
+        bool eventFilter(QObject *watched, QEvent *event) override {
+            if (event->type() == QEvent::KeyPress)
+                return true;
+
+            return QObject::eventFilter(watched, event);
+        }
     };
 }

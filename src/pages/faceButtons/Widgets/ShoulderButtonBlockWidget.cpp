@@ -19,6 +19,7 @@
 #include <QLabel>
 
 #include "ShoulderButtonBlockWidget.h"
+#include "../../Include/KeyButtonEventFilter.h"
 
 namespace OWC {
     using namespace Qt::StringLiterals;
@@ -42,7 +43,9 @@ namespace OWC {
         bottomBtn = new QPushButton();
 
         topBtn->setFixedWidth(buttonWidth);
+        topBtn->installEventFilter(new KeyButtonEventFilter(this));
         bottomBtn->setFixedWidth(buttonWidth);
+        bottomBtn->installEventFilter(new KeyButtonEventFilter(this));
         topIcn->setPixmap(QPixmap(u":/icons/%1"_s.arg(topIcon)).scaled(topIconScaleW, topIconScaleH, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         topIcn->setAlignment(Qt::AlignCenter);
         bottomIcn->setPixmap(QPixmap(u":/icons/%1"_s.arg(bottomIcon)).scaled(bottomIconScaleW, bottomIconScaleH, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));

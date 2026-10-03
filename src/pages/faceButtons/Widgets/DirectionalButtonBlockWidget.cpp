@@ -19,6 +19,7 @@
 #include <QLabel>
 
 #include "DirectionalButtonBlockWidget.h"
+#include "../../Include/KeyButtonEventFilter.h"
 
 namespace OWC {
     using namespace Qt::StringLiterals;
@@ -48,9 +49,13 @@ namespace OWC {
         bottomBtn = new QPushButton();
 
         topBtn->setFixedWidth(buttonWidth);
+        topBtn->installEventFilter(new KeyButtonEventFilter(this));
         leftBtn->setFixedWidth(buttonWidth);
+        leftBtn->installEventFilter(new KeyButtonEventFilter(this));
         rightBtn->setFixedWidth(buttonWidth);
+        rightBtn->installEventFilter(new KeyButtonEventFilter(this));
         bottomBtn->setFixedWidth(buttonWidth);
+        bottomBtn->installEventFilter(new KeyButtonEventFilter(this));
         controlIcon->setPixmap(QPixmap(u":/icons/%1"_s.arg(icon)).scaled(iconScale, iconScale, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 
         topLyt->setAlignment(Qt::AlignCenter);

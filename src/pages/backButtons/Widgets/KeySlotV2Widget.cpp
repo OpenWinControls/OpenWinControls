@@ -19,6 +19,7 @@
 #include <QLabel>
 
 #include "KeySlotV2Widget.h"
+#include "../../Include/KeyButtonEventFilter.h"
 
 namespace OWC {
     using namespace Qt::StringLiterals;
@@ -31,6 +32,7 @@ namespace OWC {
         holdTime = new QSpinBox();
 
         keySlotBtn->setFixedWidth(150);
+        keySlotBtn->installEventFilter(new KeyButtonEventFilter(this));
         startTime->setRange(0, INT16_MAX - 1);
         holdTime->setRange(0, INT16_MAX - 1);
 

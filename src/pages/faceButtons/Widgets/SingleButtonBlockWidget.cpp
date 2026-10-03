@@ -19,6 +19,7 @@
 #include <QLabel>
 
 #include "SingleButtonBlockWidget.h"
+#include "../../Include/KeyButtonEventFilter.h"
 
 namespace OWC {
     using namespace Qt::StringLiterals;
@@ -32,6 +33,7 @@ namespace OWC {
         keyBtn = new QPushButton();
 
         keyBtn->setFixedWidth(buttonWidth);
+        keyBtn->installEventFilter(new KeyButtonEventFilter(this));
         startIcon->setPixmap(QPixmap(u":/icons/%1"_s.arg(icon)).scaled(iconScaleW, iconScaleH, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         startIcon->setAlignment(Qt::AlignCenter);
 

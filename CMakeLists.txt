@@ -22,6 +22,7 @@ qt_add_resources(QT_RESOURCE
 set(PROJECT_SRC
   src/pages/Include/DownloadWorker.h
   src/pages/Include/DownloadWorker.cpp
+  src/pages/Include/KeyButtonEventFilter.h
 
   src/pages/Widgets/FlowLayout.h
   src/pages/Widgets/FlowLayout.cpp
