@@ -1,8 +1,12 @@
 ## next
 
 - Update windows Qt to 6.11.2 (left behind due to action/aqt bug)
+- Fix pending key button not reciving some keys from real keyboard (#2)
 - Fix config restore not reloading values in UI
+- Ignore Qt focus changes when a key button is selected
 - Code clean up and optimization
+- Update SDL to 3.4.18
+- Update yaml module
 
 ## 2.10
 
