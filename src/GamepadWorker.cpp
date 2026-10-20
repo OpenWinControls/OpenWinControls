@@ -137,11 +137,11 @@ namespace OWC {
 
                         axisState.leftX = getAxisState(evt.gaxis.value);
 
-                        if (old == axisState.leftX || axisState.leftX == 0)
+                        if (axisState.leftY != 0 || old == axisState.leftX || axisState.leftX == 0)
                             break;
                         else if (axisState.leftX > 0)
                             emit gamepadButton(u"LSTICK_RIGHT"_s);
-                        else
+                        else if (axisState.leftX < 0)
                             emit gamepadButton(u"LSTICK_LEFT"_s);
                     }
                         break;
@@ -150,11 +150,11 @@ namespace OWC {
 
                         axisState.leftY = getAxisState(evt.gaxis.value);
 
-                        if (old == axisState.leftY || axisState.leftY == 0)
+                        if (axisState.leftX != 0 || old == axisState.leftY || axisState.leftY == 0)
                             break;
                         else if (axisState.leftY > 0)
                             emit gamepadButton(u"LSTICK_DOWN"_s);
-                        else
+                        else if (axisState.leftY < 0)
                             emit gamepadButton(u"LSTICK_UP"_s);
                     }
                         break;
@@ -163,11 +163,11 @@ namespace OWC {
 
                         axisState.rightX = getAxisState(evt.gaxis.value);
 
-                        if (old == axisState.rightX || axisState.rightX == 0)
+                        if (axisState.rightY != 0 || old == axisState.rightX || axisState.rightX == 0)
                             break;
                         else if (axisState.rightX > 0)
                             emit gamepadButton(u"RSTICK_RIGHT"_s);
-                        else
+                        else if (axisState.rightX < 0)
                             emit gamepadButton(u"RSTICK_LEFT"_s);
                     }
                         break;
@@ -176,11 +176,11 @@ namespace OWC {
 
                         axisState.rightY = getAxisState(evt.gaxis.value);
 
-                        if (old == axisState.rightY || axisState.rightY == 0)
+                        if (axisState.rightX != 0 || old == axisState.rightY || axisState.rightY == 0)
                             break;
                         else if (axisState.rightY > 0)
                             emit gamepadButton(u"RSTICK_DOWN"_s);
-                        else
+                        else if (axisState.rightY < 0)
                             emit gamepadButton(u"RSTICK_UP"_s);
                     }
                         break;
