@@ -45,6 +45,7 @@ namespace OWC {
         backPic = new QLabel();
 
         mappingMode->addItem(u"Keyboard&Mouse"_s);
+        mappingMode->setToolTip(u"Face buttons mapping mode"_s);
         faceButtonsMapBtn->setMinimumHeight(40);
         backButtonsMapBtn->setMinimumHeight(40);
         lblFont.setBold(true);
