@@ -32,7 +32,7 @@ namespace OWC {
         SDL_Quit();
     }
 
-    short GamepadWorker::getAxisState(const Sint16 axisValue) {
+    short GamepadWorker::getAxisState(const Sint16 axisValue) const {
         if (axisValue >= -axisMax && axisValue <= axisMax) // deadzone
             return 0;
 
@@ -68,49 +68,49 @@ namespace OWC {
 
                 switch (evt.gbutton.button) {
                     case SDL_GAMEPAD_BUTTON_SOUTH:
-                        emit gamepadButton("BTN_A");
+                        emit gamepadButton(u"BTN_A"_s);
                         break;
                     case SDL_GAMEPAD_BUTTON_EAST:
-                        emit gamepadButton("BTN_B");
+                        emit gamepadButton(u"BTN_B"_s);
                         break;
                     case SDL_GAMEPAD_BUTTON_WEST:
-                        emit gamepadButton("BTN_X");
+                        emit gamepadButton(u"BTN_X"_s);
                         break;
                     case SDL_GAMEPAD_BUTTON_NORTH:
-                        emit gamepadButton("BTN_Y");
+                        emit gamepadButton(u"BTN_Y"_s);
                         break;
                     case SDL_GAMEPAD_BUTTON_START:
-                        emit gamepadButton("START");
+                        emit gamepadButton(u"START"_s);
                         break;
                     case SDL_GAMEPAD_BUTTON_BACK:
-                        emit gamepadButton("SELECT");
+                        emit gamepadButton(u"SELECT"_s);
                         break;
                     case SDL_GAMEPAD_BUTTON_GUIDE:
-                        emit gamepadButton("MENU");
+                        emit gamepadButton(u"MENU"_s);
                         break;
                     case SDL_GAMEPAD_BUTTON_LEFT_STICK:
-                        emit gamepadButton("L3");
+                        emit gamepadButton(u"L3"_s);
                         break;
                     case SDL_GAMEPAD_BUTTON_RIGHT_STICK:
-                        emit gamepadButton("R3");
+                        emit gamepadButton(u"R3"_s);
                         break;
                     case SDL_GAMEPAD_BUTTON_DPAD_UP:
-                        emit gamepadButton("DPAD_UP");
+                        emit gamepadButton(u"DPAD_UP"_s);
                         break;
                     case SDL_GAMEPAD_BUTTON_DPAD_DOWN:
-                        emit gamepadButton("DPAD_DOWN");
+                        emit gamepadButton(u"DPAD_DOWN"_s);
                         break;
                     case SDL_GAMEPAD_BUTTON_DPAD_LEFT:
-                        emit gamepadButton("DPAD_LEFT");
+                        emit gamepadButton(u"DPAD_LEFT"_s);
                         break;
                     case SDL_GAMEPAD_BUTTON_DPAD_RIGHT:
-                        emit gamepadButton("DPAD_RIGHT");
+                        emit gamepadButton(u"DPAD_RIGHT"_s);
                         break;
                     case SDL_GAMEPAD_BUTTON_LEFT_SHOULDER:
-                        emit gamepadButton("L1");
+                        emit gamepadButton(u"L1"_s);
                         break;
                     case SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER:
-                        emit gamepadButton("R1");
+                        emit gamepadButton(u"R1"_s);
                         break;
                     default:
                         break;
@@ -124,12 +124,12 @@ namespace OWC {
                 switch (evt.gaxis.axis) {
                     case SDL_GAMEPAD_AXIS_LEFT_TRIGGER: {
                         if (evt.gaxis.value >= axisMax)
-                            emit gamepadButton("L2");
+                            emit gamepadButton(u"L2"_s);
                     }
                         break;
                     case SDL_GAMEPAD_AXIS_RIGHT_TRIGGER: {
                         if (evt.gaxis.value >= axisMax)
-                            emit gamepadButton("R2");
+                            emit gamepadButton(u"R2"_s);
                     }
                         break;
                     case SDL_GAMEPAD_AXIS_LEFTX: {
@@ -140,9 +140,9 @@ namespace OWC {
                         if (old == axisState.leftX || axisState.leftX == 0)
                             break;
                         else if (axisState.leftX > 0)
-                            emit gamepadButton("LSTICK_RIGHT");
+                            emit gamepadButton(u"LSTICK_RIGHT"_s);
                         else
-                            emit gamepadButton("LSTICK_LEFT");
+                            emit gamepadButton(u"LSTICK_LEFT"_s);
                     }
                         break;
                     case SDL_GAMEPAD_AXIS_LEFTY: {
@@ -153,9 +153,9 @@ namespace OWC {
                         if (old == axisState.leftY || axisState.leftY == 0)
                             break;
                         else if (axisState.leftY > 0)
-                            emit gamepadButton("LSTICK_DOWN");
+                            emit gamepadButton(u"LSTICK_DOWN"_s);
                         else
-                            emit gamepadButton("LSTICK_UP");
+                            emit gamepadButton(u"LSTICK_UP"_s);
                     }
                         break;
                     case SDL_GAMEPAD_AXIS_RIGHTX: {
@@ -166,9 +166,9 @@ namespace OWC {
                         if (old == axisState.rightX || axisState.rightX == 0)
                             break;
                         else if (axisState.rightX > 0)
-                            emit gamepadButton("RSTICK_RIGHT");
+                            emit gamepadButton(u"RSTICK_RIGHT"_s);
                         else
-                            emit gamepadButton("RSTICK_LEFT");
+                            emit gamepadButton(u"RSTICK_LEFT"_s);
                     }
                         break;
                     case SDL_GAMEPAD_AXIS_RIGHTY: {
@@ -179,9 +179,9 @@ namespace OWC {
                         if (old == axisState.rightY || axisState.rightY == 0)
                             break;
                         else if (axisState.rightY > 0)
-                            emit gamepadButton("RSTICK_DOWN");
+                            emit gamepadButton(u"RSTICK_DOWN"_s);
                         else
-                            emit gamepadButton("RSTICK_UP");
+                            emit gamepadButton(u"RSTICK_UP"_s);
                     }
                         break;
                     default:
@@ -198,7 +198,7 @@ namespace OWC {
         SDL_SetHint(SDL_HINT_JOYSTICK_ENHANCED_REPORTS, "0");
 
         if (!SDL_Init(SDL_INIT_GAMEPAD)) {
-            emit logSent("Failed to init SDL gamepad subsystem");
+            emit logSent(u"Failed to init SDL gamepad subsystem"_s);
             emit initFail();
             return;
         }

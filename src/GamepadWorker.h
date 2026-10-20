@@ -40,7 +40,7 @@ namespace OWC {
         bool eventsEnabled = false;
         AxisState axisState;
 
-        [[nodiscard]] short getAxisState(Sint16 axisValue);
+        [[nodiscard]] short getAxisState(Sint16 axisValue) const;
         void handleEvent(const SDL_Event &evt);
 
     public:
