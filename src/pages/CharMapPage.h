@@ -38,7 +38,7 @@ namespace OWC {
         [[nodiscard]] FlowLayout *makeGamepadSection() const;
 
     public:
-        explicit CharMapPage(bool hasGamepadKeys);
+        CharMapPage();
 
         void setMode(CharMapMode mode) const;
 

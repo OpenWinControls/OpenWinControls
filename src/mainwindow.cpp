@@ -226,7 +226,6 @@ void MainWindow::initPages(const QString &product, QLabel *versionLbl) {
         homePage->setEmulationMode(gpdV2->getEmulationMode());
         xinputPage->refresh();
         stackedWidget->addWidget(xinputPage);
-        initGamepadThread();
 
         QObject::connect(xinputPage, &OWC::FaceButtonsPage::showCharMap, this, &MainWindow::onXinputCharMapClicked);
         QObject::connect(xinputPage, &OWC::FaceButtonsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
@@ -234,7 +233,7 @@ void MainWindow::initPages(const QString &product, QLabel *versionLbl) {
     }
 
     settingsPage = new OWC::SettingsPage(gpd);
-    charMapPage = new OWC::CharMapPage(gpd->getControllerType() == 2);
+    charMapPage = new OWC::CharMapPage();
     kbdMousePage = new OWC::KeyboardMouseButtonsPage(gpd);
     yamlBrowserPage = new OWC::YamlBrowserPage(appDataPath, gpd->getControllerType());
 
@@ -252,6 +251,7 @@ void MainWindow::initPages(const QString &product, QLabel *versionLbl) {
     stackedWidget->addWidget(kbdMousePage);
     stackedWidget->addWidget(backButtonsPage);
     stackedWidget->addWidget(yamlBrowserPage);
+    initGamepadThread();
 
     QObject::connect(homePage, &OWC::HomePage::keyboardMouseMap, this, &MainWindow::onHomeKeyboardMouseMapClicked);
     QObject::connect(homePage, &OWC::HomePage::xinputMap, this, &MainWindow::onHomeXinputMapClicked);
@@ -460,7 +460,7 @@ void MainWindow::onBackButtonsCharMapClicked() {
     if (gamepadThread != nullptr)
         emit enableSDLEvents(false);
 
-    charMapPage->setMode(gpd->getControllerType() == 1 ? OWC::CharMapMode::Keyboard : OWC::CharMapMode::Mixed);
+    charMapPage->setMode(OWC::CharMapMode::Mixed);
     stackedWidget->setCurrentWidget(charMapPage);
 }
 

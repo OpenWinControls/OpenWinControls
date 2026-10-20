@@ -28,10 +28,11 @@
 namespace OWC {
     using namespace Qt::StringLiterals;
 
-    CharMapPage::CharMapPage(const bool hasGamepadKeys) {
+    CharMapPage::CharMapPage() {
         QVBoxLayout *lyt = new QVBoxLayout();
         QHBoxLayout *unsetLyt = new QHBoxLayout();
         QVBoxLayout *kbMouseSectionLyt = new QVBoxLayout();
+        QVBoxLayout *gamepadSectionLyt = new QVBoxLayout();
         QHBoxLayout *bottomLyt = new QHBoxLayout();
         QVBoxLayout *scrollWidgLyt = new QVBoxLayout();
         QScrollArea *scrollArea = new QScrollArea();
@@ -42,10 +43,11 @@ namespace OWC {
         QLabel *mouseLbl = new QLabel(u"Mouse"_s);
         QLabel *kbLbl = new QLabel(u"Keyboard"_s);
         QLabel *specialLbl = new QLabel(u"Special"_s);
-        QFont font;
+        QLabel *gamepadLbl = new QLabel(u"Gamepad"_s);
+        QFont font = alphLbl->font();
 
         kbMouseSection = new QWidget();
-        font = alphLbl->font();
+        gamepadSection = new QWidget();
 
         font.setBold(true);
         font.setPointSize(14);
@@ -61,6 +63,8 @@ namespace OWC {
         kbLbl->setAlignment(Qt::AlignCenter);
         specialLbl->setFont(font);
         specialLbl->setAlignment(Qt::AlignCenter);
+        gamepadLbl->setFont(font);
+        gamepadLbl->setAlignment(Qt::AlignCenter);
         scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         scrollArea->setWidgetResizable(true);
         scrollArea->setWidget(new QWidget);
@@ -87,32 +91,21 @@ namespace OWC {
         kbMouseSectionLyt->addWidget(specialLbl);
         kbMouseSectionLyt->addSpacing(4);
         kbMouseSectionLyt->addLayout(makeSpecialSection());
+        gamepadSectionLyt->setContentsMargins(0, 0, 0, 0);
+        gamepadSectionLyt->addWidget(gamepadLbl);
+        gamepadSectionLyt->addSpacing(4);
+        gamepadSectionLyt->addLayout(makeGamepadSection());
         bottomLyt->addStretch();
         bottomLyt->addWidget(backBtn);
         scrollWidgLyt->addLayout(unsetLyt);
         scrollWidgLyt->addWidget(kbMouseSection);
+        scrollWidgLyt->addWidget(gamepadSection);
         scrollWidgLyt->addStretch();
         lyt->addWidget(scrollArea);
         lyt->addLayout(bottomLyt);
 
-        if (hasGamepadKeys) {
-            QVBoxLayout *gamepadSectionLyt = new QVBoxLayout();
-            QLabel *gamepadLbl = new QLabel(u"Gamepad"_s);
-
-            gamepadSection = new QWidget();
-
-            gamepadLbl->setFont(font);
-            gamepadLbl->setAlignment(Qt::AlignCenter);
-            gamepadSectionLyt->setContentsMargins(0, 0, 0, 0);
-            gamepadSectionLyt->addWidget(gamepadLbl);
-            gamepadSectionLyt->addSpacing(4);
-            gamepadSectionLyt->addLayout(makeGamepadSection());
-
-            scrollWidgLyt->insertWidget(2, gamepadSection);
-            gamepadSection->setLayout(gamepadSectionLyt);
-        }
-
         kbMouseSection->setLayout(kbMouseSectionLyt);
+        gamepadSection->setLayout(gamepadSectionLyt);
         scrollArea->widget()->setLayout(scrollWidgLyt);
         setLayout(lyt);
 
