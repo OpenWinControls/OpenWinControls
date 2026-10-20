@@ -116,7 +116,7 @@ namespace OWC {
         scrollArea->widget()->setLayout(scrollWidgLyt);
         setLayout(lyt);
 
-        QObject::connect(backBtn, &QPushButton::clicked, this, &CharMapPage::onBackBtnClicked);
+        QObject::connect(backBtn, &QPushButton::clicked, this, &CharMapPage::hideCharMap);
     }
 
     QPushButton *CharMapPage::makeKeyBtn(const int code) const {
@@ -229,9 +229,5 @@ namespace OWC {
 
         if (btn != nullptr)
             emit keyPressed(btn->text());
-    }
-
-    void CharMapPage::onBackBtnClicked() {
-        emit hideCharMap();
     }
 }

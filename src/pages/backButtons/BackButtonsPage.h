@@ -44,10 +44,6 @@ namespace OWC {
         [[nodiscard]] virtual QString exportToYaml() const = 0;
         virtual void importFromYaml(const YAML::Node &yaml) const = 0;
 
-    private slots:
-        void onBackBtnClicked();
-        void onCharMapBtnClicked();
-
     protected slots:
         void onkeyButtonPressed(QPushButton *btn) const;
 

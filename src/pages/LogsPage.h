@@ -29,12 +29,13 @@ namespace OWC {
     public:
         LogsPage();
 
-        void write(const QString &msg) const;
-
     private slots:
         void onClearBtnClicked() const;
         void onSaveBtnClicked();
         void onBackBtnClicked();
+
+    public slots:
+        void write(const QString &msg) const;
 
     signals:
         void backToHome();

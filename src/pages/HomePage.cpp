@@ -98,13 +98,13 @@ namespace OWC {
         setLayout(lyt);
 
         QObject::connect(faceButtonsMapBtn, &QPushButton::clicked, this, &HomePage::onFaceButtonsMapClicked);
-        QObject::connect(backButtonsMapBtn, &QPushButton::clicked, this, &HomePage::onBackButtonsMapClicked);
-        QObject::connect(logsBtn, &QPushButton::clicked, this, &HomePage::onLogsBtnClicked);
-        QObject::connect(ymlBrowserBtn, &QPushButton::clicked, this, &HomePage::onYamlBrowserClicked);
-        QObject::connect(settingsBtn, &QPushButton::clicked, this, &HomePage::onSettingsClicked);
-        QObject::connect(applyBtn, &QPushButton::clicked, this, &HomePage::onApplyBtnClicked);
-        QObject::connect(exportYamlBtn, &QPushButton::clicked, this, &HomePage::onExportYamlBtnClicked);
-        QObject::connect(importYamlBtn, &QPushButton::clicked, this, &HomePage::onImportYamlBtnClicked);
+        QObject::connect(backButtonsMapBtn, &QPushButton::clicked, this, &HomePage::backButtonsMap);
+        QObject::connect(logsBtn, &QPushButton::clicked, this, &HomePage::showLogs);
+        QObject::connect(ymlBrowserBtn, &QPushButton::clicked, this, &HomePage::yamlBrowser);
+        QObject::connect(settingsBtn, &QPushButton::clicked, this, &HomePage::settingsPage);
+        QObject::connect(applyBtn, &QPushButton::clicked, this, &HomePage::applyChanges);
+        QObject::connect(exportYamlBtn, &QPushButton::clicked, this, &HomePage::exportYaml);
+        QObject::connect(importYamlBtn, &QPushButton::clicked, this, &HomePage::importYaml);
     }
 
     void HomePage::init(const QString &product) const {
@@ -177,33 +177,5 @@ namespace OWC {
             emit keyboardMouseMap();
         else
             emit xinputMap();
-    }
-
-    void HomePage::onBackButtonsMapClicked() {
-        emit backButtonsMap();
-    }
-
-    void HomePage::onLogsBtnClicked() {
-        emit showLogs();
-    }
-
-    void HomePage::onYamlBrowserClicked() {
-        emit yamlBrowser();
-    }
-
-    void HomePage::onSettingsClicked() {
-        emit settingsPage();
-    }
-
-    void HomePage::onApplyBtnClicked() {
-        emit applyChanges();
-    }
-
-    void HomePage::onExportYamlBtnClicked() {
-        emit exportYaml();
-    }
-
-    void HomePage::onImportYamlBtnClicked() {
-        emit importYaml();
     }
 }

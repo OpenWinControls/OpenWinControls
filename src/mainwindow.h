@@ -18,7 +18,6 @@
 #pragma once
 #include <QMainWindow>
 #include <QStackedWidget>
-#include <QThread>
 
 #include "GamepadWorker.h"
 #include "pages/HomePage.h"
@@ -63,7 +62,6 @@ private:
     [[nodiscard]] bool initController(const QString &product);
     void initPages(const QString &product, QLabel *versionLbl);
     void initGamepadThread();
-    void quitGamepadThread();
     void importYamlMapping(const YAML::Node &yaml) const;
 
 public:
@@ -71,7 +69,6 @@ public:
     ~MainWindow() override;
 
 private slots:
-    void onLogSent(const QString &msg) const;
     void onHomeKeyboardMouseMapClicked() const;
     void onHomeXinputMapClicked();
     void onHomeBackButtonsMapClicked();
@@ -89,8 +86,8 @@ private slots:
     void onYamlBrowserImportProfile(const QString &yml) const;
     void onBackToHomeClicked();
     void onSettingsConfigRestore() const;
-    void onGamepadInitFail();
     void onGamepadButton(const QString &key) const;
+    void quitGamepadThread();
 
 signals:
     void enableSDLEvents(bool enable);

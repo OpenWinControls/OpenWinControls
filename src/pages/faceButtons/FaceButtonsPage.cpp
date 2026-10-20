@@ -52,9 +52,9 @@ namespace OWC {
         scrollArea->widget()->setLayout(controlsLyt);
         setLayout(lyt);
 
-        QObject::connect(backBtn, &QPushButton::clicked, this, &FaceButtonsPage::onBackBtnClicked);
+        QObject::connect(backBtn, &QPushButton::clicked, this, &FaceButtonsPage::backToHome);
         QObject::connect(resetBtn, &QPushButton::clicked, this, &FaceButtonsPage::refresh);
-        QObject::connect(charMapBtn, &QPushButton::clicked, this, &FaceButtonsPage::onCharMapBtnClicked);
+        QObject::connect(charMapBtn, &QPushButton::clicked, this, &FaceButtonsPage::showCharMap);
     }
 
     void FaceButtonsPage::refresh() const {
@@ -88,18 +88,6 @@ namespace OWC {
 
         pendingBtn->setText(key);
         pendingBtn = nullptr;
-    }
-
-    void FaceButtonsPage::onBackBtnClicked() {
-        emit backToHome();
-    }
-
-    void FaceButtonsPage::onCharMapBtnClicked() {
-        emit showCharMap();
-    }
-
-    void FaceButtonsPage::onLogSent(const QString &msg) {
-        emit logSent(msg);
     }
 
     void FaceButtonsPage::onkeyButtonPressed(QPushButton *btn) const {

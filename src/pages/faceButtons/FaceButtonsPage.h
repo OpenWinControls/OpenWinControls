@@ -43,12 +43,7 @@ namespace OWC {
         void importFromYaml(const YAML::Node &yaml) const;
         void setPendingButton(const QString &key) const;
 
-    private slots:
-        void onBackBtnClicked();
-        void onCharMapBtnClicked();
-
     protected slots:
-        void onLogSent(const QString &msg);
         void onkeyButtonPressed(QPushButton *btn) const;
 
     public slots:

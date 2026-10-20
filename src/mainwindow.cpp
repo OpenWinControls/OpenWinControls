@@ -86,7 +86,7 @@ MainWindow::~MainWindow() {
 
 QString MainWindow::getDataPath() const {
     QString path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
-    QDir qdir;
+    const QDir qdir;
 
     return !qdir.exists(path) && !qdir.mkdir(path) ? "" : path;
 }
@@ -230,7 +230,7 @@ void MainWindow::initPages(const QString &product, QLabel *versionLbl) {
 
         QObject::connect(xinputPage, &OWC::FaceButtonsPage::showCharMap, this, &MainWindow::onXinputCharMapClicked);
         QObject::connect(xinputPage, &OWC::FaceButtonsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
-        QObject::connect(xinputPage, &OWC::FaceButtonsPage::logSent, this, &MainWindow::onLogSent);
+        QObject::connect(xinputPage, &OWC::FaceButtonsPage::logSent, logsPage, &OWC::LogsPage::write);
     }
 
     settingsPage = new OWC::SettingsPage(gpd);
@@ -239,10 +239,9 @@ void MainWindow::initPages(const QString &product, QLabel *versionLbl) {
     yamlBrowserPage = new OWC::YamlBrowserPage(appDataPath, gpd->getControllerType());
 
     versionLbl->setText(u"X%1.%2, K%3.%4"_s.arg(QString::number(xmin, 16))
-                                                            .arg(QString::number(xmax, 16))
-                                                            .arg(QString::number(kmin, 16))
-                                                            .arg(QString::number(kmax, 16)));
-
+                                            .arg(QString::number(xmax, 16))
+                                            .arg(QString::number(kmin, 16))
+                                            .arg(QString::number(kmax, 16)));
     homePage->init(product);
     homePage->enableButtons(true);
     backButtonsPage->refresh();
@@ -268,12 +267,12 @@ void MainWindow::initPages(const QString &product, QLabel *versionLbl) {
     QObject::connect(charMapPage, &OWC::CharMapPage::keyPressed, this, &MainWindow::onCharMapKeyPressed);
     QObject::connect(kbdMousePage, &OWC::FaceButtonsPage::showCharMap, this, &MainWindow::onKeyboardMouseCharMapClicked);
     QObject::connect(kbdMousePage, &OWC::FaceButtonsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
-    QObject::connect(kbdMousePage, &OWC::FaceButtonsPage::logSent, this, &MainWindow::onLogSent);
+    QObject::connect(kbdMousePage, &OWC::FaceButtonsPage::logSent, logsPage, &OWC::LogsPage::write);
     QObject::connect(backButtonsPage, &OWC::BackButtonsPage::backToHome, this, &MainWindow::onBackToHomeClicked);
     QObject::connect(backButtonsPage, &OWC::BackButtonsPage::showCharMap, this, &MainWindow::onBackButtonsCharMapClicked);
-    QObject::connect(backButtonsPage, &OWC::BackButtonsPage::logSent, this, &MainWindow::onLogSent);
+    QObject::connect(backButtonsPage, &OWC::BackButtonsPage::logSent, logsPage, &OWC::LogsPage::write);
     QObject::connect(yamlBrowserPage, &OWC::YamlBrowserPage::backToHome, this, &MainWindow::onBackToHomeClicked);
-    QObject::connect(yamlBrowserPage, &OWC::YamlBrowserPage::logSent, this, &MainWindow::onLogSent);
+    QObject::connect(yamlBrowserPage, &OWC::YamlBrowserPage::logSent, logsPage, &OWC::LogsPage::write);
     QObject::connect(yamlBrowserPage, &OWC::YamlBrowserPage::importProfile, this, &MainWindow::onYamlBrowserImportProfile);
 }
 
@@ -285,8 +284,8 @@ void MainWindow::initGamepadThread() {
 
     QObject::connect(gamepadThread, &QThread::started, gamepadWorker, &OWC::GamepadWorker::startSDLEventsThread);
     QObject::connect(this, &MainWindow::enableSDLEvents, gamepadWorker, &OWC::GamepadWorker::enableEvents);
-    QObject::connect(gamepadWorker, &OWC::GamepadWorker::initFail, this, &MainWindow::onGamepadInitFail);
-    QObject::connect(gamepadWorker, &OWC::GamepadWorker::logSent, this, &MainWindow::onLogSent);
+    QObject::connect(gamepadWorker, &OWC::GamepadWorker::initFail, this, &MainWindow::quitGamepadThread);
+    QObject::connect(gamepadWorker, &OWC::GamepadWorker::logSent, logsPage, &OWC::LogsPage::write);
     QObject::connect(gamepadWorker, &OWC::GamepadWorker::gamepadButton, this, &MainWindow::onGamepadButton);
 
     gamepadThread->start();
@@ -309,10 +308,6 @@ void MainWindow::importYamlMapping(const YAML::Node &yaml) const {
 
     if (xinputPage != nullptr)
         xinputPage->importFromYaml(yaml);
-}
-
-void MainWindow::onLogSent(const QString& msg) const {
-    logsPage->write(msg);
 }
 
 void MainWindow::onHomeKeyboardMouseMapClicked() const {
@@ -524,8 +519,4 @@ void MainWindow::onGamepadButton(const QString &key) const {
         xinputPage->setPendingButton(key);
     else if (curPage == backButtonsPage)
         backButtonsPage->setPendingButton(key);
-}
-
-void MainWindow::onGamepadInitFail() {
-    quitGamepadThread();
 }

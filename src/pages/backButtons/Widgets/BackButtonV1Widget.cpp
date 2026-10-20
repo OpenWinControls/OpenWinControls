@@ -52,7 +52,7 @@ namespace OWC {
             lyt->addWidget(ks);
             keySlots.append(ks);
 
-            QObject::connect(ks, &KeySlotV1Widget::pendingEditBtn, this, &BackButtonV1Widget::onPendingEditBtn);
+            QObject::connect(ks, &KeySlotV1Widget::pendingEditBtn, this, &BackButtonV1Widget::pendingEditBtn);
         }
 
         lyt->addSpacing(25);
@@ -119,9 +119,5 @@ namespace OWC {
 
         if (yaml[macroTimeKey])
             macroStartTime->setValue(yaml[macroTimeKey].as<int>());
-    }
-
-    void BackButtonV1Widget::onPendingEditBtn(QPushButton *keyBtn) {
-        emit pendingEditBtn(keyBtn);
     }
 }

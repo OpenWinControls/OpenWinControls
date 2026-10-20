@@ -28,9 +28,9 @@ namespace OWC {
         backBtnLyt->addWidget(l4);
         backBtnLyt->addWidget(r4);
 
-        QObject::connect(l4, &BackButtonV1Widget::logSent, this, &BackButtonsV1Page::onLogSent);
+        QObject::connect(l4, &BackButtonV1Widget::logSent, this, &BackButtonsV1Page::logSent);
         QObject::connect(l4, &BackButtonV1Widget::pendingEditBtn, this, &BackButtonsV1Page::onkeyButtonPressed);
-        QObject::connect(r4, &BackButtonV1Widget::logSent, this, &BackButtonsV1Page::onLogSent);
+        QObject::connect(r4, &BackButtonV1Widget::logSent, this, &BackButtonsV1Page::logSent);
         QObject::connect(r4, &BackButtonV1Widget::pendingEditBtn, this, &BackButtonsV1Page::onkeyButtonPressed);
     }
 
@@ -57,9 +57,5 @@ namespace OWC {
     void BackButtonsV1Page::importFromYaml(const YAML::Node &yaml) const {
         l4->importFromYaml(yaml);
         r4->importFromYaml(yaml);
-    }
-
-    void BackButtonsV1Page::onLogSent(const QString &msg) {
-        emit logSent(msg);
     }
 }

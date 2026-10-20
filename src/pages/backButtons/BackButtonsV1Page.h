@@ -35,9 +35,6 @@ namespace OWC {
         [[nodiscard]] QString exportToYaml() const override;
         void importFromYaml(const YAML::Node &yaml) const override;
 
-    private slots:
-        void onLogSent(const QString &msg);
-
     public slots:
         void refresh() const override;
     };

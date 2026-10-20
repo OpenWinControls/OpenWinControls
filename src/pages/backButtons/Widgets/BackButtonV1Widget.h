@@ -38,9 +38,6 @@ namespace OWC {
         [[nodiscard]] QString exportToYaml() const;
         void importFromYaml(const YAML::Node &yaml) const;
 
-    private slots:
-        void onPendingEditBtn(QPushButton *keyBtn);
-
     signals:
         void logSent(const QString &msg);
         void pendingEditBtn(QPushButton *keyBtn);

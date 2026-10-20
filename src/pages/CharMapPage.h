@@ -44,7 +44,6 @@ namespace OWC {
 
     private slots:
         void onKeyClicked();
-        void onBackBtnClicked();
 
     signals:
         void keyPressed(const QString &key);

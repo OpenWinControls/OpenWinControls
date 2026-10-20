@@ -40,7 +40,6 @@ namespace OWC {
 
     private slots:
         void onActiveSlotsChanged(int val) const;
-        void onPendingEditBtn(QPushButton *keyBtn);
 
     signals:
         void logSent(const QString &msg);

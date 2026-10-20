@@ -55,7 +55,7 @@ namespace OWC {
 
         QObject::connect(restoreBtn, &QPushButton::clicked, this, &SettingsPage::onRestoreBtnClicked);
         QObject::connect(resetBtn, &QPushButton::clicked, this, &SettingsPage::refresh);
-        QObject::connect(backBtn, &QPushButton::clicked, this, &SettingsPage::onBackBtnClicked);
+        QObject::connect(backBtn, &QPushButton::clicked, this, &SettingsPage::backToHome);
     }
 
     QVBoxLayout *SettingsPage::makeRumbleV1() {
@@ -287,10 +287,6 @@ namespace OWC {
         }
 
         mbox->deleteLater();
-    }
-
-    void SettingsPage::onBackBtnClicked() {
-        emit backToHome();
     }
 
     void SettingsPage::onLedColorPickBtnClicked() {

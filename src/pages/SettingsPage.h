@@ -48,7 +48,6 @@ namespace OWC {
 
     private slots:
         void onRestoreBtnClicked();
-        void onBackBtnClicked();
         void onLedColorPickBtnClicked();
         void onLedModeChanged(int idx) const;
 

@@ -60,9 +60,9 @@ namespace OWC {
 
         setLayout(lyt);
 
-        QObject::connect(backBtn, &QPushButton::clicked, this, &BackButtonsPage::onBackBtnClicked);
+        QObject::connect(backBtn, &QPushButton::clicked, this, &BackButtonsPage::backToHome);
         QObject::connect(resetBtn, &QPushButton::clicked, this, &BackButtonsPage::refresh);
-        QObject::connect(charMapBtn, &QPushButton::clicked, this, &BackButtonsPage::onCharMapBtnClicked);
+        QObject::connect(charMapBtn, &QPushButton::clicked, this, &BackButtonsPage::showCharMap);
     }
 
     void BackButtonsPage::keyReleaseEvent(QKeyEvent *event) {
@@ -92,14 +92,6 @@ namespace OWC {
 
         pendingBtn->setText(key);
         pendingBtn = nullptr;
-    }
-
-    void BackButtonsPage::onBackBtnClicked() {
-        emit backToHome();
-    }
-
-    void BackButtonsPage::onCharMapBtnClicked() {
-        emit showCharMap();
     }
 
     void BackButtonsPage::onkeyButtonPressed(QPushButton *btn) const {

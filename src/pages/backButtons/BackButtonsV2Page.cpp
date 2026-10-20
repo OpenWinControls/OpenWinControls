@@ -33,13 +33,13 @@ namespace OWC {
             r5 = new BackButtonV2Widget(4, 32, u"r5"_s);
 
             backBtnLyt->addWidget(r5);
-            QObject::connect(r5, &BackButtonV2Widget::logSent, this, &BackButtonsV2Page::onLogSent);
+            QObject::connect(r5, &BackButtonV2Widget::logSent, this, &BackButtonsV2Page::logSent);
             QObject::connect(r5, &BackButtonV2Widget::pendingEditBtn, this, &BackButtonsV2Page::onkeyButtonPressed);
         }
 
-        QObject::connect(l4, &BackButtonV2Widget::logSent, this, &BackButtonsV2Page::onLogSent);
+        QObject::connect(l4, &BackButtonV2Widget::logSent, this, &BackButtonsV2Page::logSent);
         QObject::connect(l4, &BackButtonV2Widget::pendingEditBtn, this, &BackButtonsV2Page::onkeyButtonPressed);
-        QObject::connect(r4, &BackButtonV2Widget::logSent, this, &BackButtonsV2Page::onLogSent);
+        QObject::connect(r4, &BackButtonV2Widget::logSent, this, &BackButtonsV2Page::logSent);
         QObject::connect(r4, &BackButtonV2Widget::pendingEditBtn, this, &BackButtonsV2Page::onkeyButtonPressed);
     }
 
@@ -78,9 +78,5 @@ namespace OWC {
 
         if (r5 != nullptr)
             r5->importFromYaml(yaml);
-    }
-
-    void BackButtonsV2Page::onLogSent(const QString &msg) {
-        emit logSent(msg);
     }
 }

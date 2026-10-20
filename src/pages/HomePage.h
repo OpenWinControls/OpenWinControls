@@ -50,13 +50,6 @@ namespace OWC {
 
     private slots:
         void onFaceButtonsMapClicked();
-        void onBackButtonsMapClicked();
-        void onLogsBtnClicked();
-        void onYamlBrowserClicked();
-        void onSettingsClicked();
-        void onApplyBtnClicked();
-        void onExportYamlBtnClicked();
-        void onImportYamlBtnClicked();
 
     signals:
         void keyboardMouseMap();

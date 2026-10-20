@@ -55,7 +55,7 @@ namespace OWC {
             lyt->addWidget(ks);
             keySlots.append(ks);
 
-            QObject::connect(ks, &KeySlotV2Widget::pendingEditBtn, this, &BackButtonV2Widget::onPendingEditBtn);
+            QObject::connect(ks, &KeySlotV2Widget::pendingEditBtn, this, &BackButtonV2Widget::pendingEditBtn);
         }
 
         setLayout(lyt);
@@ -132,9 +132,5 @@ namespace OWC {
     void BackButtonV2Widget::onActiveSlotsChanged(const int val) const {
         for (int i=0,l=keySlots.length(); i<l; ++i)
             keySlots[i]->setEnabled(i < val);
-    }
-
-    void BackButtonV2Widget::onPendingEditBtn(QPushButton *keyBtn) {
-        emit pendingEditBtn(keyBtn);
     }
 }
