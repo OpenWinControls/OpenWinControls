@@ -93,7 +93,7 @@ namespace OWC {
     }
 
     void HomePage::init(const QString &product) const {
-        if (product == win5 || product == mini25 || product == max3)
+        if (product == win5 || product == mini25 || product == max3 || product == miniUltra)
             mappingMode->addItem(u"Xinput"_s);
 
         if (product == win4) {
@@ -119,6 +119,10 @@ namespace OWC {
         } else if (product == max3) {
             frontPic->setPixmap(QPixmap(u":/max3f"_s).scaled(220, 200, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             backPic->setPixmap(QPixmap(u":/max3b"_s).scaled(300, 200, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+
+        } else if (product == miniUltra) {
+            frontPic->setPixmap(QPixmap(u":/miniuf"_s).scaled(280, 200, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            backPic->setPixmap(QPixmap(u":/miniub"_s).scaled(280, 200, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         }
     }
 

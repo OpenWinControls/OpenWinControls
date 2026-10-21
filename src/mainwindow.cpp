@@ -147,7 +147,7 @@ std::shared_ptr<OWC::Controller> MainWindow::getDevice(const QString &product) c
         return std::make_shared<OWC::ControllerV1>(OWC::ControllerFeature::DeadZoneControlV1 | OWC::ControllerFeature::RumbleV1);
     /*else if (product == OWC::win3)
         return std::make_shared<OWC::ControllerV1>();*/
-    else if (product == OWC::win5 || product == OWC::max3)
+    else if (product == OWC::win5 || product == OWC::max3 || product == OWC::miniUltra)
         return std::make_shared<OWC::ControllerV2>(OWC::ControllerFeature::RumbleV1 | OWC::ControllerFeature::XinputMappingV1 | OWC::ControllerFeature::BackButton4);
     else if (product == OWC::mini25 || product == OWC::mini25L)
         return std::make_shared<OWC::ControllerV2>(OWC::ControllerFeature::DeadZoneControlV1 | OWC::ControllerFeature::RumbleV1 | OWC::ControllerFeature::XinputMappingV1);
@@ -174,7 +174,7 @@ bool MainWindow::isCompatible(const QString &product) const {
         isSupported = major >= 1 && minor >= 0x8;
     else if (product == OWC::mini25 || product == OWC::mini25L)
         isSupported = major >= 1 && minor >= 0x22;
-    else if (product == OWC::max3)
+    else if (product == OWC::max3 || product == OWC::miniUltra)
         return true;
 
     if (!isSupported)

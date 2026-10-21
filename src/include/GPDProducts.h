@@ -27,4 +27,5 @@ namespace OWC {
     static constexpr char max2_25[] = "G1619-05";
     static constexpr char win5[] = "G1618-05";
     static constexpr char max3[] = "G1638-01";
+    static constexpr char miniUltra[] = "G1688-01";
 }
