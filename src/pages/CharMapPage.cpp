@@ -23,12 +23,13 @@
 
 #include "CharMapPage.h"
 #include "../extern/libOpenWinControls/src/include/HIDUsageIDMap.h"
-#include "../extern/libOpenWinControls/src/include/XinputUsageIDMap.h"
+#include "../extern/libOpenWinControls/src/include/XinputV1UsageIDMap.h"
+#include "../extern/libOpenWinControls/src/include/XinputV2UsageIDMap.h"
 
 namespace OWC {
     using namespace Qt::StringLiterals;
 
-    CharMapPage::CharMapPage() {
+    CharMapPage::CharMapPage(const int controllerType) {
         QVBoxLayout *lyt = new QVBoxLayout();
         QHBoxLayout *unsetLyt = new QHBoxLayout();
         QVBoxLayout *kbMouseSectionLyt = new QVBoxLayout();
@@ -70,7 +71,7 @@ namespace OWC {
         scrollArea->setWidget(new QWidget);
         QScroller::grabGesture(scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
 
-        unsetLyt->addWidget(makeKeyBtn(0));
+        unsetLyt->addWidget(makeKeyBtn(HIDUsageIDMap.at(0), 0));
         unsetLyt->addStretch();
         kbMouseSectionLyt->setContentsMargins(0, 0, 0, 0);
         kbMouseSectionLyt->addWidget(alphLbl);
@@ -94,7 +95,7 @@ namespace OWC {
         gamepadSectionLyt->setContentsMargins(0, 0, 0, 0);
         gamepadSectionLyt->addWidget(gamepadLbl);
         gamepadSectionLyt->addSpacing(4);
-        gamepadSectionLyt->addLayout(makeGamepadSection());
+        gamepadSectionLyt->addLayout(makeGamepadSection(controllerType));
         bottomLyt->addStretch();
         bottomLyt->addWidget(backBtn);
         scrollWidgLyt->addLayout(unsetLyt);
@@ -112,8 +113,7 @@ namespace OWC {
         QObject::connect(backBtn, &QPushButton::clicked, this, &CharMapPage::hideCharMap);
     }
 
-    QPushButton *CharMapPage::makeKeyBtn(const int code) const {
-        const std::string key = code >= 0x8000 ? XinputUsageIDMap.at(code) : HIDUsageIDMap.at(code);
+    QPushButton *CharMapPage::makeKeyBtn(const std::string &key, const int code) const {
         QPushButton *kbtn = new QPushButton(QString::fromStdString(key));
 
         kbtn->setFlat(true);
@@ -128,7 +128,7 @@ namespace OWC {
         FlowLayout *lyt = new FlowLayout();
 
         for (int i=0x4; i<=0x1d; ++i)
-            lyt->addWidget(makeKeyBtn(i));
+            lyt->addWidget(makeKeyBtn(HIDUsageIDMap.at(i), i));
 
         return lyt;
     }
@@ -137,7 +137,7 @@ namespace OWC {
         FlowLayout *lyt = new FlowLayout();
 
         for (int i=0x1e; i<=0x27; ++i)
-            lyt->addWidget(makeKeyBtn(i));
+            lyt->addWidget(makeKeyBtn(HIDUsageIDMap.at(i), i));
 
         return lyt;
     }
@@ -146,10 +146,10 @@ namespace OWC {
         FlowLayout *lyt = new FlowLayout();
 
         for (int i=0x3a; i<=0x45; ++i)
-            lyt->addWidget(makeKeyBtn(i));
+            lyt->addWidget(makeKeyBtn(HIDUsageIDMap.at(i), i));
 
         for (int i=0x68; i<=0x73; ++i)
-            lyt->addWidget(makeKeyBtn(i));
+            lyt->addWidget(makeKeyBtn(HIDUsageIDMap.at(i), i));
 
         return lyt;
     }
@@ -158,16 +158,16 @@ namespace OWC {
         FlowLayout *lyt = new FlowLayout();
 
         for (int i=0x28; i<=0x39; ++i)
-            lyt->addWidget(makeKeyBtn(i));
+            lyt->addWidget(makeKeyBtn(HIDUsageIDMap.at(i), i));
 
         for (int i=0x46; i<=0x52; ++i)
-            lyt->addWidget(makeKeyBtn(i));
+            lyt->addWidget(makeKeyBtn(HIDUsageIDMap.at(i), i));
 
         for (int i=0x74; i<=0x81; ++i)
-            lyt->addWidget(makeKeyBtn(i));
+            lyt->addWidget(makeKeyBtn(HIDUsageIDMap.at(i), i));
 
         for (int i=0xe0; i<=0xe7; ++i)
-            lyt->addWidget(makeKeyBtn(i));
+            lyt->addWidget(makeKeyBtn(HIDUsageIDMap.at(i), i));
 
         return lyt;
     }
@@ -176,7 +176,7 @@ namespace OWC {
         FlowLayout *lyt = new FlowLayout();
 
         for (int i=0xe8; i<=0xed; ++i)
-            lyt->addWidget(makeKeyBtn(i));
+            lyt->addWidget(makeKeyBtn(HIDUsageIDMap.at(i), i));
 
         return lyt;
     }
@@ -184,28 +184,34 @@ namespace OWC {
     FlowLayout *CharMapPage::makeSpecialSection() const {
         FlowLayout *lyt = new FlowLayout();
 
-        lyt->addWidget(makeKeyBtn(0x85));
+        lyt->addWidget(makeKeyBtn(HIDUsageIDMap.at(0x85), 0x85));
 
         for (int i=0x53; i<=0x67; ++i)
-            lyt->addWidget(makeKeyBtn(i));
+            lyt->addWidget(makeKeyBtn(HIDUsageIDMap.at(i), i));
 
         for (int i=0x87; i<=0x8c; ++i)
-            lyt->addWidget(makeKeyBtn(i));
+            lyt->addWidget(makeKeyBtn(HIDUsageIDMap.at(i), i));
 
         for (int i=0x90; i<=0x94; ++i)
-            lyt->addWidget(makeKeyBtn(i));
+            lyt->addWidget(makeKeyBtn(HIDUsageIDMap.at(i), i));
 
         for (int i=0xb6; i<=0xb7; ++i)
-            lyt->addWidget(makeKeyBtn(i));
+            lyt->addWidget(makeKeyBtn(HIDUsageIDMap.at(i), i));
 
         return lyt;
     }
 
-    FlowLayout *CharMapPage::makeGamepadSection() const {
+    FlowLayout *CharMapPage::makeGamepadSection(const int controllerType) const {
         FlowLayout *lyt = new FlowLayout();
 
-        for (int i=0x8000; i<=0x8018; ++i)
-            lyt->addWidget(makeKeyBtn(i));
+        if (controllerType == 1) {
+            for (int i=0xff01; i<=0xff19; ++i)
+                lyt->addWidget(makeKeyBtn(XinputV1UsageIDMap.at(i), i));
+
+        } else if (controllerType == 2) {
+            for (int i=0x8000; i<=0x8018; ++i)
+                lyt->addWidget(makeKeyBtn(XinputV2UsageIDMap.at(i), i));
+        }
 
         return lyt;
     }

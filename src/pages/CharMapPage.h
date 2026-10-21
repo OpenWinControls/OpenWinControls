@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #pragma once
-
 #include "Widgets/FlowLayout.h"
 #include "../include/CharMapMode.h"
 
@@ -28,17 +27,17 @@ namespace OWC {
         QWidget *kbMouseSection = nullptr;
         QWidget *gamepadSection = nullptr;
 
-        [[nodiscard]] QPushButton *makeKeyBtn(int code) const;
+        [[nodiscard]] QPushButton *makeKeyBtn(const std::string &key, int code) const;
         [[nodiscard]] FlowLayout *makeAlphabetSection() const;
         [[nodiscard]] FlowLayout *makeNumbersSection() const;
         [[nodiscard]] FlowLayout *makeFKeysSection() const;
         [[nodiscard]] FlowLayout *makeKBKeysSection() const;
         [[nodiscard]] FlowLayout *makeMouseSection() const;
         [[nodiscard]] FlowLayout *makeSpecialSection() const;
-        [[nodiscard]] FlowLayout *makeGamepadSection() const;
+        [[nodiscard]] FlowLayout *makeGamepadSection(int controllerType) const;
 
     public:
-        CharMapPage();
+        explicit CharMapPage(int controllerType);
 
         void setMode(CharMapMode mode) const;
 

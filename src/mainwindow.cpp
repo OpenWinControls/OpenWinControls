@@ -233,7 +233,7 @@ void MainWindow::initPages(const QString &product, QLabel *versionLbl) {
     }
 
     settingsPage = new OWC::SettingsPage(gpd);
-    charMapPage = new OWC::CharMapPage();
+    charMapPage = new OWC::CharMapPage(gpd->getControllerType());
     kbdMousePage = new OWC::KeyboardMouseButtonsPage(gpd);
     yamlBrowserPage = new OWC::YamlBrowserPage(appDataPath, gpd->getControllerType());
 
