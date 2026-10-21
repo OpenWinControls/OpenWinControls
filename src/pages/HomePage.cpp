@@ -132,8 +132,8 @@ namespace OWC {
             backPic->setPixmap(QPixmap(u":/win3b"_s).scaled(235, 110, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 
         } else if (product == max3) {
-            frontPic->setPixmap(QPixmap(u":/max3f"_s).scaled(210, 190, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-            backPic->setPixmap(QPixmap(u":/max3b"_s).scaled(235, 190, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            frontPic->setPixmap(QPixmap(u":/max3f"_s).scaled(220, 200, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            backPic->setPixmap(QPixmap(u":/max3b"_s).scaled(300, 200, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         }
     }
 
