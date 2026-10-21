@@ -28,14 +28,11 @@ namespace OWC {
         QVBoxLayout *mapBackBtnLyt = new QVBoxLayout();
         QHBoxLayout *bottomLyt = new QHBoxLayout();
         QPushButton *logsBtn = new QPushButton(u"Logs"_s);
-        QLabel *frontLbl = new QLabel(u"Face buttons"_s);
-        QLabel *backLbl = new QLabel(u"Back buttons"_s);
-        QFont lblFont = frontLbl->font();
 
         headLyt = new QHBoxLayout();
         mappingMode = new QComboBox();
-        faceButtonsMapBtn = new QPushButton(u"Customize"_s);
-        backButtonsMapBtn = new QPushButton(u"Customize"_s);
+        faceButtonsMapBtn = new QPushButton(u"Face buttons"_s);
+        backButtonsMapBtn = new QPushButton(u"Back buttons"_s);
         ymlBrowserBtn = new QPushButton(u"Profiles"_s);
         settingsBtn = new QPushButton(u"Settings"_s);
         applyBtn = new QPushButton(u"Apply"_s);
@@ -48,12 +45,6 @@ namespace OWC {
         mappingMode->setToolTip(u"Face buttons mapping mode"_s);
         faceButtonsMapBtn->setMinimumHeight(40);
         backButtonsMapBtn->setMinimumHeight(40);
-        lblFont.setBold(true);
-        lblFont.setPointSize(14);
-        frontLbl->setFont(lblFont);
-        frontLbl->setAlignment(Qt::AlignCenter);
-        backLbl->setFont(lblFont);
-        backLbl->setAlignment(Qt::AlignCenter);
         frontPic->setAlignment(Qt::AlignCenter);
         frontPic->setPixmap(QPixmap(u":/unkd"_s));
         backPic->setAlignment(Qt::AlignCenter);
@@ -63,17 +54,11 @@ namespace OWC {
         enableButtons(false);
 
         mapFaceBtnLyt->setAlignment(Qt::AlignCenter);
-        mapFaceBtnLyt->addStretch();
-        mapFaceBtnLyt->addWidget(frontLbl);
         mapFaceBtnLyt->addWidget(frontPic);
         mapFaceBtnLyt->addWidget(faceButtonsMapBtn);
-        mapFaceBtnLyt->addStretch();
         mapBackBtnLyt->setAlignment(Qt::AlignCenter);
-        mapBackBtnLyt->addStretch();
-        mapBackBtnLyt->addWidget(backLbl);
         mapBackBtnLyt->addWidget(backPic);
         mapBackBtnLyt->addWidget(backButtonsMapBtn);
-        mapBackBtnLyt->addStretch();
 
         headLyt->addStretch();
         headLyt->addWidget(mappingMode);
