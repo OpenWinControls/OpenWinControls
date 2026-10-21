@@ -26,7 +26,7 @@ namespace OWC {
         Q_OBJECT
 
     protected:
-        static constexpr int buttonWidth = 122;
+        static constexpr int buttonWidth = 130;
 
     public:
         virtual void setMapping(const std::shared_ptr<Controller> &gpd) const = 0;
