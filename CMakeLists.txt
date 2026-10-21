@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.23)
 
-project(OpenWinControls VERSION 2.10 DESCRIPTION "Multiplatform GPD WinControls replacement" LANGUAGES CXX)
+project(OpenWinControls VERSION 2.11 DESCRIPTION "Multiplatform GPD WinControls replacement" LANGUAGES CXX)
 
 set(PROJECT_AUTHOR "kylon")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 6.10 REQUIRED COMPONENTS Core Widgets Network)
+find_package(Qt6 6 REQUIRED COMPONENTS Core Widgets Network)
 
 qt_standard_project_setup()
 
